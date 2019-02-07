@@ -9,7 +9,11 @@
  * http://www.icbanq.com/pbloger/board_View.aspx?number=269
  * http://www.raspberrypi.org/forums/viewtopic.php?f=93&t=78551 (baart)
  * http://www.mikroe.com/add-on-boards/measurement/adc-proto/ (boards)
- *
+ * Rpi        -   MCP3208
+ * GPIO10(19) - DATA in(11)
+ * GPIO9(21) - Data out (12)
+ * GPIO11(23) - CLK(13)
+ * GPIO8(24) - CS
  */
 
 #include <stdio.h>
