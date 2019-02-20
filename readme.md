@@ -9,4 +9,4 @@ Description of hardware used, with pictures and explanation of what each compone
 Description of how to clone source code, any dependancies, how to power up components etc.
 
 ### Social media links(if any)
-Put em here
+https://www.facebook.com/AcousticLocator/?modal=admin_todo_tour 
