@@ -5,6 +5,7 @@
 
 #include <wiringPi.h>
 #include <pthread.h>
+#include "minunit.h"
 
 #define SIG 7
 #define MUXIN 24
@@ -31,6 +32,8 @@ struct mux{
 };
 
 struct mux m;
+pthread_t mux_write_thread;
+pthread_t mux_read_thread; 
 
 static void setupMux(int in_pin, int sel_pin, int out0_pin, int out1_pin){
     struct mux_args in = {.input = 0, .select = 0};
@@ -103,25 +106,35 @@ static void* swStatus(void* void_sw){
     }
 }
 
+static void startMux(){    
+    pthread_create(&mux_write_thread, NULL, writeMuxOut, NULL);
+    pthread_create(&mux_read_thread, NULL, readMuxIn, NULL);    
+}
+
+static void endMux(){
+    pthread_join(mux_write_thread, NULL);
+    pthread_join(mux_read_thread, NULL);  
+}
+
 
 
 int main(){
+    // Setup of variables 
+    if (wiringPiSetup() == -1) exit(1);
     struct signal_args sig_args ={.pin = SIG, .del = 50};
     setupMux(MUXIN, MUXSE, MOUT0, MOUT1);
     
-    if (wiringPiSetup() == -1) exit(1);
+    // Starting all relevant threads
+    pthread_t inputSig_thread;
+    pthread_create(&inputSig_thread, NULL, newSig, (void*) &sig_args);    
+    startMux();
     
-    pthread_t inputSig_thread; 
-    pthread_t mux_write_thread;
-    pthread_t mux_read_thread; 
-     
-    pthread_create(&inputSig_thread, NULL, newSig, (void*) &sig_args);
-    pthread_create(&mux_write_thread, NULL, writeMuxOut, NULL);
-    pthread_create(&mux_read_thread, NULL, readMuxIn, NULL);
-    
+    // Joining the threads
+    endMux();
     pthread_join(inputSig_thread, NULL); 
-    pthread_join(mux_write_thread, NULL);
-    pthread_join(mux_read_thread, NULL); 
+    
+    
+    
 }
 /*
 pinMode(SIG, GPIO_CLOCK);
