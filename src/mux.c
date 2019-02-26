@@ -106,8 +106,7 @@ static void* swStatus(void* void_sw){
 
 
 int main(){
-    int muxse = MUXSE;
-    struct signal_args sig_args ={.pin = SIG, .del = 100};
+    struct signal_args sig_args ={.pin = SIG, .del = 50};
     setupMux(MUXIN, MUXSE, MOUT0, MOUT1);
     
     if (wiringPiSetup() == -1) exit(1);
