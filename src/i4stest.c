@@ -48,23 +48,23 @@ int writeWAVHeader(int fd, WaveHeader *hdr)
     return 0;
 }
 
-int recordWAV(const char *fileName, WaveHeader *hdr, uint32_t duration)
+int recordWAV(char *device, const char *fileName, WaveHeader *hdr, uint32_t duration)
 {
     int err;
     int size;
     snd_pcm_t *handle;
     snd_pcm_hw_params_t *params;
     snd_pcm_uframes_t periodsize = 4096;
-    unsigned int sampleRate = hdr->sample_rate;
+    unsigned int sampleRate = hdr->sample_rate; 
     int dir;
     snd_pcm_uframes_t frames = 32;
-    const char *device = "plughw:1"; // USB microphone
+    const char *d = device; // USB microphone
     // const char *device = "default"; // Integrated system microphone
     char *buffer;
     int filedesc;
 
     /* Open PCM device for recording (capture). */
-    err = snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0);
+    err = snd_pcm_open(&handle, d, SND_PCM_STREAM_CAPTURE, 0);
     if (err)
     {
         fprintf(stderr, "Unable to open PCM device: %s\n", snd_strerror(err));
@@ -124,12 +124,7 @@ int recordWAV(const char *fileName, WaveHeader *hdr, uint32_t duration)
     }
     
     err = snd_pcm_hw_params_set_buffer_size (handle, params, frames);
-    if (0)
-    {
-        fprintf(stderr, "Error setting buffer size: %s\n", snd_strerror(err));
-        snd_pcm_close(handle);
-        return err;
-    }
+    
     /* Write the parameters to the driver */
     err = snd_pcm_hw_params(handle, params);
     if (err)
@@ -156,7 +151,7 @@ int recordWAV(const char *fileName, WaveHeader *hdr, uint32_t duration)
         snd_pcm_close(handle);
         return -1;
     }
-
+	printf("sample_rate: %d\n", sampleRate);
     err = snd_pcm_hw_params_get_period_time(params, &sampleRate, &dir);
     if (err)
     {
@@ -165,6 +160,7 @@ int recordWAV(const char *fileName, WaveHeader *hdr, uint32_t duration)
         free(buffer);
         return err;
     }
+    printf("period_time: %d\n", sampleRate);
 
     uint32_t pcm_data_size = hdr->sample_rate * hdr->bytes_per_frame * (duration / 1000);
     hdr->file_size = pcm_data_size + 36;
@@ -205,7 +201,9 @@ int recordWAV(const char *fileName, WaveHeader *hdr, uint32_t duration)
     return 0;
 }
 
-int main(){
+int main(int argc, char *argv[]){
+	char *device = argv[1];
+	int time = strtol(argv[2], NULL, 10); //milliseconds
 	WaveHeader *h = genericWAVHeader(48000, 16, 2);
-	recordWAV("newfile.wav", h, 5000);
+	recordWAV(device, "newfile.wav", h, time);
 }
