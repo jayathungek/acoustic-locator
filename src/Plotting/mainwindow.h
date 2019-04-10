@@ -16,7 +16,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void plot();
+    int plot();
 private:
     Ui::MainWindow *ui;
 };
