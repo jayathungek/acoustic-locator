@@ -1,4 +1,5 @@
 #define MUXSE  21
+#define FRAMES 64
 
 #include <alsa/asoundlib.h>
 #include <stdio.h>
@@ -11,8 +12,9 @@ int size_mic;
 unsigned int sample_rate;
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
-snd_pcm_uframes_t frames = 64; 
-char *buffer; 
+snd_pcm_uframes_t frames = FRAMES; 
+char *buffer0;
+char *buffer1; 
 char *micMbuf;
 char *mic0buf;
 char *mic1buf;
@@ -21,7 +23,9 @@ int setupdevice(char *device, unsigned int rate){
 	int err;
     sample_rate = rate;
     
-    printf("requested period size: %d\n", frames);
+    
+    printf("req period size: %d\n", frames);
+	printf("req sample rate: %d\n", sample_rate);
     /* Open PCM device for recording (capture). */
     err = snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0);
     if (err)
@@ -77,8 +81,14 @@ int setupdevice(char *device, unsigned int rate){
         fprintf(stderr, "Error setting period size: %s\n", snd_strerror(err));
         snd_pcm_close(handle);
         return err;
-    } 
-   
+    }
+    
+    unsigned int periodtime;
+    snd_pcm_hw_params_get_period_time(params, &periodtime, NULL);
+    printf("period time: %dus\n", periodtime);
+    
+    printf("actual period size: %d\n", frames);
+	printf("actual sample rate: %d\n", sample_rate);
     
     /* Write the parameters to the driver */
     err = snd_pcm_hw_params(handle, params);
@@ -88,28 +98,27 @@ int setupdevice(char *device, unsigned int rate){
         snd_pcm_close(handle);
         return err;
     }
-	printf("actual period size: %d\n", frames);
-	printf("actual sample rate: %d\n", sample_rate);
+	
 }
 
-void printbuffer(char *buffer, int size, int channels){
+void printbuffer(char *buf, int size, int channels){
 	//loop through L/R samples (pairs of shorts) in char buffer
 	if(channels == 2){
 		for (int i = 0; i<size; i+=4){
-			char lsb = buffer[i];
-			char msb = buffer[i+1];
+			char lsb = buf[i];
+			char msb = buf[i+1];
 			int lchannel = msb | lsb << 8;
 			
-			lsb = buffer[i+2];
-			msb = buffer[i+3];
+			lsb = buf[i+2];
+			msb = buf[i+3];
 			int rchannel = msb | lsb << 8;
 		
 			printf("[%04x | %04x], ", lchannel, rchannel );
 		}
 	}else if(channels == 1){
 		for (int i = 0; i<size; i+=2){
-			char lsb = buffer[i];
-			char msb = buffer[i+1];
+			char lsb = buf[i];
+			char msb = buf[i+1];
 			int channel = msb | lsb << 8;		
 			printf("[%04x], ", channel);
 		}
@@ -117,7 +126,7 @@ void printbuffer(char *buffer, int size, int channels){
 		printf("%d channels not supported", channels);
 	}
 	
-	printf("\n");
+	printf("\n\n");
 }
 
 int setupbuffers(){
@@ -128,8 +137,16 @@ int setupbuffers(){
     size_mic = size / 2;
     printf("main_buffer_size: %d\n", size);
     printf("mic_buffers_size: %d\n", size_mic);
-    buffer = (char *) malloc(size);
-    if (!buffer)
+    buffer0 = (char *) malloc(size);
+    if (!buffer0)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    } 
+    
+    buffer1 = (char *) malloc(size);
+    if (!buffer1)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
@@ -164,39 +181,105 @@ int setupbuffers(){
     return 0;
 }
 
+void freebuffers(){
+	free(buffer0);
+	free(buffer1); 
+    free(micMbuf);
+	free(mic0buf);
+	free(mic1buf); 
+}
+
+//(char code for sub buffer to fill, main buffer, size of main buffer)
+void fillbuf(char tobuf, char *frombuf, int sizefrom){
+	switch(tobuf){
+		char lsb;
+		char msb;
+		case 'm':
+			for(int i = 0; i < sizefrom; i+=4){
+				lsb = frombuf[i];
+				msb = frombuf[i+1];
+				micMbuf[i/2] = lsb;
+				micMbuf[(i/2) + 1] = msb;
+			}
+			break;
+			
+		case '0':
+			for(int i = 2; i < sizefrom; i+=4){
+				lsb = frombuf[i];
+				msb = frombuf[i+1];
+				mic0buf[(i/2) - 1] = lsb;
+				mic0buf[(i/2)] = msb;
+			}
+			break;
+			
+		case '1':
+			for(int i = 2; i < sizefrom; i+=4){
+				lsb = frombuf[i];
+				msb = frombuf[i+1];
+				mic1buf[(i/2) - 1] = lsb;
+				mic1buf[(i/2)] = msb;
+			}
+			break;
+			
+		default:
+			printf("Unknown buffer: %c\n", tobuf);
+	}
+}
+
 int main(int argc, char *argv[]){
+	if (wiringPiSetup() == -1) exit(1);
+	pinMode(MUXSE, OUTPUT);
+	
 	char * dev = argv[1];
-	setupdevice(dev, 48000);
+	setupdevice(dev, 44000);
 	setupbuffers();
 	
 	int totalFrames = 0;
 	int loops = 4;
 	int err;
+	int sel;
 /*	int i = 0; i<loops; i++*/
 /*	;;*/
+	
 	for(int i = 0; i<loops; i++){
-		err = snd_pcm_readi(handle, buffer, frames); 
-        totalFrames += err;
-        if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
-        if (err < 0) err = snd_pcm_recover(handle, err, 0);
-        // Still an error, need to exit.
-        if (err < 0)
-        {
-            fprintf(stderr, "Error occured while recording: %s\n", snd_strerror(err));
-            snd_pcm_close(handle);
-            free(buffer); 
-            free(micMbuf);
-			free(mic0buf);
-			free(mic1buf); 
-            return err;
-        }
-        printbuffer(buffer, size, 2);
+		sel = 1;
+		digitalWrite(MUXSE, sel);
+		err = snd_pcm_readi(handle, buffer0, frames);
+		totalFrames += err;
+		printf("mux: %d, read %d frames from buffer\n", sel, totalFrames);
+		totalFrames = 0;
+/*		printbuffer(buffer0, size, 2);*/
+        fillbuf('m', buffer0, size);
+        fillbuf('1', buffer0, size); 
+        printf("MAIN MIC:\n");
+        printbuffer(micMbuf, size_mic, 1);
+        printf("MIC 1:\n");
+        printbuffer(mic1buf, size_mic, 1);
+        
+		sel = 0;
+		digitalWrite(MUXSE, sel);
+		err = snd_pcm_readi(handle, buffer0, frames);
+		totalFrames += err;
+		printf("mux: %d, read %d frames from buffer\n", sel, totalFrames);
+		totalFrames = 0;
+/*		printbuffer(buffer0, size, 2); */
+		fillbuf('0', buffer0, size); 
+		printf("MIC 0:\n");
+        printbuffer(mic0buf, size_mic, 1);
+        
+/*        if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);*/
+/*        if (err < 0) err = snd_pcm_recover(handle, err, 0);*/
+/*        // Still an error, need to exit.*/
+/*        if (err < 0)*/
+/*        {*/
+/*            fprintf(stderr, "Error occured while recording: %s\n", snd_strerror(err));*/
+/*            snd_pcm_close(handle);*/
+/*            freebuffers();*/
+/*            return err;*/
+/*        }*/
+        
 	}
-	printf("read %d frames total\n", totalFrames);
 	snd_pcm_close(handle);
-	free(buffer); 
-	free(micMbuf);
-	free(mic0buf);
-	free(mic1buf); 
+	freebuffers();
 	
 }
