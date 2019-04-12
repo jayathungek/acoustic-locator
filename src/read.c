@@ -1,4 +1,5 @@
-#define MUXSE  21
+#define MUXSE 21
+#define LASER 22
 #define FRAMES 64
 
 #include <alsa/asoundlib.h>
@@ -240,13 +241,15 @@ void fillbuf(char tobuf, char *frombuf, int sizefrom){
 }
 
 int setupcsvbuffer(int micbufsize, int mainloops){
-	csvbuf = (char *) malloc(micbufsize*mainloops*3);
+	int csvsize = micbufsize*mainloops*4;
+	csvbuf = (char *) malloc(csvsize);
     if (!csvbuf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
+    printf("csvbuffer_size: %d\n", csvsize);
     return 0;
 }
 
@@ -254,51 +257,67 @@ void write_csv(char *filename, char *buf, int size){
 	FILE *csv_file;
 	csv_file = fopen(filename, "w");
 	fprintf(csv_file, "buffer data,\n");
-	//3 samples to be processed each loop
-	for (int i = 0; i<size; i+=6){
+	//4 samples to be processed each loop
+	for (int i = 0; i<size; i+=8){
 		char lsb;
 		char msb;
 		int mic;
 		
-		//mic1
+		//micm0
 		lsb = buf[i];
 		msb = buf[i+1];
 		mic = msb | lsb << 8;		
 		fprintf(csv_file, "%04x,\n", mic);
 		
-		//mic2
+		//mic0
 		lsb = buf[i+2];
 		msb = buf[i+3];
 		mic = msb | lsb << 8;			
 		fprintf(csv_file, "%04x,\n", mic);
 		
-		//mic3
+		//micm1
 		lsb = buf[i+4];
 		msb = buf[i+5];
+		mic = msb | lsb << 8;			
+		fprintf(csv_file, "%04x,\n", mic);
+		
+		//mic1
+		lsb = buf[i+6];
+		msb = buf[i+7];
 		mic = msb | lsb << 8;			
 		fprintf(csv_file, "%04x,\n", mic);
 	}
 	fclose(csv_file);
 }
 
+void copy(char *to, char *from, int fromsize, int pos){
+	for (int i = 0; i<fromsize; i++){
+		to[pos] = from[i];
+		pos++;
+	}
+}
+
 int main(int argc, char *argv[]){
 	int totalFrames = 0;
-	int loops = 4;
+	int loops = 1;
 	int err;
 	int sel;
 	int csv_i = 0;
 	
+	
+	
+	
 	if (wiringPiSetup() == -1) exit(1);
 	pinMode(MUXSE, OUTPUT);
+	pinMode(LASER, OUTPUT);
+	digitalWrite(LASER, 0);
 	
 	char * dev = argv[1];
 	setupdevice(dev, 44000);
 	setupmicbuffers(); //sets size_mic
-/*	setupcsvbuffer(size_mic, loops)*/
+	setupcsvbuffer(size_mic, loops);
 	
 	
-/*	int i = 0; i<loops; i++*/
-/*	;;*/
 	
 	for(int i = 0; i<loops; i++){
 		sel = 1;
@@ -307,22 +326,19 @@ int main(int argc, char *argv[]){
 		totalFrames += err;
 		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
-/*		printbuffer(buffer, size, 2);*/
         fillbuf('b', buffer, size);
         fillbuf('1', buffer, size); 
         printf("MAIN MIC:\n");
         printbuffer(micM1buf, size_mic, 1);
         printf("MIC 1:\n");
-        printbuffer(mic1buf, size_mic, 1);
-        
-        
+		printbuffer(mic1buf, size_mic, 1);
+
 		sel = 0;
 		digitalWrite(MUXSE, sel);
 		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
 		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
-/*		printbuffer(buffer, size, 2); */
 		fillbuf('a', buffer, size);
 		fillbuf('0', buffer, size);
 		printf("MAIN MIC:\n");
@@ -330,16 +346,16 @@ int main(int argc, char *argv[]){
 		printf("MIC 0:\n");
         printbuffer(mic0buf, size_mic, 1);
         
-/*        if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);*/
-/*        if (err < 0) err = snd_pcm_recover(handle, err, 0);*/
-/*        // Still an error, need to exit.*/
-/*        if (err < 0)*/
-/*        {*/
-/*            fprintf(stderr, "Error occured while recording: %s\n", snd_strerror(err));*/
-/*            snd_pcm_close(handle);*/
-/*            freebuffers();*/
-/*            return err;*/
-/*        }*/
+        if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
+        if (err < 0) err = snd_pcm_recover(handle, err, 0);
+        // Still an error, need to exit.
+        if (err < 0)
+        {
+            fprintf(stderr, "Error occured while recording: %s\n", snd_strerror(err));
+            snd_pcm_close(handle);
+            freebuffers();
+            return err;
+        }
         
 	}
 	snd_pcm_close(handle);
