@@ -1,6 +1,7 @@
 #define MUXSE 21
 #define LASER 22
-#define FRAMES 64
+#define FRAMES 128
+#define CSVDIR "../csv"
 
 #include <alsa/asoundlib.h>
 #include <stdio.h>
@@ -241,15 +242,15 @@ void fillbuf(char tobuf, char *frombuf, int sizefrom){
 }
 
 int setupcsvbuffer(int micbufsize, int mainloops){
-	int csvsize = micbufsize*mainloops*4;
-	csvbuf = (char *) malloc(csvsize);
+	size_csv = micbufsize*mainloops*4;
+	csvbuf = (char *) malloc(size_csv);
     if (!csvbuf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
-    printf("csvbuffer_size: %d\n", csvsize);
+    printf("csvbuffer_size: %d\n", size_csv);
     return 0;
 }
 
@@ -299,13 +300,10 @@ void copy(char *to, char *from, int fromsize, int pos){
 
 int main(int argc, char *argv[]){
 	int totalFrames = 0;
-	int loops = 1;
+	int loops = 2000;
 	int err;
 	int sel;
 	int csv_i = 0;
-	
-	
-	
 	
 	if (wiringPiSetup() == -1) exit(1);
 	pinMode(MUXSE, OUTPUT);
@@ -317,34 +315,43 @@ int main(int argc, char *argv[]){
 	setupmicbuffers(); //sets size_mic
 	setupcsvbuffer(size_mic, loops);
 	
-	
-	
 	for(int i = 0; i<loops; i++){
 		sel = 1;
 		digitalWrite(MUXSE, sel);
 		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
+/*		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);*/
 		totalFrames = 0;
         fillbuf('b', buffer, size);
         fillbuf('1', buffer, size); 
-        printf("MAIN MIC:\n");
-        printbuffer(micM1buf, size_mic, 1);
-        printf("MIC 1:\n");
-		printbuffer(mic1buf, size_mic, 1);
+/*        printf("MAIN MIC:\n");*/
+/*        printbuffer(micM1buf, size_mic, 1);*/
+/*        printf("MIC 1:\n");*/
+/*		printbuffer(mic1buf, size_mic, 1);*/
+		
+		
+		copy(csvbuf, micM1buf, size_mic, csv_i);
+		csv_i += size_mic;
+		copy(csvbuf, mic1buf, size_mic, csv_i);
+		csv_i += size_mic;
 
 		sel = 0;
 		digitalWrite(MUXSE, sel);
 		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
+/*		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);*/
 		totalFrames = 0;
 		fillbuf('a', buffer, size);
 		fillbuf('0', buffer, size);
-		printf("MAIN MIC:\n");
-        printbuffer(micM0buf, size_mic, 1); 
-		printf("MIC 0:\n");
-        printbuffer(mic0buf, size_mic, 1);
+/*		printf("MAIN MIC:\n");*/
+/*        printbuffer(micM0buf, size_mic, 1); */
+/*		printf("MIC 0:\n");*/
+/*        printbuffer(mic0buf, size_mic, 1);*/
+        
+        copy(csvbuf, micM0buf, size_mic, csv_i);
+		csv_i += size_mic;
+		copy(csvbuf, mic0buf, size_mic, csv_i);
+		csv_i += size_mic;
         
         if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
         if (err < 0) err = snd_pcm_recover(handle, err, 0);
@@ -358,6 +365,9 @@ int main(int argc, char *argv[]){
         }
         
 	}
+	
+	//write_csv("left128.csv", csvbuf, size_csv);
+	
 	snd_pcm_close(handle);
 	freebuffers();
 	
