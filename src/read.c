@@ -9,15 +9,17 @@
 
 int size;
 int size_mic;
+int size_csv;
 unsigned int sample_rate;
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = FRAMES; 
-char *buffer0;
-char *buffer1; 
-char *micMbuf;
+char *buffer;
+char *micM0buf;
+char *micM1buf;
 char *mic0buf;
 char *mic1buf;
+char *csvbuf;
 
 int setupdevice(char *device, unsigned int rate){
 	int err;
@@ -129,32 +131,33 @@ void printbuffer(char *buf, int size, int channels){
 	printf("\n\n");
 }
 
-int setupbuffers(){
+int setupmicbuffers(){
 	int err;
 	/* Use a buffer large enough to hold one period */
 	
     size = frames * 2 * 2; /* 2 bytes/sample, 2 channels */
     size_mic = size / 2;
+    
     printf("main_buffer_size: %d\n", size);
     printf("mic_buffers_size: %d\n", size_mic);
-    buffer0 = (char *) malloc(size);
-    if (!buffer0)
+    buffer = (char *) malloc(size);
+    if (!buffer)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     } 
     
-    buffer1 = (char *) malloc(size);
-    if (!buffer1)
+    micM0buf = (char *) malloc(size_mic);
+    if (!micM0buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
-    } 
+    }
     
-    micMbuf = (char *) malloc(size_mic);
-    if (!micMbuf)
+    micM1buf = (char *) malloc(size_mic);
+    if (!micM1buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
@@ -182,11 +185,12 @@ int setupbuffers(){
 }
 
 void freebuffers(){
-	free(buffer0);
-	free(buffer1); 
-    free(micMbuf);
+	free(buffer); 
+    free(micM0buf);
+    free(micM1buf);
 	free(mic0buf);
 	free(mic1buf); 
+	free(csvbuf);
 }
 
 //(char code for sub buffer to fill, main buffer, size of main buffer)
@@ -194,12 +198,21 @@ void fillbuf(char tobuf, char *frombuf, int sizefrom){
 	switch(tobuf){
 		char lsb;
 		char msb;
-		case 'm':
+		case 'a':
 			for(int i = 0; i < sizefrom; i+=4){
 				lsb = frombuf[i];
 				msb = frombuf[i+1];
-				micMbuf[i/2] = lsb;
-				micMbuf[(i/2) + 1] = msb;
+				micM0buf[i/2] = lsb;
+				micM0buf[(i/2) + 1] = msb;
+			}
+			break;
+			
+		case 'b':
+			for(int i = 0; i < sizefrom; i+=4){
+				lsb = frombuf[i];
+				msb = frombuf[i+1];
+				micM1buf[i/2] = lsb;
+				micM1buf[(i/2) + 1] = msb;
 			}
 			break;
 			
@@ -226,44 +239,94 @@ void fillbuf(char tobuf, char *frombuf, int sizefrom){
 	}
 }
 
+int setupcsvbuffer(int micbufsize, int mainloops){
+	csvbuf = (char *) malloc(micbufsize*mainloops*3);
+    if (!csvbuf)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    }
+    return 0;
+}
+
+void write_csv(char *filename, char *buf, int size){
+	FILE *csv_file;
+	csv_file = fopen(filename, "w");
+	fprintf(csv_file, "buffer data,\n");
+	//3 samples to be processed each loop
+	for (int i = 0; i<size; i+=6){
+		char lsb;
+		char msb;
+		int mic;
+		
+		//mic1
+		lsb = buf[i];
+		msb = buf[i+1];
+		mic = msb | lsb << 8;		
+		fprintf(csv_file, "%04x,\n", mic);
+		
+		//mic2
+		lsb = buf[i+2];
+		msb = buf[i+3];
+		mic = msb | lsb << 8;			
+		fprintf(csv_file, "%04x,\n", mic);
+		
+		//mic3
+		lsb = buf[i+4];
+		msb = buf[i+5];
+		mic = msb | lsb << 8;			
+		fprintf(csv_file, "%04x,\n", mic);
+	}
+	fclose(csv_file);
+}
+
 int main(int argc, char *argv[]){
+	int totalFrames = 0;
+	int loops = 4;
+	int err;
+	int sel;
+	int csv_i = 0;
+	
 	if (wiringPiSetup() == -1) exit(1);
 	pinMode(MUXSE, OUTPUT);
 	
 	char * dev = argv[1];
 	setupdevice(dev, 44000);
-	setupbuffers();
+	setupmicbuffers(); //sets size_mic
+/*	setupcsvbuffer(size_mic, loops)*/
 	
-	int totalFrames = 0;
-	int loops = 4;
-	int err;
-	int sel;
+	
 /*	int i = 0; i<loops; i++*/
 /*	;;*/
 	
 	for(int i = 0; i<loops; i++){
 		sel = 1;
 		digitalWrite(MUXSE, sel);
-		err = snd_pcm_readi(handle, buffer0, frames);
+		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-		printf("mux: %d, read %d frames from buffer\n", sel, totalFrames);
+		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
-/*		printbuffer(buffer0, size, 2);*/
-        fillbuf('m', buffer0, size);
-        fillbuf('1', buffer0, size); 
+/*		printbuffer(buffer, size, 2);*/
+        fillbuf('b', buffer, size);
+        fillbuf('1', buffer, size); 
         printf("MAIN MIC:\n");
-        printbuffer(micMbuf, size_mic, 1);
+        printbuffer(micM1buf, size_mic, 1);
         printf("MIC 1:\n");
         printbuffer(mic1buf, size_mic, 1);
         
+        
 		sel = 0;
 		digitalWrite(MUXSE, sel);
-		err = snd_pcm_readi(handle, buffer0, frames);
+		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-		printf("mux: %d, read %d frames from buffer\n", sel, totalFrames);
+		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
-/*		printbuffer(buffer0, size, 2); */
-		fillbuf('0', buffer0, size); 
+/*		printbuffer(buffer, size, 2); */
+		fillbuf('a', buffer, size);
+		fillbuf('0', buffer, size);
+		printf("MAIN MIC:\n");
+        printbuffer(micM0buf, size_mic, 1); 
 		printf("MIC 0:\n");
         printbuffer(mic0buf, size_mic, 1);
         
