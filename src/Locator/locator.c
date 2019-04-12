@@ -2,6 +2,8 @@
 // buffers from microphone
 int * top1, * left, * top2, * right;
 
+
+
 // frame size for microphone
 const int FRAMELENGTH;
 
