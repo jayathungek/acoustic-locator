@@ -8,3 +8,4 @@ build-Plotting-Desktop_Qt_5_12_2_MinGW_64_bit-Debug/
 *.wav
 *.txt
 *.c.save.1
+*error.txt
