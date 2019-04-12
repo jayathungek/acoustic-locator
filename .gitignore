@@ -4,7 +4,6 @@
 *.c.save
 *.out
 build-Plotting-Desktop_Qt_5_12_2_MinGW_64_bit-Debug/
-*.csv
 *.wav
 *.txt
 *.c.save.1
