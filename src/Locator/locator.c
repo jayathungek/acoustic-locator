@@ -1,6 +1,6 @@
 
 // buffers from microphone
-int * top1, left, top2, right;
+int * top1, * left, * top2, * right;
 
 // frame size for microphone
 const int FRAMELENGTH;
@@ -36,11 +36,11 @@ int main ()
         // 3) if we can find 0 crossings, calculate angles, else goto 1)
         if (!findZero(top1Norm)){
             continue;
-        }elif(!findZero(leftNorm);){
+        }else if(!findZero(leftNorm)){
             continue;
-        }elif(!findZero(top2Norm))
+        }else if(!findZero(top2Norm)){
             continue;
-        }elif(!findZero(rightNorm)){
+        }else if(!findZero(rightNorm)){
             continue;
         }
 
@@ -60,15 +60,15 @@ int main ()
 
 
 
-void readMic(frameSize)
+void readMic(int frameSize)
 {
     // todo Kavi
 }
 
-int *normalize(int *buffer);
+int *normalize(int *buffer)
 {
     //todo Roni
-    int normalized[FRAMELENGTH]
+    static int *normalized;
     return normalized;
 }
 
