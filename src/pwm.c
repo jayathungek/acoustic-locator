@@ -5,7 +5,7 @@
 #include <signal.h>
 
 #define PWM0 23 //wiringpi
-#define PWM1 1 
+#define PWM1 26 
 #define PWM_PIN 31 //physical
 #define BASE_CLK 19200000
 #define PWM_PERIOD 50
@@ -54,10 +54,21 @@ int main(){
     wiringPiSetup();
     
     
-    //pinMode (PWM0, PWM_OUTPUT);
     pinMode (PWM1, PWM_OUTPUT);
+    pinMode (PWM0, PWM_OUTPUT);
     pwmSetup();
 
+    turnMotor(0, PWM0);
+    delay(1000);
+    
+    turnMotor(90, PWM0);
+    delay(1000);
+    
+    turnMotor(180, PWM0);
+    delay(1000);
+    
+    stopMotor(PWM0);
+    
     turnMotor(0, PWM1);
     delay(1000);
     
