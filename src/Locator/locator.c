@@ -8,20 +8,17 @@
 #define BOT1       3
 #define CSVDIR     "../../csv"
 
-
-
 #include <alsa/asoundlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <wiringPi.h>
 
-
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = FRAMES; 
 unsigned int sample_rate;
-int sel;
+int sel; // mux
 
 char *buffer;   // main ALSA PCM buffer
 
@@ -79,11 +76,11 @@ int main (int argc, char *argv[])
         readMics();
         printf("micT0:\n");
         printbuf(micT0buf, size_mic);
-        printf("mic0:\n");
+        printf("micB0:\n");
         printbuf(micB0buf, size_mic);
         printf("micT1:\n");
         printbuf(micT1buf, size_mic);
-        printf("mic1:\n");
+        printf("micB1:\n");
         printbuf(micB1buf, size_mic);
         
 
