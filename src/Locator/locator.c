@@ -2,8 +2,6 @@
 // buffers from microphone
 int * top1, * left, * top2, * right;
 
-
-
 // frame size for microphone
 const int FRAMELENGTH;
 
@@ -19,7 +17,7 @@ int findZero(int *buffer); // returns 0 on success
 
 float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
 
-void updatePosition(float ang1, float ang2); // sets servos and LED
+void updatePosition(float del1, float del2, float del3); // sets servos and LED
 
 
 int main ()
@@ -47,13 +45,14 @@ int main ()
         }
 
         // 4) calculate angles
-        float angleTopLeft = calcAngle(top1Norm, leftNorm);
-        float angleTopRight = calcAngle(top2Norm, rightNorm);
+        float delTopLeft = calcAngle(top1Norm, leftNorm);
+        float delTopRight = calcAngle(top2Norm, rightNorm);
+        float delLeftRight = calcAngle(leftNorm, rightNorm);
 
         // 5) update position and turn on LED
-        updatePosition(angleTopLeft, angleTopRight);
+        updatePosition(delTopLeft, delTopRight, delLeftRigth);
 
-        // delaay for a bit to prevent jittering
+        // delay for a bit to prevent jittering
         // delay(1000);
 
     }
@@ -87,7 +86,8 @@ float calcAngle(int *top_buf, int *side_buf)
     return angle;
 }
 
-void updatePosition(float ang1, float ang2)
+// args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
+void updatePosition(float delay1, float delay2, float delay3)
 {
     // todo Try Kavi
 }
