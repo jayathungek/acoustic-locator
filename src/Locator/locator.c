@@ -6,21 +6,24 @@
 #define TOP2       1
 #define LEFT       2
 #define RIGHT      3
-#define MICDIST    10 // cm
+#define MICDIST    10.0 // cm
 #define VSOUND     34600 // cm/s
 #define MICRO      0.000001
 
-#include <alsa/asoundlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 #include <wiringPi.h>
+#include <alsa/asoundlib.h>
+
 
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = FRAMES; 
 unsigned int sample_rate;
 int sel; // mux
+double mic_x = (double)MICDIST/2; // x coord of mic relative to other mic
 
 char *buffer;   // main ALSA PCM buffer
 
@@ -60,12 +63,19 @@ float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
 
 void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
 
+double hyperbola(double l, double x); // hyperbola that represents possible mic locations
+
+/*double getMinX(double l); // hyperbola not valid for all x, returns minimum safe x*/
+
+//delta in microseconds
 float getDevFromNormal(float delta); // uses time diff delta to calculate the angular offset of the noise from the normal line
 
 
 int main (int argc, char *argv[])
 {
-	int loops = 4;
+	float angle  = getDevFromNormal(-288.7);
+	printf("angle: %.2f degrees\n", angle);
+	int loops = 0;
 	if (wiringPiSetup() == -1) exit(1);
 	pinMode(MUXSE, OUTPUT);
 	pinMode(LASER, OUTPUT);
@@ -78,13 +88,13 @@ int main (int argc, char *argv[])
     {
         // 1) read data from microphone
         readMics();
-        printf("micT0:\n");
+        printf("top1:\n");
         printbuf(top1, size_mic);
-        printf("micB0:\n");
+        printf("left:\n");
         printbuf(left, size_mic);
-        printf("micT1:\n");
+        printf("top2:\n");
         printbuf(top2, size_mic);
-        printf("micB1:\n");
+        printf("right:\n");
         printbuf(right, size_mic);
         
 
@@ -336,11 +346,7 @@ void readMics()
 	err = snd_pcm_readi(handle, buffer, frames);
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
     fillbuf(TOP1, buffer, size);
-    fillbuf(LEFT, buffer, size); 
-/*    printf("MAIN MIC:\n");*/
-/*    printbuffer(top2, size_mic, 1);*/
-/*    printf("MIC 1:\n");*/
-/*	printbuffer(right, size_mic, 1);*/
+    fillbuf(LEFT, buffer, size);
 
 	sel = 0;
 	digitalWrite(MUXSE, sel);
@@ -348,10 +354,7 @@ void readMics()
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
 	fillbuf(TOP2, buffer, size);
 	fillbuf(RIGHT, buffer, size);
-/*	printf("MAIN MIC:\n");*/
-/*    printbuffer(top1, size_mic, 1); */
-/*	printf("MIC 0:\n");*/
-/*    printbuffer(left, size_mic, 1);*/
+	
     if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
     if (err < 0) err = snd_pcm_recover(handle, err, 0);
     // Still an error, need to exit.
@@ -383,10 +386,37 @@ float calcAngle(int *top_buf, int *side_buf)
     return angle;
 }
 
+/*double getMinX(double l, double ){*/
+/*	double exp1 = pow(l, 2)*(pow(l, 2) - 4*pow(mic_x));*/
+/*	double exp2 = 4*(4*pow(mic_x, 2) - pow(l, 2));*/
+/*	return sqrt(-exp1/exp2);*/
+/*}*/
+
+double hyperbola(double l, double x){
+	double exp1 = (pow(l, 2)/4) - pow(mic_x, 2);
+	double exp2 = ((4*pow(mic_x, 2))/pow(l, 2)) - 1;
+	double exp3 = pow(x, 2) * exp2;
+	return sqrt(exp1 + exp3);
+	
+}
+
 float getDevFromNormal(float delta){
+	// all distances/coords in cm
 	// l - extra distance sound has to travel to further mic
-	float l = VSOUND * delta; 
-	float mic_x = 5; // x coord of mic relative to 
+	double l = (double)VSOUND * delta * MICRO;
+	double x1 = 20; //arbitrary, but must be above the parabola minimum
+	double x2 = 40; // x2 > x1
+	double y1 = hyperbola(l, x1);
+	double y2 = hyperbola(l, x2);
+	
+	double alpha_prime = atan((y2 - y1)/(x2 - x1));
+	if (delta > 0){
+		return (M_PI_2 - alpha_prime)*(180/M_PI);
+	}else{
+		return -(M_PI_2 - alpha_prime)*(180/M_PI);
+	}
+	
+	
 }
 
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
