@@ -2,11 +2,13 @@
 #define LASER      22
 #define FRAMES     64
 #define SAMPLERATE 44000
-#define TOP0       0
-#define TOP1       1
-#define BOT0       2
-#define BOT1       3
-#define CSVDIR     "../../csv"
+#define TOP1       0
+#define TOP2       1
+#define LEFT       2
+#define RIGHT      3
+#define MICDIST    10 // cm
+#define VSOUND     34600 // cm/s
+#define MICRO      0.000001
 
 #include <alsa/asoundlib.h>
 #include <stdio.h>
@@ -23,10 +25,10 @@ int sel; // mux
 char *buffer;   // main ALSA PCM buffer
 
 // buffers from microphones
-signed int *micT0buf;
-signed int *micT1buf;
-signed int *micB0buf;
-signed int *micB1buf;
+signed int *top1;
+signed int *top2;
+signed int *left;
+signed int *right;
 
 //buffer sizes
 int size;
@@ -56,12 +58,14 @@ int findZero(int *buffer); // returns 0 on success
 
 float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
 
-void updatePosition(float del1, float del2, float del3); // sets servos and LED
+void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
+
+float getDevFromNormal(float delta); // uses time diff delta to calculate the angular offset of the noise from the normal line
 
 
 int main (int argc, char *argv[])
 {
-	int loops = 400;
+	int loops = 4;
 	if (wiringPiSetup() == -1) exit(1);
 	pinMode(MUXSE, OUTPUT);
 	pinMode(LASER, OUTPUT);
@@ -75,20 +79,20 @@ int main (int argc, char *argv[])
         // 1) read data from microphone
         readMics();
         printf("micT0:\n");
-        printbuf(micT0buf, size_mic);
+        printbuf(top1, size_mic);
         printf("micB0:\n");
-        printbuf(micB0buf, size_mic);
+        printbuf(left, size_mic);
         printf("micT1:\n");
-        printbuf(micT1buf, size_mic);
+        printbuf(top2, size_mic);
         printf("micB1:\n");
-        printbuf(micB1buf, size_mic);
+        printbuf(right, size_mic);
         
 
         // 2) normalize data around 0
-        int *top1Norm = normalize(micT0buf);
-        int *leftNorm = normalize(micB0buf);
-        int *top2Norm = normalize(micT1buf);
-        int *rightNorm = normalize(micB1buf);
+        int *top1Norm = normalize(top1);
+        int *leftNorm = normalize(left);
+        int *top2Norm = normalize(top2);
+        int *rightNorm = normalize(right);
 
         // 3) if we can find 0 crossings, calculate angles, else goto 1)
         if (!findZero(top1Norm)){
@@ -231,32 +235,32 @@ int setupmicbuffers(){
         return -1;
     } 
     
-    micT0buf = (signed int *) malloc(size_mic_bytes);
-    if (!micT0buf)
+    top1 = (signed int *) malloc(size_mic_bytes);
+    if (!top1)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    micT1buf = (signed int *) malloc(size_mic_bytes);
-    if (!micT1buf)
+    top2 = (signed int *) malloc(size_mic_bytes);
+    if (!top2)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    micB0buf = (signed int *) malloc(size_mic_bytes);
-    if (!micB0buf)
+    left = (signed int *) malloc(size_mic_bytes);
+    if (!left)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    micB1buf = (signed int *) malloc(size_mic_bytes);
-    if (!micB1buf)
+    right = (signed int *) malloc(size_mic_bytes);
+    if (!right)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
@@ -269,10 +273,10 @@ int setupmicbuffers(){
 
 void freebuffers(){
 	free(buffer); 
-    free(micT0buf);
-    free(micT1buf);
-	free(micB0buf);
-	free(micB1buf);
+    free(top1);
+    free(top2);
+	free(left);
+	free(right);
 }
 
 //(char code for sub buffer to fill, main buffer, size of main buffer)
@@ -281,39 +285,39 @@ void fillbuf(int tobuf, char *frombuf, int sizefrom){
 		char lsb;
 		char msb;
 		int  value;
-		case TOP0:
-			for(int i = 0; i < sizefrom; i+=4){
-				lsb   = frombuf[i];
-				msb   = frombuf[i+1];
-				value = convertValue(msb, lsb);
-				micT0buf[i/4] = value;
-			}
-			break;
-			
 		case TOP1:
 			for(int i = 0; i < sizefrom; i+=4){
 				lsb   = frombuf[i];
 				msb   = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				micT1buf[i/4] = value;
+				top1[i/4] = value;
 			}
 			break;
 			
-		case BOT0:
+		case TOP2:
+			for(int i = 0; i < sizefrom; i+=4){
+				lsb   = frombuf[i];
+				msb   = frombuf[i+1];
+				value = convertValue(msb, lsb);
+				top2[i/4] = value;
+			}
+			break;
+			
+		case LEFT:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
 				msb = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				micB0buf[((i+2)/4) - 1] = value;
+				left[((i+2)/4) - 1] = value;
 			}
 			break;
 			
-		case BOT1:
+		case RIGHT:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
 				msb = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				micB1buf[((i+2)/4) - 1] = value;
+				right[((i+2)/4) - 1] = value;
 			}
 			break;
 			
@@ -332,22 +336,22 @@ void readMics()
 	err = snd_pcm_readi(handle, buffer, frames);
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
     fillbuf(TOP1, buffer, size);
-    fillbuf(BOT1, buffer, size); 
+    fillbuf(LEFT, buffer, size); 
 /*    printf("MAIN MIC:\n");*/
-/*    printbuffer(micT1buf, size_mic, 1);*/
+/*    printbuffer(top2, size_mic, 1);*/
 /*    printf("MIC 1:\n");*/
-/*	printbuffer(micB1buf, size_mic, 1);*/
+/*	printbuffer(right, size_mic, 1);*/
 
 	sel = 0;
 	digitalWrite(MUXSE, sel);
 	err = snd_pcm_readi(handle, buffer, frames);
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
-	fillbuf(TOP0, buffer, size);
-	fillbuf(BOT0, buffer, size);
+	fillbuf(TOP2, buffer, size);
+	fillbuf(RIGHT, buffer, size);
 /*	printf("MAIN MIC:\n");*/
-/*    printbuffer(micT0buf, size_mic, 1); */
+/*    printbuffer(top1, size_mic, 1); */
 /*	printf("MIC 0:\n");*/
-/*    printbuffer(micB0buf, size_mic, 1);*/
+/*    printbuffer(left, size_mic, 1);*/
     if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
     if (err < 0) err = snd_pcm_recover(handle, err, 0);
     // Still an error, need to exit.
@@ -379,8 +383,14 @@ float calcAngle(int *top_buf, int *side_buf)
     return angle;
 }
 
+float getDevFromNormal(float delta){
+	// l - extra distance sound has to travel to further mic
+	float l = VSOUND * delta; 
+	float mic_x = 5; // x coord of mic relative to 
+}
+
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
-void updatePosition(float delay1, float delay2, float delay3)
+void updatePosition(float delayTL, float delayTR, float delayLR)
 {
     // todo Try Kavi
 }

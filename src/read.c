@@ -1,6 +1,6 @@
 #define MUXSE 21
 #define LASER 22
-#define FRAMES 128
+#define FRAMES 64
 #define CSVDIR "../csv"
 
 #include <alsa/asoundlib.h>
@@ -54,8 +54,8 @@ int setupdevice(char *device, unsigned int rate){
         snd_pcm_close(handle);
         return err;
     }
-    /* Signed 16-bit little-endian format */
-    err = snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
+    /* Signed 16-bit big-endian format */
+    err = snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_BE);
     if (err<0)
     {
         fprintf(stderr, "Error setting format: %s\n", snd_strerror(err));
@@ -109,22 +109,22 @@ void printbuffer(char *buf, int size, int channels){
 	//loop through L/R samples (pairs of shorts) in char buffer
 	if(channels == 2){
 		for (int i = 0; i<size; i+=4){
-			char lsb = buf[i];
-			char msb = buf[i+1];
-			int lchannel = msb | lsb << 8;
+			char msb = buf[i];
+			char lsb = buf[i+1];
+			int lchannel = lsb | msb << 8;
 			
-			lsb = buf[i+2];
-			msb = buf[i+3];
-			int rchannel = msb | lsb << 8;
+			msb = buf[i+2];
+			lsb = buf[i+3];
+			int rchannel = lsb | msb << 8;
 		
-			printf("[%04x | %04x], ", lchannel, rchannel );
+			printf("[%d | %d], ", lchannel, rchannel );
 		}
 	}else if(channels == 1){
 		for (int i = 0; i<size; i+=2){
-			char lsb = buf[i];
-			char msb = buf[i+1];
-			int channel = msb | lsb << 8;		
-			printf("[%04x], ", channel);
+			char msb = buf[i];
+			char lsb = buf[i+1];
+			int channel = lsb | msb << 8;		
+			printf("[%d], ", channel);
 		}
 	}else{
 		printf("%d channels not supported", channels);
@@ -300,7 +300,7 @@ void copy(char *to, char *from, int fromsize, int pos){
 
 int main(int argc, char *argv[]){
 	int totalFrames = 0;
-	int loops = 2000;
+	int loops = 4;
 	int err;
 	int sel;
 	int csv_i = 0;
@@ -320,14 +320,14 @@ int main(int argc, char *argv[]){
 		digitalWrite(MUXSE, sel);
 		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-/*		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);*/
+		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
         fillbuf('b', buffer, size);
         fillbuf('1', buffer, size); 
-/*        printf("MAIN MIC:\n");*/
-/*        printbuffer(micM1buf, size_mic, 1);*/
-/*        printf("MIC 1:\n");*/
-/*		printbuffer(mic1buf, size_mic, 1);*/
+        printf("MAIN MIC:\n");
+        printbuffer(micM1buf, size_mic, 1);
+        printf("MIC 1:\n");
+		printbuffer(mic1buf, size_mic, 1);
 		
 		
 		copy(csvbuf, micM1buf, size_mic, csv_i);
@@ -339,14 +339,14 @@ int main(int argc, char *argv[]){
 		digitalWrite(MUXSE, sel);
 		err = snd_pcm_readi(handle, buffer, frames);
 		totalFrames += err;
-/*		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);*/
+		printf("mux: %d, read %d frames to buffer\n", sel, totalFrames);
 		totalFrames = 0;
 		fillbuf('a', buffer, size);
 		fillbuf('0', buffer, size);
-/*		printf("MAIN MIC:\n");*/
-/*        printbuffer(micM0buf, size_mic, 1); */
-/*		printf("MIC 0:\n");*/
-/*        printbuffer(mic0buf, size_mic, 1);*/
+		printf("MAIN MIC:\n");
+        printbuffer(micM0buf, size_mic, 1); 
+		printf("MIC 0:\n");
+        printbuffer(mic0buf, size_mic, 1);
         
         copy(csvbuf, micM0buf, size_mic, csv_i);
 		csv_i += size_mic;
