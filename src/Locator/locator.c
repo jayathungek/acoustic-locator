@@ -2,7 +2,13 @@
 #define LASER      22
 #define FRAMES     64
 #define SAMPLERATE 44000
+#define TOP0       0
+#define TOP1       1
+#define BOT0       2
+#define BOT1       3
 #define CSVDIR     "../../csv"
+
+
 
 #include <alsa/asoundlib.h>
 #include <stdio.h>
@@ -20,10 +26,10 @@ int sel;
 char *buffer;   // main ALSA PCM buffer
 
 // buffers from microphones
-signed int *micM0buf;
-signed int *micM1buf;
-signed int *mic0buf;
-signed int *mic1buf;
+signed int *micT0buf;
+signed int *micT1buf;
+signed int *micB0buf;
+signed int *micB1buf;
 
 //buffer sizes
 int size;
@@ -34,7 +40,8 @@ int size_mic;
 
 void printbuf(int *buf, int size); // for debugging
 
-void fillbuf(char tobuf, char *frombuf, int sizefrom);
+//int tobuf is the character code for the different buffers 
+void fillbuf(int tobuf, char *frombuf, int sizefrom); // splits the raw data buffer so that the correct channel is sent to tobuf
 
 int setupdevice(char *device, unsigned int rate); // returns 0 on success
 
@@ -42,7 +49,7 @@ int setupmicbuffers(); // 0 on success
 
 void freebuffers();
 
-void readMics(); // updates micM0, micM1, mic1 and mic0 buffers
+void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
 
 int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
 
@@ -70,21 +77,21 @@ int main (int argc, char *argv[])
     {
         // 1) read data from microphone
         readMics();
-        printf("micM0:\n");
-        printbuf(micM0buf, size_mic);
+        printf("micT0:\n");
+        printbuf(micT0buf, size_mic);
         printf("mic0:\n");
-        printbuf(mic0buf, size_mic);
-        printf("micM1:\n");
-        printbuf(micM1buf, size_mic);
+        printbuf(micB0buf, size_mic);
+        printf("micT1:\n");
+        printbuf(micT1buf, size_mic);
         printf("mic1:\n");
-        printbuf(mic1buf, size_mic);
+        printbuf(micB1buf, size_mic);
         
 
         // 2) normalize data around 0
-        int *top1Norm = normalize(micM0buf);
-        int *leftNorm = normalize(mic0buf);
-        int *top2Norm = normalize(micM1buf);
-        int *rightNorm = normalize(mic1buf);
+        int *top1Norm = normalize(micT0buf);
+        int *leftNorm = normalize(micB0buf);
+        int *top2Norm = normalize(micT1buf);
+        int *rightNorm = normalize(micB1buf);
 
         // 3) if we can find 0 crossings, calculate angles, else goto 1)
         if (!findZero(top1Norm)){
@@ -227,32 +234,32 @@ int setupmicbuffers(){
         return -1;
     } 
     
-    micM0buf = (signed int *) malloc(size_mic_bytes);
-    if (!micM0buf)
+    micT0buf = (signed int *) malloc(size_mic_bytes);
+    if (!micT0buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    micM1buf = (signed int *) malloc(size_mic_bytes);
-    if (!micM1buf)
+    micT1buf = (signed int *) malloc(size_mic_bytes);
+    if (!micT1buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    mic0buf = (signed int *) malloc(size_mic_bytes);
-    if (!mic0buf)
+    micB0buf = (signed int *) malloc(size_mic_bytes);
+    if (!micB0buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
     }
     
-    mic1buf = (signed int *) malloc(size_mic_bytes);
-    if (!mic1buf)
+    micB1buf = (signed int *) malloc(size_mic_bytes);
+    if (!micB1buf)
     {
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
@@ -265,51 +272,51 @@ int setupmicbuffers(){
 
 void freebuffers(){
 	free(buffer); 
-    free(micM0buf);
-    free(micM1buf);
-	free(mic0buf);
-	free(mic1buf);
+    free(micT0buf);
+    free(micT1buf);
+	free(micB0buf);
+	free(micB1buf);
 }
 
 //(char code for sub buffer to fill, main buffer, size of main buffer)
-void fillbuf(char tobuf, char *frombuf, int sizefrom){
+void fillbuf(int tobuf, char *frombuf, int sizefrom){
 	switch(tobuf){
 		char lsb;
 		char msb;
 		int  value;
-		case 'a':
+		case TOP0:
 			for(int i = 0; i < sizefrom; i+=4){
 				lsb   = frombuf[i];
 				msb   = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				micM0buf[i/4] = value;
+				micT0buf[i/4] = value;
 			}
 			break;
 			
-		case 'b':
+		case TOP1:
 			for(int i = 0; i < sizefrom; i+=4){
 				lsb   = frombuf[i];
 				msb   = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				micM1buf[i/4] = value;
+				micT1buf[i/4] = value;
 			}
 			break;
 			
-		case '0':
+		case BOT0:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
 				msb = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				mic0buf[((i+2)/4) - 1] = value;
+				micB0buf[((i+2)/4) - 1] = value;
 			}
 			break;
 			
-		case '1':
+		case BOT1:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
 				msb = frombuf[i+1];
 				value = convertValue(msb, lsb);
-				mic1buf[((i+2)/4) - 1] = value;
+				micB1buf[((i+2)/4) - 1] = value;
 			}
 			break;
 			
@@ -319,7 +326,7 @@ void fillbuf(char tobuf, char *frombuf, int sizefrom){
 }
 
 
-//fills micM0, micM1, mic0 and mic1 buffers
+//fills micT0, micT1, micB0 and micB1 buffers
 void readMics()
 {
 	int err;
@@ -327,23 +334,23 @@ void readMics()
 	digitalWrite(MUXSE, sel);
 	err = snd_pcm_readi(handle, buffer, frames);
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
-    fillbuf('b', buffer, size);
-    fillbuf('1', buffer, size); 
+    fillbuf(TOP1, buffer, size);
+    fillbuf(BOT1, buffer, size); 
 /*    printf("MAIN MIC:\n");*/
-/*    printbuffer(micM1buf, size_mic, 1);*/
+/*    printbuffer(micT1buf, size_mic, 1);*/
 /*    printf("MIC 1:\n");*/
-/*	printbuffer(mic1buf, size_mic, 1);*/
+/*	printbuffer(micB1buf, size_mic, 1);*/
 
 	sel = 0;
 	digitalWrite(MUXSE, sel);
 	err = snd_pcm_readi(handle, buffer, frames);
 	printf("mux: %d, read %d frames to buffer\n", sel, err);
-	fillbuf('a', buffer, size);
-	fillbuf('0', buffer, size);
+	fillbuf(TOP0, buffer, size);
+	fillbuf(BOT0, buffer, size);
 /*	printf("MAIN MIC:\n");*/
-/*    printbuffer(micM0buf, size_mic, 1); */
+/*    printbuffer(micT0buf, size_mic, 1); */
 /*	printf("MIC 0:\n");*/
-/*    printbuffer(mic0buf, size_mic, 1);*/
+/*    printbuffer(micB0buf, size_mic, 1);*/
     if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
     if (err < 0) err = snd_pcm_recover(handle, err, 0);
     // Still an error, need to exit.
