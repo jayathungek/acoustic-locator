@@ -129,15 +129,16 @@ int main (int argc, char *argv[])
     {
         // 1) read data from microphone
         readMics();
-/*        printf("top1:\n");*/
-/*        printbuf(top1, size_mic);*/
-/*        printf("left:\n");*/
-/*        printbuf(left, size_mic);*/
-/*        printf("top2:\n");*/
-/*        printbuf(top2, size_mic);*/
-/*        printf("right:\n");*/
-/*        printbuf(right, size_mic);*/
+
         if(debug){
+	        printf("top1:\n");
+		    printbuf(top1, size_mic);
+		    printf("left:\n");
+		    printbuf(left, size_mic);
+		    printf("top2:\n");
+		    printbuf(top2, size_mic);
+		    printf("right:\n");
+		    printbuf(right, size_mic);
 		    printBufToFile(out, top1, size_mic);
 		    printBufToFile(out, left, size_mic);
 		    printBufToFile(out, top2, size_mic);
@@ -399,14 +400,14 @@ void readMics()
     sel = 1;
 	digitalWrite(MUXSE, sel);
 	err = snd_pcm_readi(handle, buffer, frames);
-	printf("mux: %d, read %d frames to buffer\n", sel, err);
+	if (debug) printf("mux: %d, read %d frames to buffer\n", sel, err);
     fillbuf(TOP1, buffer, size);
     fillbuf(LEFT, buffer, size);
 
 	sel = 0;
 	digitalWrite(MUXSE, sel);
 	err = snd_pcm_readi(handle, buffer, frames);
-	printf("mux: %d, read %d frames to buffer\n", sel, err);
+	if (debug) printf("mux: %d, read %d frames to buffer\n", sel, err);
 	fillbuf(TOP2, buffer, size);
 	fillbuf(RIGHT, buffer, size);
 	
