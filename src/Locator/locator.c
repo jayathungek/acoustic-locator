@@ -172,7 +172,7 @@ int main (int argc, char *argv[])
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
-        // delay(1000);
+        // delay(DELAY);
         
         
 
