@@ -1,16 +1,32 @@
+//hardware stuff
 #define MUXSE      21
-#define LASER      22
 #define FRAMES     64
 #define SAMPLERATE 44000
 #define TOP1       0
 #define TOP2       1
 #define LEFT       2
 #define RIGHT      3
+
+#define LASER      22
+#define ELEVATION  23   //top servo
+#define AZIMUTH    26   //bottom servo
+#define BASE_CLK   19200000
+#define PWM_FREQ   50   //Hz
+#define PWMRNG     2000  // range of pwm values that can be written
+#define DELAY      500   // motor delay, ms 
+#define AZ_MAX     90    // Limit range of motion to prevent damage - values
+#define AZ_MIN    -90    // derived from experiment
+#define EL_MAX     70
+#define EL_MIN    -35
+#define DELAY      500   // servo delay, ms
+
+//physics stuff
 #define MICDIST    10.0 // cm
 #define VSOUND     34600 // cm/s
 #define MICRO      0.000001
 
 #include <stdio.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
@@ -37,53 +53,71 @@ signed int *right;
 int size;
 int size_mic;
 
+// keep track of positions of both servos
+int az_curr;
+int el_curr;
+
 
 // functions
+//DEBUG
+void printbuf(int *buf, int size); 
 
-void printbuf(int *buf, int size); // for debugging
+//SERVOS AND LED
+int  getPwmClk(int pwmRange);
+int  getPwmValue(int angle);
+void turnMotorTo(int angle, int motor);
+void turnMotorBy(int angle, int motor); // prevents movement if at limits
+void stopMotor(int motor);
+void stopMotors();
+void zeroMotors();
 
-//int tobuf is the character code for the different buffers 
-void fillbuf(int tobuf, char *frombuf, int sizefrom); // splits the raw data buffer so that the correct channel is sent to tobuf
-
-int setupdevice(char *device, unsigned int rate); // returns 0 on success
-
-int setupmicbuffers(); // 0 on success
-
-void freebuffers();
-
-void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
-
-int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
-
-int *normalize(int *buffer); // returns normalized buffer
-
-int findZero(int *buffer); // returns 0 on success
-
-float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
-
+void zeroAzimuth();
+void zeroElevation();
+void pwmSetup();
 void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
 
+//MICS
+//int tobuf is the character code for the different buffers 
+void fillbuf(int tobuf, char *frombuf, int sizefrom); // splits the raw data buffer so that the correct channel is sent to tobuf
+int setupdevice(char *device, unsigned int rate); // returns 0 on success
+int setupmicbuffers(); // 0 on success
+void freebuffers();
+void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
+
+//DATA MANIPULATION
+int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
+int *normalize(int *buffer); // returns normalized buffer
+int findZero(int *buffer); // returns 0 on success
+float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
 double hyperbola(double l, double x); // hyperbola that represents possible mic locations
-
-/*double getMinX(double l); // hyperbola not valid for all x, returns minimum safe x*/
-
 //delta in microseconds
 float getDevFromNormal(float delta); // uses time diff delta to calculate the angular offset of the noise from the normal line
+/*double getMinX(double l); // hyperbola not valid for all x, returns minimum safe x*/
+
+
 
 
 int main (int argc, char *argv[])
 {
-	float angle  = getDevFromNormal(-288.7);
-	printf("angle: %.2f degrees\n", angle);
-	int loops = 0;
-	if (wiringPiSetup() == -1) exit(1);
-	pinMode(MUXSE, OUTPUT);
-	pinMode(LASER, OUTPUT);
-	digitalWrite(LASER, 0);
+	
 	
 	char * dev = argv[1];
+	if (wiringPiSetup() == -1) exit(1);
+	
+	pinMode(MUXSE, OUTPUT);
+	pinMode(LASER, OUTPUT);
+	pinMode (AZIMUTH, PWM_OUTPUT);
+    pinMode (ELEVATION, PWM_OUTPUT);
+	pwmSetup();
 	setupdevice(dev, SAMPLERATE);
 	setupmicbuffers(); //sets size_mic
+	
+	
+	digitalWrite(LASER, 0);
+	
+	zeroMotors();
+	delay(DELAY);
+	int loops = 0;
     for (int i = 0; i < loops; i++) //change to while(1) for real use 
     {
         // 1) read data from microphone
@@ -229,7 +263,6 @@ int setupdevice(char *device, unsigned int rate){
 
 int setupmicbuffers(){
 	int err;
-	/* Use a buffer large enough to hold one period */
 	
     size = frames * 2 * 2; /* 2 bytes/sample, 2 channels */
     size_mic = frames; // one int per frame received
@@ -403,7 +436,8 @@ double hyperbola(double l, double x){
 float getDevFromNormal(float delta){
 	// all distances/coords in cm
 	// l - extra distance sound has to travel to further mic
-	double l = (double)VSOUND * delta * MICRO;
+	if(delta == 0) return 0;
+	double l  = (double)VSOUND * delta * MICRO;
 	double x1 = 20; //arbitrary, but must be above the parabola minimum
 	double x2 = 40; // x2 > x1
 	double y1 = hyperbola(l, x1);
@@ -420,7 +454,94 @@ float getDevFromNormal(float delta){
 }
 
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
-void updatePosition(float delayTL, float delayTR, float delayLR)
-{
-    // todo Try Kavi
+void updatePosition(float delayTL, float delayTR, float delayLR){
+    int azimuth_angle   = round(getDevFromNormal(delayLR));
+    int elevation_angle = round(getDevFromNormal(delayTR));
+    turnMotorBy(azimuth_angle, AZIMUTH);
+    turnMotorBy(elevation_angle, ELEVATION);
+    printf("azimuth deviation: %d degrees\n", azimuth_angle);
+    printf("elevation deviation: %d degrees\n", elevation_angle);
+}
+
+int getPwmClk(int pwmRange){
+    return BASE_CLK/(pwmRange * PWM_FREQ);
+}
+
+
+int getPwmValue(int angle){  // from -90 to +90
+    if (angle > 90){
+    	printf("err: Max angle is 90\n");
+    	exit(-1);
+    }
+    
+    if (angle < -90){
+    	printf("err: Min angle is -90\n");
+    	exit(-1);
+    }
+    
+    return 160 - angle;
+    
+}
+
+void turnMotorTo(int angle, int motor){
+    int toWrite = getPwmValue(angle);
+    pwmWrite(motor, toWrite);
+    printf("angle: %d - pwmVal: %d\n", angle,  toWrite);
+}
+
+void stopMotor(int pin){
+    pwmWrite(pin, 0);
+}
+
+void stopMotors(){
+	stopMotor(AZIMUTH);
+	stopMotor(ELEVATION);
+}
+
+void turnMotorBy(int angle, int motor){
+	int new_angle;
+	switch(motor){
+    	case AZIMUTH:
+    		new_angle = az_curr + angle;
+    		if(new_angle > AZ_MIN && new_angle < AZ_MAX){
+    			az_curr = new_angle;
+    			turnMotorTo(az_curr, AZIMUTH);
+    		}
+    		break;
+    	
+    	case ELEVATION:
+    		new_angle = el_curr + angle;
+    		if(new_angle > EL_MIN && new_angle < EL_MAX){
+    			el_curr = new_angle;
+    			turnMotorTo(el_curr, ELEVATION);
+    		}
+    		break;
+    	default:
+    		printf("Motor not found: %d\n", motor);
+    }
+}
+
+void zeroAzimuth(){
+	turnMotorTo(0, AZIMUTH);
+	az_curr = 0;
+}
+
+void zeroElevation(){
+	turnMotorTo(0, ELEVATION);
+	el_curr = 0;
+}
+
+void zeroMotors(){
+	zeroAzimuth();
+	zeroElevation();
+}
+
+void pwmSetup(){
+    pwmSetMode(PWM_MODE_MS);
+    pwmSetRange(PWMRNG);
+    int clk = getPwmClk(PWMRNG);
+    pwmSetClock(clk);
+    az_curr = 0;
+    el_curr = 0;
+    printf("pwm_range: %d\npwm_clk: %d\n", PWMRNG, clk);
 }
