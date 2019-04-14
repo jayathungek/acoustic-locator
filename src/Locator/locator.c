@@ -59,7 +59,7 @@ int az_curr;
 int el_curr;
 
 // for sound level
-const int threshold = 10000;
+signed int threshold = 1000;
 
 // zero crossings
 int zeroTop1, zeroLeft, zeroTop2, zeroRight;
@@ -178,6 +178,8 @@ int main (int argc, char *argv[])
         if (!calcDelays()){
             continue;
         }
+        
+        
 
         // 5) update position and turn on LED
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
@@ -438,7 +440,6 @@ int findZero(int *buffer, int *zeroCrossing)
     while(buffer[i] < threshold && i < FRAMES){
         i++;
     }
-
     // find first zero crossing
     while(buffer[i]>0 && i < FRAMES){
         i++;
@@ -450,7 +451,7 @@ int findZero(int *buffer, int *zeroCrossing)
 
 
     *zeroCrossing = i;
-    printf("found buffer peak: %d at %d\n", buffer[i], *zeroCrossing);
+    
 
     return 1;
 }
@@ -459,7 +460,7 @@ int calcDelays()
 {
     // given the spacing between the mics, max delay can be speed_sound x distance
     float maxDelay = MICDIST/VSOUND;
-    float stepSize = 1/SAMPLERATE;
+    float stepSize = 1.0/SAMPLERATE;
 
     // comment 1 option out
     //  option 1: for accuracy, we want both zero crossings to come from the same frame
@@ -487,16 +488,22 @@ int calcDelays()
         return 0;
     }
 
-    delTopLeft = zeroTop1 - zeroLeft;
+    delTopLeft = (zeroTop1 - zeroLeft) * stepSize;
 
     if ((zeroTop2 - zeroRight) * stepSize > maxDelay || (zeroTop2 - zeroRight) * stepSize < -maxDelay){
         return 0;
     }
 
-    delTopRight = zeroTop2 - zeroRight;
+    delTopRight = (zeroTop2 - zeroRight) * stepSize;
 
     // left right delay is just the difference between delTopLeft and delTopRight
     delLeftRight = delTopLeft - delTopRight;
+    printf("topleft indices: %d, %d\n", zeroTop1, zeroLeft);
+    printf("topright indices: %d, %d\n", zeroTop2, zeroRight);
+    
+    printf("delayTL: %.6f\n", delTopLeft);
+    printf("delayTR: %.6f\n", delTopRight);
+    printf("delayLR: %.6f\n", delLeftRight);
 
     return 1;
 }
