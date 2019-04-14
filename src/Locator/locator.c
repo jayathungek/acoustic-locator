@@ -73,7 +73,9 @@ float delTopLeft, delTopRight, delLeftRight;
 void printbuf(signed int *buf, int size); 
 void printBufToFile(FILE *file, signed int *buf, int size);
 
-//SERVOS AND LED
+//SERVOS AND LASER
+void laserOn();
+void laserOff();
 int  getPwmClk(int pwmRange);
 int  getPwmValue(int angle);
 void turnMotorTo(int angle, int motor);
@@ -127,15 +129,15 @@ int main (int argc, char *argv[])
 	setupmicbuffers(); //sets size_mic
 	
 	
-	digitalWrite(LASER, 0);
 	
+	laserOff();
 	zeroMotors();
 	delay(DELAY);
 /*	updatePosition(0, 0, -297*MICRO);*/
 /*	delay(DELAY);*/
 /*	stopMotors();*/
 	
-	int loops = 10000;
+	int loops = 0;
     for (int i = 0; i < loops; i++) //change to while(1) for real use 
     {
         // 1) read data from microphone
@@ -628,4 +630,12 @@ void pwmSetup(){
     az_curr = 0;
     el_curr = 0;
     printf("pwm_range: %d\npwm_clk: %d\n", PWMRNG, clk);
+}
+
+void laserOn(){
+	digitalWrite(LASER, 1);
+}
+
+void laserOff(){
+	digitalWrite(LASER, 0);
 }
