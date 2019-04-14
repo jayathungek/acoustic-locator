@@ -1,40 +1,46 @@
 #include <wiringPi.h>
-//#include <softPwm.h>
-//#include <pigpio.h>
 #include <stdio.h>
+#include <stdlib.h> 
 #include <signal.h>
 
-#define PWM0 23 //wiringpi
-#define PWM1 26 
-#define PWM_PIN 31 //physical
-#define BASE_CLK 19200000
-#define PWM_PERIOD 50
-#define PWMRNG 200  // range of pwm values that can be written 
+#define LASER      22
+#define ELEVATION  23   //top
+#define AZIMUTH    26   //bottom
+#define BASE_CLK   19200000
+#define PWM_FREQ   50   //Hz
+#define PWMRNG     2000  // range of pwm values that can be written 
+
+#define AZ_MAX     90
+#define AZ_MIN    -90
+#define EL_MAX     90
+#define EL_MIN    -90
+
+int az_curr;
+int el_curr;
 
 int getPwmClk(int pwmRange){
-    return BASE_CLK/(pwmRange * PWM_PERIOD);
+    return BASE_CLK/(pwmRange * PWM_FREQ);
 }
 
-float getConvFactor(){
-    // For a pwm range of 100 -- 0 degrees -> 1; 180 degrees -> 13
-    float pwmr_float = (float)PWMRNG;
-    return ((pwmr_float/100) * 13)/180; 
 
-}
-
-int getPwmValue(int angle){  // from 0 -180
-    // 1 represents the 0 degree position -- from experiment
-    if(angle == 0) return 1;
+int getPwmValue(int angle){  // from -90 to +90
+    if (angle > 90){
+    	printf("err: Max angle is 90\n");
+    	exit(-1);
+    }
     
-    //13 represents the 180 position -- from experiment
-    float conv_factor = getConvFactor();
-    int toWrite = (int)(conv_factor * angle);
-    return toWrite; 
+    if (angle < -90){
+    	printf("err: Min angle is -90\n");
+    	exit(-1);
+    }
+    
+    return 160 - angle;
+    
 }
 
-void turnMotor(int angle, int pin){
+void turnMotor(int angle, int motor){
     int toWrite = getPwmValue(angle);
-    pwmWrite(pin, toWrite);
+    pwmWrite(motor, toWrite);
     printf("angle: %d - pwmVal: %d\n", angle,  toWrite);
 }
 
@@ -42,22 +48,97 @@ void stopMotor(int pin){
     pwmWrite(pin, 0);
 }
 
+void turnMotorBy(int angle, int motor){
+	int new_angle;
+	switch(motor){
+    	case AZIMUTH:
+    		new_angle = az_curr + angle;
+    		if(new_angle > AZ_MIN && new_angle < AZ_MAX){
+    			az_curr = new_angle;
+    			turnMotor(az_curr, AZIMUTH);
+    			delay(500);
+    			//stopMotor(AZIMUTH);
+    		}
+    		break;
+    	
+    	case ELEVATION:
+    		new_angle = el_curr + angle;
+    		if(new_angle > EL_MIN && new_angle < EL_MAX){
+    			el_curr = new_angle;
+    			turnMotor(el_curr, ELEVATION);
+    			delay(500);
+    			//stopMotor(ELEVATION);
+    		}
+    		break;
+    	default:
+    		printf("Motor not found: %d\n", motor);
+    }
+}
+
+void zeroAzimuth(){
+	turnMotor(0, AZIMUTH);
+	delay(500);
+	stopMotor(AZIMUTH);
+	az_curr = 0;
+}
+
+void zeroElevation(){
+	turnMotor(45, ELEVATION);
+	delay(500);
+	stopMotor(ELEVATION);
+	el_curr = 45;
+}
+
 void pwmSetup(){
     pwmSetMode(PWM_MODE_MS);
     pwmSetRange(PWMRNG);
     int clk = getPwmClk(PWMRNG);
-    pwmSetClock(clk);  
+    pwmSetClock(clk);
+    az_curr = 0;
+    el_curr = 45;
     printf("pwm_range: %d\npwm_clk: %d\n", PWMRNG, clk);
 }
 
-int main(){
+int main(int argc, char *argv[]){
     wiringPiSetup();
-    
-    
-    pinMode (PWM1, PWM_OUTPUT);
-    pinMode (PWM0, PWM_OUTPUT);
-    pwmSetup();
 
+    int val = strtol(argv[1], NULL, 10);
+    pinMode (AZIMUTH, PWM_OUTPUT);
+    pinMode (ELEVATION, PWM_OUTPUT);
+    pwmSetup();
+    
+    zeroAzimuth();
+    zeroElevation();
+/*    for(int i = 0; i < 20; i++){*/
+/*    	turnMotorBy(5, AZIMUTH);*/
+/*    }*/
+    
+    
+/*    turnMotor(val, AZIMUTH);*/
+/*    delay(500);*/
+/*    stopMotor(AZIMUTH);*/
+/*    */
+    turnMotor(val, ELEVATION);
+    delay(500);
+    stopMotor(ELEVATION);
+    
+    
+    
+/*    for (int i = -90; i<91; i++){*/
+/*    	turnMotor(i, AZIMUTH);*/
+/*    	delay(30);*/
+/*    }    */
+/*    stopMotor(AZIMUTH);*/
+    return 0;
+    
+/*    zeroAzimuth();*/
+/*    zeroElevation();*/
+    
+}
+    /*
+    gpioCfgClock(5,1,0);
+    gpioInitialise();
+    gpioHardwarePWM(PWM, 50, 7);
     turnMotor(0, PWM0);
     delay(1000);
     
@@ -79,10 +160,5 @@ int main(){
     delay(1000);
     
     stopMotor(PWM1);
-}
-    /*
-    gpioCfgClock(5,1,0);
-    gpioInitialise();
-    gpioHardwarePWM(PWM, 50, 7);
     */
 
