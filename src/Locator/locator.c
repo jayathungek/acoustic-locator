@@ -1,6 +1,6 @@
 //hardware stuff
 #define MUXSE      21
-#define FRAMES     64
+#define FRAMES     128
 #define SAMPLERATE 44100
 #define TOP1       0
 #define TOP2       1
@@ -59,7 +59,7 @@ int az_curr;
 int el_curr;
 
 // for sound level
-signed int threshold = 1000;
+signed int threshold = 600;
 
 // zero crossings
 int zeroTop1, zeroLeft, zeroTop2, zeroRight;
@@ -183,6 +183,7 @@ int main (int argc, char *argv[])
 
         // 5) update position and turn on LED
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
+        updatePosition(0, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
         //delay(DELAY);
@@ -456,48 +457,28 @@ int findZero(int *buffer, int *zeroCrossing)
     return 1;
 }
 
-int calcDelays()
-{
+int calcDelays(){
     // given the spacing between the mics, max delay can be speed_sound x distance
     float maxDelay = MICDIST/VSOUND;
     float stepSize = 1.0/SAMPLERATE;
 
-    // comment 1 option out
-    //  option 1: for accuracy, we want both zero crossings to come from the same frame
-    // if ((zeroTop1 - zeroLeft) * stepSize > maxDelay || (zeroTop1 - zeroLeft) * stepSize < -maxDelay || zeroTop1 / FRAMELENGTH != zeroLeft / FRAMELENGTH){
-    //     return 0;
-    // }
-    //
-    // delTopLeft = zeroTop1 - zeroLeft;
-    //
-    // if ((zeroTop2 - zeroRight) * stepSize > maxDelay || (zeroTop2 - zeroRight) * stepSize < -maxDelay || zeroTop2 / FRAMELENGTH != zeroRight / FRAMELENGTH){
-    //     return 0;
-    // }
-    //
-    // delTopRight = zeroTop2 - zeroRight;
-    //
-    // if ((zeroLeft - zeroRight) * stepSize > maxDelay || (zeroLeft - zeroRight) * stepSize < -maxDelay){
-    //     return 0;
-    // }
-    //
-    // delLeftRight = zeroLeft - zeroRight;
-
-
     // option 2: we dont care that the zero crossings come from the same frame --maxDelay is enough
-    if ((zeroTop1 - zeroLeft) * stepSize > maxDelay || (zeroTop1 - zeroLeft) * stepSize < -maxDelay){
-        return 0;
+    delTopLeft = (zeroTop1 - zeroLeft) * stepSize;    
+    if (delTopLeft > maxDelay || delTopLeft < -maxDelay) {
+    	return 0;
     }
-
-    delTopLeft = (zeroTop1 - zeroLeft) * stepSize;
-
-    if ((zeroTop2 - zeroRight) * stepSize > maxDelay || (zeroTop2 - zeroRight) * stepSize < -maxDelay){
-        return 0;
+	
+	delTopRight = (zeroTop2 - zeroRight) * stepSize;
+    if (delTopRight > maxDelay || delTopRight < -maxDelay) {
+    	return 0;
     }
-
-    delTopRight = (zeroTop2 - zeroRight) * stepSize;
 
     // left right delay is just the difference between delTopLeft and delTopRight
-    delLeftRight = delTopLeft - delTopRight;
+    delLeftRight = delTopLeft - delTopRight;    
+    if(delLeftRight > maxDelay || delLeftRight < -maxDelay) {
+    	return 0;
+    }
+    
     printf("topleft indices: %d, %d\n", zeroTop1, zeroLeft);
     printf("topright indices: %d, %d\n", zeroTop2, zeroRight);
     
