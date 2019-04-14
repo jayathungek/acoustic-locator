@@ -13,7 +13,7 @@
 #define BASE_CLK   19200000
 #define PWM_FREQ   50   //Hz
 #define PWMRNG     2000  // range of pwm values that can be written
-#define DELAY      500   // motor delay, ms 
+#define DELAY      500   // motor delay, ms
 #define AZ_MAX     90    // Limit range of motion to prevent damage - values
 #define AZ_MIN    -90    // derived from experiment
 #define EL_MAX     70
@@ -37,7 +37,7 @@ FILE *out;
 int debug = 0;
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
-snd_pcm_uframes_t frames = FRAMES; 
+snd_pcm_uframes_t frames = FRAMES;
 unsigned int sample_rate;
 int sel; // mux
 double mic_x = (double)MICDIST/2; // x coord of mic relative to other mic
@@ -70,7 +70,7 @@ float delTopLeft, delTopRight, delLeftRight;
 
 // functions
 //DEBUG
-void printbuf(signed int *buf, int size); 
+void printbuf(signed int *buf, int size);
 void printBufToFile(FILE *file, signed int *buf, int size);
 
 //SERVOS AND LASER
@@ -83,14 +83,14 @@ void turnMotorBy(int angle, int motor); // prevents movement if at limits
 void stopMotor(int motor);
 void stopMotors();
 void zeroMotors();
- 
+
 void zeroAzimuth();
 void zeroElevation();
 void pwmSetup();
 void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
 
 //MICS
-//int tobuf is the character code for the different buffers 
+//int tobuf is the character code for the different buffers
 void fillbuf(int tobuf, char *frombuf, int sizefrom); // splits the raw data buffer so that the correct channel is sent to tobuf
 int setupdevice(char *device, unsigned int rate); // returns 0 on success
 int setupmicbuffers(); // 0 on success
@@ -98,7 +98,7 @@ void freebuffers();
 void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
 
 //DATA MANIPULATION
-int convertValue(char msb, char lsb); // returns signed int value of 16bit BE 
+int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
 int findZero(signed int *buffer, int *zeroCrossing); // returns 0 on success
 int calcDelays();
 float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
@@ -112,14 +112,14 @@ float getDevFromNormal(float delta); // uses time diff delta to calculate the an
 int main (int argc, char *argv[])
 {
 	if(argc == 3){
-		debug = 1; 
+		debug = 1;
 		char *filename = argv[2];
 		out = fopen(filename, "w+");
 	}
-	
+
 	char *dev = argv[1];
 	if (wiringPiSetup() == -1) exit(1);
-	
+
 	pinMode(MUXSE, OUTPUT);
 	pinMode(LASER, OUTPUT);
 	pinMode(AZIMUTH, PWM_OUTPUT);
@@ -127,16 +127,16 @@ int main (int argc, char *argv[])
 	pwmSetup();
 	setupdevice(dev, SAMPLERATE);
 	setupmicbuffers(); //sets size_mic
-	
+
 	laserOff();
 	zeroMotors();
 	delay(DELAY);
 /*	updatePosition(0, 200*MICRO, -297*MICRO);*/
 /*	delay(DELAY);*/
 	stopMotors();
-	
+
 	int loops = 100000;
-    for (int i = 0; i < loops; i++) //change to while(1) for real use 
+    for (int i = 0; i < loops; i++) //change to while(1) for real use
     {
         // 1) read data from microphone
         readMics();
@@ -155,7 +155,7 @@ int main (int argc, char *argv[])
 /*		    printBufToFile(out, top2, size_mic);*/
 /*		    printBufToFile(out, right, size_mic);*/
         }
-        
+
 
         // 2) normalize data around 0
         // int *top1Norm = normalize(top1);
@@ -173,7 +173,7 @@ int main (int argc, char *argv[])
         }else if(!findZero(right, &zeroRight)){
             continue;
         }
- 
+
         // 4) calculate delays
         if (!calcDelays()){
             continue;
@@ -196,7 +196,7 @@ int convertValue(char msb, char lsb){
 }
 
 void printbuf(signed int *buf, int size){
-	for (int i = 0; i<size; i++){		
+	for (int i = 0; i<size; i++){
 		printf("[%d], ", buf[i]);
 	}
 	printf("\n\n");
@@ -204,7 +204,7 @@ void printbuf(signed int *buf, int size){
 
 void printBufToFile(FILE *fd, signed int *buf, int size){
 	fprintf(fd, "[");
-	for (int i = 0; i<size; i++){		
+	for (int i = 0; i<size; i++){
 		fprintf(fd, "%d, ", buf[i]);
 	}
 	fprintf(fd, "]\n");
@@ -213,8 +213,8 @@ void printBufToFile(FILE *fd, signed int *buf, int size){
 int setupdevice(char *device, unsigned int rate){
 	int err;
     sample_rate = rate;
-    
-    
+
+
     printf("req period size: %d\n", frames);
 	printf("req sample rate: %d\n", sample_rate);
     /* Open PCM device for recording (capture). */
@@ -257,14 +257,14 @@ int setupdevice(char *device, unsigned int rate){
         snd_pcm_close(handle);
         return err;
     }
-    /* 44100 bits/second sampling rate (CD quality) */ 
+    /* 44100 bits/second sampling rate (CD quality) */
     err = snd_pcm_hw_params_set_rate_near(handle, params, &sample_rate, NULL);
     if (err<0)
     {
         fprintf(stderr, "Error setting sampling rate (%d): %s\n", sample_rate, snd_strerror(err));
         snd_pcm_close(handle);
         return err;
-    } 
+    }
     /* Set period size*/
     err = snd_pcm_hw_params_set_period_size_near(handle, params, &frames, NULL);
     if (err<0)
@@ -273,14 +273,14 @@ int setupdevice(char *device, unsigned int rate){
         snd_pcm_close(handle);
         return err;
     }
-    
+
     unsigned int periodtime;
     snd_pcm_hw_params_get_period_time(params, &periodtime, NULL);
     printf("period time: %dus\n", periodtime);
-    
+
     printf("actual period size: %d\n", frames);
 	printf("actual sample rate: %d\n", sample_rate);
-    
+
     /* Write the parameters to the driver */
     err = snd_pcm_hw_params(handle, params);
     if (err<0)
@@ -289,16 +289,16 @@ int setupdevice(char *device, unsigned int rate){
         snd_pcm_close(handle);
         return err;
     }
-	
+
 }
 
 int setupmicbuffers(){
 	int err;
-	
+
     size = frames * 2 * 2; /* 2 bytes/sample, 2 channels */
     size_mic = frames; // one int per frame received
-    int size_mic_bytes = size_mic *  sizeof(signed int); 
-    
+    int size_mic_bytes = size_mic *  sizeof(signed int);
+
     printf("main_buffer_size: %d bytes (%d samples)\n", size, size/2);
     printf("mic_buffers_size: %d bytes (%d ints)\n", size_mic_bytes, size_mic);
     buffer = (char *) malloc(size);
@@ -307,8 +307,8 @@ int setupmicbuffers(){
         fprintf(stdout, "Buffer error.\n");
         snd_pcm_close(handle);
         return -1;
-    } 
-    
+    }
+
     top1 = (signed int *) malloc(size_mic_bytes);
     if (!top1)
     {
@@ -316,7 +316,7 @@ int setupmicbuffers(){
         snd_pcm_close(handle);
         return -1;
     }
-    
+
     top2 = (signed int *) malloc(size_mic_bytes);
     if (!top2)
     {
@@ -324,7 +324,7 @@ int setupmicbuffers(){
         snd_pcm_close(handle);
         return -1;
     }
-    
+
     left = (signed int *) malloc(size_mic_bytes);
     if (!left)
     {
@@ -332,7 +332,7 @@ int setupmicbuffers(){
         snd_pcm_close(handle);
         return -1;
     }
-    
+
     right = (signed int *) malloc(size_mic_bytes);
     if (!right)
     {
@@ -340,13 +340,13 @@ int setupmicbuffers(){
         snd_pcm_close(handle);
         return -1;
     }
-    
-    
+
+
     return 0;
 }
 
 void freebuffers(){
-	free(buffer); 
+	free(buffer);
     free(top1);
     free(top2);
 	free(left);
@@ -367,7 +367,7 @@ void fillbuf(int tobuf, char *frombuf, int sizefrom){
 				top1[i/4] = value;
 			}
 			break;
-			
+
 		case TOP2:
 			for(int i = 0; i < sizefrom; i+=4){
 				lsb   = frombuf[i];
@@ -376,7 +376,7 @@ void fillbuf(int tobuf, char *frombuf, int sizefrom){
 				top2[i/4] = value;
 			}
 			break;
-			
+
 		case LEFT:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
@@ -385,7 +385,7 @@ void fillbuf(int tobuf, char *frombuf, int sizefrom){
 				left[((i+2)/4) - 1] = value;
 			}
 			break;
-			
+
 		case RIGHT:
 			for(int i = 2; i < sizefrom; i+=4){
 				lsb = frombuf[i];
@@ -394,7 +394,7 @@ void fillbuf(int tobuf, char *frombuf, int sizefrom){
 				right[((i+2)/4) - 1] = value;
 			}
 			break;
-			
+
 		default:
 			printf("Unknown buffer: %c\n", tobuf);
 	}
@@ -418,7 +418,7 @@ void readMics()
 	if (debug) printf("mux: %d, read %d frames to buffer\n", sel, err);
 	fillbuf(TOP2, buffer, size);
 	fillbuf(RIGHT, buffer, size);
-	
+
     if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
     if (err < 0) err = snd_pcm_recover(handle, err, 0);
     // Still an error, need to exit.
@@ -447,11 +447,11 @@ int findZero(int *buffer, int *zeroCrossing)
     if(i==FRAMES){
         return 0;
     }
-    
+
 
     *zeroCrossing = i;
     printf("found buffer peak: %d at %d\n", buffer[i], *zeroCrossing);
-    
+
     return 1;
 }
 
@@ -495,11 +495,8 @@ int calcDelays()
 
     delTopRight = zeroTop2 - zeroRight;
 
-    if ((zeroLeft - zeroRight) * stepSize > maxDelay || (zeroLeft - zeroRight) * stepSize < -maxDelay){
-        return 0;
-    }
-
-    delLeftRight = zeroLeft - zeroRight;
+    // left right delay is just the difference between delTopLeft and delTopRight
+    delLeftRight = delTopLeft - delTopRight;
 
     return 1;
 }
@@ -515,7 +512,7 @@ double hyperbola(double l, double x){
 	double exp2 = ((4*pow(mic_x, 2))/pow(l, 2)) - 1;
 	double exp3 = pow(x, 2) * exp2;
 	return sqrt(exp1 + exp3);
-	
+
 }
 
 float getDevFromNormal(float delta){
@@ -527,15 +524,15 @@ float getDevFromNormal(float delta){
 	double x2 = 40; // x2 > x1
 	double y1 = hyperbola(l, x1);
 	double y2 = hyperbola(l, x2);
-	
+
 	double alpha_prime = atan((y2 - y1)/(x2 - x1));
 	if (delta > 0){
 		return (M_PI_2 - alpha_prime)*(180/M_PI);
 	}else{
 		return -(M_PI_2 - alpha_prime)*(180/M_PI);
 	}
-	
-	
+
+
 }
 
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
@@ -559,14 +556,14 @@ int getPwmValue(int angle){  // from -90 to +90
     	printf("err: Max angle is 90\n");
     	exit(-1);
     }
-    
+
     if (angle < -90){
     	printf("err: Min angle is -90\n");
     	exit(-1);
     }
-    
+
     return 160 - angle;
-    
+
 }
 
 void turnMotorTo(int angle, int motor){
@@ -594,7 +591,7 @@ void turnMotorBy(int angle, int motor){
     			turnMotorTo(az_curr, AZIMUTH);
     		}
     		break;
-    	
+
     	case ELEVATION:
     		new_angle = el_curr + angle;
     		if(new_angle > EL_MIN && new_angle < EL_MAX){
