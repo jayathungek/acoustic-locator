@@ -128,16 +128,14 @@ int main (int argc, char *argv[])
 	setupdevice(dev, SAMPLERATE);
 	setupmicbuffers(); //sets size_mic
 	
-	
-	
 	laserOff();
 	zeroMotors();
 	delay(DELAY);
-/*	updatePosition(0, 0, -297*MICRO);*/
+/*	updatePosition(0, 200*MICRO, -297*MICRO);*/
 /*	delay(DELAY);*/
-/*	stopMotors();*/
+	stopMotors();
 	
-	int loops = 0;
+	int loops = 100000;
     for (int i = 0; i < loops; i++) //change to while(1) for real use 
     {
         // 1) read data from microphone
@@ -437,11 +435,10 @@ int findZero(int *buffer, int *zeroCrossing)
 {
     // find the beginning of the sound
     int i = 0;
-    while(buffer[i] < threshold && i < FRAMES - 1){
+    while(buffer[i] < threshold && i < FRAMES){
         i++;
     }
 
-    printf("found buffer peak: %d is greater than %d\n", buffer[i], threshold);
     // find first zero crossing
     while(buffer[i]>0 && i < FRAMES){
         i++;
@@ -450,8 +447,10 @@ int findZero(int *buffer, int *zeroCrossing)
     if(i==FRAMES){
         return 0;
     }
+    
 
     *zeroCrossing = i;
+    printf("found buffer peak: %d at %d\n", buffer[i], *zeroCrossing);
     
     return 1;
 }
@@ -545,6 +544,7 @@ void updatePosition(float delayTL, float delayTR, float delayLR){
     int elevation_angle = round(getDevFromNormal(delayTR));
     turnMotorBy(azimuth_angle, AZIMUTH);
     turnMotorBy(elevation_angle, ELEVATION);
+    laserOn();
     printf("azimuth deviation: %d degrees\n", azimuth_angle);
     printf("elevation deviation: %d degrees\n", elevation_angle);
 }
