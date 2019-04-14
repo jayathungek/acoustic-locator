@@ -33,7 +33,8 @@
 #include <wiringPi.h>
 #include <alsa/asoundlib.h>
 
-
+FILE *out;
+int debug = 0;
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = FRAMES; 
@@ -60,7 +61,8 @@ int el_curr;
 
 // functions
 //DEBUG
-void printbuf(int *buf, int size); 
+void printbuf(signed int *buf, int size); 
+void printBufToFile(FILE *file, signed int *buf, int size);
 
 //SERVOS AND LED
 int  getPwmClk(int pwmRange);
@@ -99,15 +101,19 @@ float getDevFromNormal(float delta); // uses time diff delta to calculate the an
 
 int main (int argc, char *argv[])
 {
+	if(argc == 3){
+		debug = 1; 
+		char *filename = argv[2];
+		out = fopen(filename, "w+");
+	}
 	
-	
-	char * dev = argv[1];
+	char *dev = argv[1];
 	if (wiringPiSetup() == -1) exit(1);
 	
 	pinMode(MUXSE, OUTPUT);
 	pinMode(LASER, OUTPUT);
-	pinMode (AZIMUTH, PWM_OUTPUT);
-    pinMode (ELEVATION, PWM_OUTPUT);
+	pinMode(AZIMUTH, PWM_OUTPUT);
+    pinMode(ELEVATION, PWM_OUTPUT);
 	pwmSetup();
 	setupdevice(dev, SAMPLERATE);
 	setupmicbuffers(); //sets size_mic
@@ -117,19 +123,26 @@ int main (int argc, char *argv[])
 	
 	zeroMotors();
 	delay(DELAY);
-	int loops = 0;
+	stopMotors();
+	int loops = 1000;
     for (int i = 0; i < loops; i++) //change to while(1) for real use 
     {
         // 1) read data from microphone
         readMics();
-        printf("top1:\n");
-        printbuf(top1, size_mic);
-        printf("left:\n");
-        printbuf(left, size_mic);
-        printf("top2:\n");
-        printbuf(top2, size_mic);
-        printf("right:\n");
-        printbuf(right, size_mic);
+/*        printf("top1:\n");*/
+/*        printbuf(top1, size_mic);*/
+/*        printf("left:\n");*/
+/*        printbuf(left, size_mic);*/
+/*        printf("top2:\n");*/
+/*        printbuf(top2, size_mic);*/
+/*        printf("right:\n");*/
+/*        printbuf(right, size_mic);*/
+        if(debug){
+		    printBufToFile(out, top1, size_mic);
+		    printBufToFile(out, left, size_mic);
+		    printBufToFile(out, top2, size_mic);
+		    printBufToFile(out, right, size_mic);
+        }
         
 
         // 2) normalize data around 0
@@ -155,7 +168,7 @@ int main (int argc, char *argv[])
         float delLeftRight = calcAngle(leftNorm, rightNorm);
 
         // 5) update position and turn on LED
-        updatePosition(delTopLeft, delTopRight, delLeftRight);
+        //updatePosition(delTopLeft, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
         // delay(1000);
@@ -164,6 +177,7 @@ int main (int argc, char *argv[])
 
     }
     freebuffers();
+    if(debug) fclose(out);
 }
 
 
@@ -177,6 +191,14 @@ void printbuf(signed int *buf, int size){
 		printf("[%d], ", buf[i]);
 	}
 	printf("\n\n");
+}
+
+void printBufToFile(FILE *fd, signed int *buf, int size){
+	fprintf(fd, "[");
+	for (int i = 0; i<size; i++){		
+		fprintf(fd, "%d, ", buf[i]);
+	}
+	fprintf(fd, "]\n");
 }
 
 int setupdevice(char *device, unsigned int rate){
