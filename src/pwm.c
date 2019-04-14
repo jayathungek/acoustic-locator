@@ -8,12 +8,13 @@
 #define AZIMUTH    26   //bottom
 #define BASE_CLK   19200000
 #define PWM_FREQ   50   //Hz
-#define PWMRNG     2000  // range of pwm values that can be written 
+#define PWMRNG     2000  // range of pwm values that can be written
+#define DELAY      500   // motor delay, ms 
 
 #define AZ_MAX     90
 #define AZ_MIN    -90
-#define EL_MAX     90
-#define EL_MIN    -90
+#define EL_MAX     70
+#define EL_MIN    -35
 
 int az_curr;
 int el_curr;
@@ -38,7 +39,7 @@ int getPwmValue(int angle){  // from -90 to +90
     
 }
 
-void turnMotor(int angle, int motor){
+void turnMotorTo(int angle, int motor){
     int toWrite = getPwmValue(angle);
     pwmWrite(motor, toWrite);
     printf("angle: %d - pwmVal: %d\n", angle,  toWrite);
@@ -55,9 +56,7 @@ void turnMotorBy(int angle, int motor){
     		new_angle = az_curr + angle;
     		if(new_angle > AZ_MIN && new_angle < AZ_MAX){
     			az_curr = new_angle;
-    			turnMotor(az_curr, AZIMUTH);
-    			delay(500);
-    			//stopMotor(AZIMUTH);
+    			turnMotorTo(az_curr, AZIMUTH);
     		}
     		break;
     	
@@ -65,9 +64,7 @@ void turnMotorBy(int angle, int motor){
     		new_angle = el_curr + angle;
     		if(new_angle > EL_MIN && new_angle < EL_MAX){
     			el_curr = new_angle;
-    			turnMotor(el_curr, ELEVATION);
-    			delay(500);
-    			//stopMotor(ELEVATION);
+    			turnMotorTo(el_curr, ELEVATION);
     		}
     		break;
     	default:
@@ -76,17 +73,13 @@ void turnMotorBy(int angle, int motor){
 }
 
 void zeroAzimuth(){
-	turnMotor(0, AZIMUTH);
-	delay(500);
-	stopMotor(AZIMUTH);
+	turnMotorTo(0, AZIMUTH);
 	az_curr = 0;
 }
 
 void zeroElevation(){
-	turnMotor(45, ELEVATION);
-	delay(500);
-	stopMotor(ELEVATION);
-	el_curr = 45;
+	turnMotorTo(0, ELEVATION);
+	el_curr = 0;
 }
 
 void pwmSetup(){
@@ -95,7 +88,7 @@ void pwmSetup(){
     int clk = getPwmClk(PWMRNG);
     pwmSetClock(clk);
     az_curr = 0;
-    el_curr = 45;
+    el_curr = 0;
     printf("pwm_range: %d\npwm_clk: %d\n", PWMRNG, clk);
 }
 
@@ -109,54 +102,45 @@ int main(int argc, char *argv[]){
     
     zeroAzimuth();
     zeroElevation();
-/*    for(int i = 0; i < 20; i++){*/
-/*    	turnMotorBy(5, AZIMUTH);*/
-/*    }*/
-    
-    
-/*    turnMotor(val, AZIMUTH);*/
-/*    delay(500);*/
-/*    stopMotor(AZIMUTH);*/
-/*    */
-    turnMotor(val, ELEVATION);
-    delay(500);
-    stopMotor(ELEVATION);
-    
-    
-    
-/*    for (int i = -90; i<91; i++){*/
-/*    	turnMotor(i, AZIMUTH);*/
-/*    	delay(30);*/
-/*    }    */
-/*    stopMotor(AZIMUTH);*/
+	delay(DELAY);
+
+	turnMotorBy(45, AZIMUTH);
+	turnMotorBy(45, ELEVATION);
+	delay(DELAY);
+	turnMotorBy(15, AZIMUTH);
+	turnMotorBy(15, ELEVATION);
+    delay(DELAY);
+    turnMotorBy(-15, AZIMUTH);
+	turnMotorBy(-15, ELEVATION);
+	delay(DELAY);
+	turnMotorBy(-45, AZIMUTH);
+	turnMotorBy(-45, ELEVATION);
+    delay(DELAY);
     return 0;
-    
-/*    zeroAzimuth();*/
-/*    zeroElevation();*/
     
 }
     /*
     gpioCfgClock(5,1,0);
     gpioInitialise();
     gpioHardwarePWM(PWM, 50, 7);
-    turnMotor(0, PWM0);
+    turnMotorTo(0, PWM0);
     delay(1000);
     
-    turnMotor(90, PWM0);
+    turnMotorTo(90, PWM0);
     delay(1000);
     
-    turnMotor(180, PWM0);
+    turnMotorTo(180, PWM0);
     delay(1000);
     
     stopMotor(PWM0);
     
-    turnMotor(0, PWM1);
+    turnMotorTo(0, PWM1);
     delay(1000);
     
-    turnMotor(90, PWM1);
+    turnMotorTo(90, PWM1);
     delay(1000);
     
-    turnMotor(180, PWM1);
+    turnMotorTo(180, PWM1);
     delay(1000);
     
     stopMotor(PWM1);
