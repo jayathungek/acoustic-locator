@@ -1,7 +1,7 @@
 CC=gcc
-CFLAGS= -lwiringPi -lpthread
+CFLAGS= -lwiringPi -lm -lasound
 
-TARGET = mux
+TARGET = locator
 all: $(TARGET)
 
 $(TARGET): $(TARGET).c
