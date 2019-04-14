@@ -1,7 +1,7 @@
 //hardware stuff
 #define MUXSE      21
 #define FRAMES     64
-#define SAMPLERATE 44000
+#define SAMPLERATE 44100
 #define TOP1       0
 #define TOP2       1
 #define LEFT       2
@@ -21,7 +21,7 @@
 #define DELAY      500   // servo delay, ms
 
 //physics stuff
-#define MICDIST    10.0 // cm
+#define MICDIST    10.385 // cm
 #define VSOUND     34600 // cm/s
 #define MICRO      0.000001
 
@@ -58,6 +58,15 @@ int size_mic;
 int az_curr;
 int el_curr;
 
+// for sound level
+const int threshold = 10000;
+
+// zero crossings
+int zeroTop1, zeroLeft, zeroTop2, zeroRight;
+
+// delays
+float delTopLeft, delTopRight, delLeftRight;
+
 
 // functions
 //DEBUG
@@ -72,7 +81,7 @@ void turnMotorBy(int angle, int motor); // prevents movement if at limits
 void stopMotor(int motor);
 void stopMotors();
 void zeroMotors();
-
+ 
 void zeroAzimuth();
 void zeroElevation();
 void pwmSetup();
@@ -87,15 +96,14 @@ void freebuffers();
 void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
 
 //DATA MANIPULATION
-int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
-int *normalize(int *buffer); // returns normalized buffer
-int findZero(int *buffer); // returns 0 on success
+int convertValue(char msb, char lsb); // returns signed int value of 16bit BE 
+int findZero(signed int *buffer, int *zeroCrossing); // returns 0 on success
+int calcDelays();
 float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
 double hyperbola(double l, double x); // hyperbola that represents possible mic locations
 //delta in microseconds
 float getDevFromNormal(float delta); // uses time diff delta to calculate the angular offset of the noise from the normal line
 /*double getMinX(double l); // hyperbola not valid for all x, returns minimum safe x*/
-
 
 
 
@@ -123,8 +131,11 @@ int main (int argc, char *argv[])
 	
 	zeroMotors();
 	delay(DELAY);
-	stopMotors();
-	int loops = 1000;
+/*	updatePosition(0, 0, -297*MICRO);*/
+/*	delay(DELAY);*/
+/*	stopMotors();*/
+	
+	int loops = 10000;
     for (int i = 0; i < loops; i++) //change to while(1) for real use 
     {
         // 1) read data from microphone
@@ -139,43 +150,40 @@ int main (int argc, char *argv[])
 		    printbuf(top2, size_mic);
 		    printf("right:\n");
 		    printbuf(right, size_mic);
-		    printBufToFile(out, top1, size_mic);
-		    printBufToFile(out, left, size_mic);
-		    printBufToFile(out, top2, size_mic);
-		    printBufToFile(out, right, size_mic);
+/*		    printBufToFile(out, top1, size_mic);*/
+/*		    printBufToFile(out, left, size_mic);*/
+/*		    printBufToFile(out, top2, size_mic);*/
+/*		    printBufToFile(out, right, size_mic);*/
         }
         
 
         // 2) normalize data around 0
-        int *top1Norm = normalize(top1);
-        int *leftNorm = normalize(left);
-        int *top2Norm = normalize(top2);
-        int *rightNorm = normalize(right);
+        // int *top1Norm = normalize(top1);
+        // int *leftNorm = normalize(left);
+        // int *top2Norm = normalize(top2);
+        // int *rightNorm = normalize(right);
 
         // 3) if we can find 0 crossings, calculate angles, else goto 1)
-        if (!findZero(top1Norm)){
+        if (!findZero(top1, &zeroTop1)){
             continue;
-        }else if(!findZero(leftNorm)){
+        }else if(!findZero(left, &zeroLeft)){
             continue;
-        }else if(!findZero(top2Norm)){
+        }else if(!findZero(top2, &zeroTop2)){
             continue;
-        }else if(!findZero(rightNorm)){
+        }else if(!findZero(right, &zeroRight)){
             continue;
         }
-
-        // 4) calculate angles
-        float delTopLeft = calcAngle(top1Norm, leftNorm);
-        float delTopRight = calcAngle(top2Norm, rightNorm);
-        float delLeftRight = calcAngle(leftNorm, rightNorm);
+ 
+        // 4) calculate delays
+        if (!calcDelays()){
+            continue;
+        }
 
         // 5) update position and turn on LED
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
-        // delay(DELAY);
-        
-        
-
+        //delay(DELAY);
     }
     freebuffers();
     if(debug) fclose(out);
@@ -422,24 +430,77 @@ void readMics()
     }
 }
 
-int *normalize(int *buffer)
+
+int findZero(int *buffer, int *zeroCrossing)
 {
-    //todo Roni
-    static int *normalized;
-    return normalized;
+    // find the beginning of the sound
+    int i = 0;
+    while(buffer[i] < threshold && i < FRAMES - 1){
+        i++;
+    }
+
+    printf("found buffer peak: %d is greater than %d\n", buffer[i], threshold);
+    // find first zero crossing
+    while(buffer[i]>0 && i < FRAMES){
+        i++;
+    }
+
+    if(i==FRAMES){
+        return 0;
+    }
+
+    *zeroCrossing = i;
+    
+    return 1;
 }
 
-int findZero(int *buffer)
+int calcDelays()
 {
-    //todo Roni
-    return 0;
-}
+    // given the spacing between the mics, max delay can be speed_sound x distance
+    float maxDelay = MICDIST/VSOUND;
+    float stepSize = 1/SAMPLERATE;
 
-float calcAngle(int *top_buf, int *side_buf)
-{
-    // todo Roni
-    float angle;
-    return angle;
+    // comment 1 option out
+    //  option 1: for accuracy, we want both zero crossings to come from the same frame
+    // if ((zeroTop1 - zeroLeft) * stepSize > maxDelay || (zeroTop1 - zeroLeft) * stepSize < -maxDelay || zeroTop1 / FRAMELENGTH != zeroLeft / FRAMELENGTH){
+    //     return 0;
+    // }
+    //
+    // delTopLeft = zeroTop1 - zeroLeft;
+    //
+    // if ((zeroTop2 - zeroRight) * stepSize > maxDelay || (zeroTop2 - zeroRight) * stepSize < -maxDelay || zeroTop2 / FRAMELENGTH != zeroRight / FRAMELENGTH){
+    //     return 0;
+    // }
+    //
+    // delTopRight = zeroTop2 - zeroRight;
+    //
+    // if ((zeroLeft - zeroRight) * stepSize > maxDelay || (zeroLeft - zeroRight) * stepSize < -maxDelay){
+    //     return 0;
+    // }
+    //
+    // delLeftRight = zeroLeft - zeroRight;
+
+
+    // option 2: we dont care that the zero crossings come from the same frame --maxDelay is enough
+    if ((zeroTop1 - zeroLeft) * stepSize > maxDelay || (zeroTop1 - zeroLeft) * stepSize < -maxDelay){
+        return 0;
+    }
+
+    delTopLeft = zeroTop1 - zeroLeft;
+
+    if ((zeroTop2 - zeroRight) * stepSize > maxDelay || (zeroTop2 - zeroRight) * stepSize < -maxDelay){
+        return 0;
+    }
+
+    delTopRight = zeroTop2 - zeroRight;
+
+    if ((zeroLeft - zeroRight) * stepSize > maxDelay || (zeroLeft - zeroRight) * stepSize < -maxDelay){
+        return 0;
+    }
+
+    delLeftRight = zeroLeft - zeroRight;
+
+    return 1;
 }
 
 /*double getMinX(double l, double ){*/
@@ -460,7 +521,7 @@ float getDevFromNormal(float delta){
 	// all distances/coords in cm
 	// l - extra distance sound has to travel to further mic
 	if(delta == 0) return 0;
-	double l  = (double)VSOUND * delta * MICRO;
+	double l  = (double)VSOUND * delta;
 	double x1 = 20; //arbitrary, but must be above the parabola minimum
 	double x2 = 40; // x2 > x1
 	double y1 = hyperbola(l, x1);
