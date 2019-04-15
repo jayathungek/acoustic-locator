@@ -1,3 +1,6 @@
+/**
+ *   locator.c
+ **/
 //hardware stuff
 #define MUXSE      21
 #define FRAMES     128
@@ -70,42 +73,144 @@ float delTopLeft, delTopRight, delLeftRight;
 
 // functions
 //DEBUG
+/**
+   * A function that takes an integer buffer and renders its contents to sdout for debugging.
+   * @param buf A pointer to a signed integer.
+   * @param size  The number of elements in the array.
+   */
 void printbuf(signed int *buf, int size);
+
+/**
+   * A function that takes an integer buffer and renders its contents to the specified file descriptor for debugging.
+   * @param file  A pointer to a file descriptor.
+   * @param buf A pointer to a signed integer.
+   * @param size  The number of elements in the array.
+   */
 void printBufToFile(FILE *file, signed int *buf, int size);
 
 //SERVOS AND LASER
+
+/**
+   * Sets up PWM control for the servo motors.
+   */
+void pwmSetup();
+
+/**
+   * Turns on the front LED.
+   */
 void laserOn();
+
+/**
+   * Turns off the front LED.
+   */
 void laserOff();
-int  getPwmClk(int pwmRange);
-int  getPwmValue(int angle);
-void turnMotorTo(int angle, int motor);
-void turnMotorBy(int angle, int motor); // prevents movement if at limits
-void stopMotor(int motor);
+
+/**
+   * Stops movement of both servos.
+   */
 void stopMotors();
+
+/**
+   * Brings both servos to their 0 position, i.e. facing straight ahead
+   */
 void zeroMotors();
+
+/**
+   * Turns a given motor by the specified angle in degrees. Prevents movements of the servos at their angular limits so as to avoid damage
+   * @param angle The angle by which the motor should turn. 
+   * @param An integer that distiguishes between the azimuthal or eleavtion servo.
+   */
+void turnMotorBy(int angle, int motor); // 
+
+/**
+   * Moves servos in response to timing difference data.
+   * @param delayTL Time difference between sound reaching top and left mics (seconds) 
+   * @param delayTR Time difference between sound reaching top and right mics (seconds)
+   * @param delayTR Time difference between sound reaching left and right mics (seconds)
+   */
+void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
 
 void zeroAzimuth();
 void zeroElevation();
-void pwmSetup();
-void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
+int  getPwmClk(int pwmRange);
+int  getPwmValue(int angle);
+void turnMotorTo(int angle, int motor);
+void stopMotor(int motor);
 
 //MICS
 //int tobuf is the character code for the different buffers
-void fillbuf(int tobuf, char *frombuf, int sizefrom); // splits the raw data buffer so that the correct channel is sent to tobuf
-int setupdevice(char *device, unsigned int rate); // returns 0 on success
-int setupmicbuffers(); // 0 on success
+
+/**
+   * Splits data in the PCM buffer so that the correct channel is sent to the destination buffer.
+   * @param tobuf Character code for destination buffer
+   * @param frombuf Pointer to PCM buffer
+   * @param size Size of PCM buffer
+   */
+void fillbuf(int tobuf, char *frombuf, int sizefrom); 
+
+/**
+   * Initialises the ALSA PCM interface.
+   * @param device Name of the I2S device
+   * @param rate Audio sampling rate (Hz)
+   * @return Error code (0 on success)
+   */
+int setupdevice(char *device, unsigned int rate);
+
+/**
+   * Allocates memory for PCM and mic data buffers.
+   * @return Error code (0 on success)
+   */ 
+int setupmicbuffers();
+
+/**
+   * Frees memory allocated to PCM and mic data buffers.
+   */ 
 void freebuffers();
-void readMics(); // updates micT0, micT1, mic1 and mic0 buffers
+
+/**
+   * Updates top1, left, top2 and right buffers.
+   */ 
+void readMics(); 
 
 //DATA MANIPULATION
-int convertValue(char msb, char lsb); // returns signed int value of 16bit BE
-int findZero(signed int *buffer, int *zeroCrossing); // returns 0 on success
+
+/**
+   * Converts a 16bit big endian number to an integer.
+   * @param msb Most significant byte of the 16bit number.
+   * @param lsb Least significant byte of the 16bit number.
+   * @return Signed integer. 
+   */ 
+int convertValue(char msb, char lsb); 
+
+/**
+   * Finds index of a data buffer where the sound pressure level crosses the x-axis, if such a crossing exists.
+   * @param buffer Audio data buffer.
+   * @param zeroCrossing Pointer to an integer where the zero crossing index will be stored if found. Do not use if findZero() returns error.
+   * @return Error code (0 on success). 
+   */ 
+int findZero(signed int *buffer, int *zeroCrossing); 
+
+/**
+   * Updates delay variables, which keep track of the timing difference between mics
+   * @return Error code (0 on success). 
+   */ 
 int calcDelays();
-float calcAngle(int *top_buf, int *side_buf); // returns angle in degrees
-double hyperbola(double l, double x); // hyperbola that represents possible mic locations
+
+/**
+   *A mathematical function that represents possible sound source locations for a particular timing difference.
+   * @param l Extra distance travelled by sound from closer to further mic
+   * @param x Arbitrary x-coordinate greater than mic's x coordinate 
+   * @return Possible Y-coordinate of sound source. 
+   */ 
+double hyperbola(double l, double x);
 //delta in microseconds
-float getDevFromNormal(float delta); // uses time diff delta to calculate the angular offset of the noise from the normal line
-/*double getMinX(double l); // hyperbola not valid for all x, returns minimum safe x*/
+
+/**
+   * Uses time difference between to calculate the angular offset of the noise from the normal line, i.e. line that bisects the line that joins the mics.
+   * @param delta Time difference (microseconds)
+   * @return Angular offset from normal (degrees). 
+   */ 
+float getDevFromNormal(float delta); 
 
 
 
@@ -150,20 +255,12 @@ int main (int argc, char *argv[])
 		    printbuf(top2, size_mic);
 		    printf("right:\n");
 		    printbuf(right, size_mic);
-/*		    printBufToFile(out, top1, size_mic);*/
-/*		    printBufToFile(out, left, size_mic);*/
-/*		    printBufToFile(out, top2, size_mic);*/
-/*		    printBufToFile(out, right, size_mic);*/
+		    printBufToFile(out, top1, size_mic);
+		    printBufToFile(out, left, size_mic);
+		    printBufToFile(out, top2, size_mic);
+		    printBufToFile(out, right, size_mic);
         }
-
-
-        // 2) normalize data around 0
-        // int *top1Norm = normalize(top1);
-        // int *leftNorm = normalize(left);
-        // int *top2Norm = normalize(top2);
-        // int *rightNorm = normalize(right);
-
-        // 3) if we can find 0 crossings, calculate angles, else goto 1)
+        // 2) if we can find 0 crossings, calculate angles, else goto 1)
         if (!findZero(top1, &zeroTop1)){
             continue;
         }else if(!findZero(left, &zeroLeft)){
@@ -174,19 +271,17 @@ int main (int argc, char *argv[])
             continue;
         }
 
-        // 4) calculate delays
+        // 3) calculate delays
         if (!calcDelays()){
             continue;
         }
-        
-        
 
-        // 5) update position and turn on LED
+        // 4) update position and turn on LED
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
         updatePosition(0, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
-        //delay(DELAY);
+        delay(DELAY);
     }
     freebuffers();
     if(debug) fclose(out);
