@@ -142,7 +142,7 @@ The head – a 3D printed part – clicks in place on top of the gimbal. The par
 ## How to use
 Description of how to clone source code, any dependancies, how to power up components etc.
 
-### Social media links
+## Social media links
 Facebook: https://www.facebook.com/AcousticLocator/?modal=admin_todo_tour 
 
 Youtube: https://www.youtube.com/channel/UC-Mpuqiijxo4YobSjKvtcCA/featured?view_as=subscriber
