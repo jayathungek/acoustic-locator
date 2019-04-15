@@ -48,10 +48,15 @@ int findZero(signed int *buffer, int size, int *zeroCrossing, int threshold);
 
 /**
    * Updates delay variables, which keep track of the timing difference between mics
-   * @return Error code (0 on success). 
+   * @param zeroTop1 Index of top1 buffer's zero crossing
+   * @param zeroLeft Index of left buffer's zero crossing
+   * @param zeroTop2 Index of top2 buffer's zero crossing
+   * @param zeroRight Index of right buffer's zero crossing
    * @param delTopLeft Pointer to a float where the delay between top and left mics will be stored if found. Do not use if CalcDelays() returns error.
    * @param delTopRight Pointer to a float where the delay between top and right mics will be stored if found. Do not use if CalcDelays() returns error.
    * @param delLeftRight Pointer to a float where the delay between left and right mics will be stored if found. Do not use if CalcDelays() returns error.
+   *@param samplerate The sampling frequency (Hz)
+   * @return Error code (0 on success). 
    */ 
 int calcDelays(int zeroTop1, int zeroLeft, int zeroTop2, int zeroRight, float *delTopLeft, float *delTopRight, float *delLeftRight, int samplerate);
 
