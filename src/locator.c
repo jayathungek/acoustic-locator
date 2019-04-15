@@ -1,32 +1,30 @@
-/**
- *   locator.c
- **/
+/* file: locator.c */
 //hardware stuff
-#define MUXSE      21
-#define FRAMES     128
-#define SAMPLERATE 44100
-#define TOP1       0
-#define TOP2       1
-#define LEFT       2
-#define RIGHT      3
+#define FRAMES     128 /**< Number of frames to read in. Frames contain both left- and right-channel samples and are read into the PCM buffer */
+#define SAMPLERATE 44100 /**< Audio sampling frequency (Hz) */
+#define TOP1       0 /**< Enumeration for top microphone buffer. (Multiplexer select = 0)*/
+#define TOP2       1 /**< Enumeration for top microphone buffer. (Multiplexer select = 1)*/
+#define LEFT       2 /**< Enumeration for left microphone buffer. */
+#define RIGHT      3 /**< Enumeration for right microphone buffer. */
 
-#define LASER      22
-#define ELEVATION  23   //top servo
-#define AZIMUTH    26   //bottom servo
-#define BASE_CLK   19200000
-#define PWM_FREQ   50   //Hz
-#define PWMRNG     2000  // range of pwm values that can be written
-#define DELAY      500   // motor delay, ms
-#define AZ_MAX     90    // Limit range of motion to prevent damage - values
-#define AZ_MIN    -90    // derived from experiment
-#define EL_MAX     70
-#define EL_MIN    -35
-#define DELAY      500   // servo delay, ms
+#define MUXSE      21 /**< wiringPi pin connected to multiplexer. */
+#define LASER      22 /**< wiringPi pin connected to LED. */
+#define ELEVATION  23 /**< wiringPi pin connected to top servo. */
+#define AZIMUTH    26 /**< wiringPi pin connected to bottom servo. */
+#define BASE_CLK   19200000 /**< Raspberry Pi base clock frequency (Hz). */
+#define PWM_FREQ   50  /**< Desired PWM frequency (Hz). */
+#define PWMRNG     2000 /**< Range of PWM period. */
+#define DELAY      500  /**< Motor delay (milliseconds). */
+#define AZ_MAX     90  /**<Maximum azimuthal angle (degrees). Used in limiting range of motion to prevent damage.*/
+#define AZ_MIN    -90  /**<Minimum azimuthal angle (degrees). Used in limiting range of motion to prevent damage.*/
+#define EL_MAX     70 /**<Maximum elevation angle (degrees). Used in limiting range of motion to prevent damage.*/
+#define EL_MIN    -35 /**<Minimum elevation angle (degrees). Used in limiting range of motion to prevent damage.*/
+#define DELAY      500  /**<Servo delay (milliseconds). Used in preventing jitter.*/
 
 //physics stuff
-#define MICDIST    10.385 // cm
-#define VSOUND     34600 // cm/s
-#define MICRO      0.000001
+#define MICDIST    10.385 /**<Distance between pairs of mics (centimetres).*/
+#define VSOUND     34600 /**<Speed of sound in air (centimetres/second).*/
+#define MICRO      0.000001 /**<Order of magnitude conversion.*/
 
 #include <stdio.h>
 #include <signal.h>
@@ -48,10 +46,10 @@ double mic_x = (double)MICDIST/2; // x coord of mic relative to other mic
 char *buffer;   // main ALSA PCM buffer
 
 // buffers from microphones
-signed int *top1;
-signed int *top2;
-signed int *left;
-signed int *right;
+signed int *top1; /**<Buffer for top mic. This buffer, along with left is read into when the multiplexer select is 0. */
+signed int *top2; /**<Buffer for top mic. This buffer, along with right is read into when the multiplexer select is 1. */
+signed int *left; /**<Buffer for left mic. This buffer is read into when the multiplexer select is 0. */
+signed int *right; /**<Buffer for right mic. This buffer is read into when the multiplexer select is 1. */
 
 //buffer sizes
 int size;
@@ -65,11 +63,15 @@ int el_curr;
 signed int threshold = 600;
 
 // zero crossings
-int zeroTop1, zeroLeft, zeroTop2, zeroRight;
+int zeroTop1; /**<Index of zero crossing in top1 mic buffer. */
+int zeroLeft; /**<Index of zero crossing in left mic buffer. */
+int zeroTop2; /**<Index of zero crossing in top2 mic buffer. */
+int zeroRight;/**<Index of zero crossing in right mic buffer. */
 
 // delays
-float delTopLeft, delTopRight, delLeftRight;
-
+float delTopLeft; /**<Time delay of zero crossing between top and left mics (seconds).*/
+float delTopRight; /**<Time delay of zero crossing between top and right mics (seconds).*/ 
+float delLeftRight; /**<Time delay of zero crossing between left and right mics (seconds).*/
 
 // functions
 //DEBUG
@@ -118,17 +120,19 @@ void zeroMotors();
 /**
    * Turns a given motor by the specified angle in degrees. Prevents movements of the servos at their angular limits so as to avoid damage
    * @param angle The angle by which the motor should turn. 
-   * @param An integer that distiguishes between the azimuthal or eleavtion servo.
+   * @param motor An integer that distiguishes between the azimuthal or elevation servo.
+   * @see AZIMUTH
+   * @see ELEVATION
    */
 void turnMotorBy(int angle, int motor); // 
 
 /**
    * Moves servos in response to timing difference data.
-   * @param delayTL Time difference between sound reaching top and left mics (seconds) 
-   * @param delayTR Time difference between sound reaching top and right mics (seconds)
-   * @param delayTR Time difference between sound reaching left and right mics (seconds)
+   * @param delTL Time difference between sound reaching top and left mics (seconds) 
+   * @param delTR Time difference between sound reaching top and right mics (seconds)
+   * @param delLR Time difference between sound reaching left and right mics (seconds)
    */
-void updatePosition(float delayTL, float delTR, float delayLR); // sets servos and LED
+void updatePosition(float delTL, float delTR, float delLR); // sets servos and LED
 
 void zeroAzimuth();
 void zeroElevation();
@@ -144,7 +148,11 @@ void stopMotor(int motor);
    * Splits data in the PCM buffer so that the correct channel is sent to the destination buffer.
    * @param tobuf Character code for destination buffer
    * @param frombuf Pointer to PCM buffer
-   * @param size Size of PCM buffer
+   * @param sizefrom Size of PCM buffer
+   * @see top1
+   * @see top2
+   * @see left
+   * @see right
    */
 void fillbuf(int tobuf, char *frombuf, int sizefrom); 
 
@@ -187,12 +195,20 @@ int convertValue(char msb, char lsb);
    * @param buffer Audio data buffer.
    * @param zeroCrossing Pointer to an integer where the zero crossing index will be stored if found. Do not use if findZero() returns error.
    * @return Error code (0 on success). 
+   * @see zeroTop1
+   * @see zeroLeft
+   * @see zeroTop2
+   * @see zeroRight
+
    */ 
 int findZero(signed int *buffer, int *zeroCrossing); 
 
 /**
    * Updates delay variables, which keep track of the timing difference between mics
    * @return Error code (0 on success). 
+   * @see delTopLeft
+   * @see delTopRight
+   * @see delLeftRight
    */ 
 int calcDelays();
 
@@ -209,6 +225,7 @@ double hyperbola(double l, double x);
    * Uses time difference between to calculate the angular offset of the noise from the normal line, i.e. line that bisects the line that joins the mics.
    * @param delta Time difference (microseconds)
    * @return Angular offset from normal (degrees). 
+   * @see hyperbola()
    */ 
 float getDevFromNormal(float delta); 
 
@@ -619,9 +636,9 @@ float getDevFromNormal(float delta){
 }
 
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
-void updatePosition(float delayTL, float delayTR, float delayLR){
-    int azimuth_angle   = round(getDevFromNormal(delayLR));
-    int elevation_angle = round(getDevFromNormal(delayTR));
+void updatePosition(float delTL, float delTR, float delLR){
+    int azimuth_angle   = round(getDevFromNormal(delLR));
+    int elevation_angle = round(getDevFromNormal(delTR));
     turnMotorBy(azimuth_angle, AZIMUTH);
     turnMotorBy(elevation_angle, ELEVATION);
     laserOn();
