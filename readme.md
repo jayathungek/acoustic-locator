@@ -5,11 +5,11 @@ Table of Contents
       * [Principle of Operation](#principle-of-operation)
       * [Accuracy Limitations and Aliasing](#accuracy-limitations-and-aliasing)
       * [Hardware setup](#hardware-setup)
-      * [The Microphone Circuit](#the-microphone-circuit)
-      * [The Humidity/Temperature Sensor](#the-humiditytemperature-sensor)
-      * [The Laser LED circuit](#the-laser-led-circuit)
-      * [The Servo Circuit](#the-servo-circuit)
-      * [Mechanical Design](#mechanical-design)
+       * [The Microphone Circuit](#the-microphone-circuit)
+       * [The Humidity/Temperature Sensor](#the-humiditytemperature-sensor)
+       * [The Laser LED circuit](#the-laser-led-circuit)
+       * [The Servo Circuit](#the-servo-circuit)
+       * [Mechanical Design](#mechanical-design)
       * [Codework](#codework)
       * [Prerequisites](#prerequisites)
       * [Installation](#installation)
@@ -96,7 +96,7 @@ The third module on the microphones PCB board is a laser LED circuit consisting 
 
                             Figure 9
                             
-## The Microphone Circuit
+### The Microphone Circuit
 
 The microphones used by the acoustic locator are the ICS-43432 digital I2S microphones from InvenSence. The ICS-43432 microphone includes all the required circuitry so that it can be interfaced directly with a microcontroller or a DSP, without the use of an audio codec. As shown in figure 10 the ICS-43432 contains in the same package the MEMS sensor with the signal conditioning circuit, the A/D converter, the anti-aliasing filter and a 24-bit I2S interface. The data sheet, handling information and application notes for the ICS-43432 microphone can be found [here]( https://www.invensense.com/products/digital/ics-43432/).
 
@@ -120,7 +120,7 @@ Setting the In1 pin to low, the WS signal is switched to the WS signal of the Mi
 
                               Figure 12
 
-## The Humidity/Temperature Sensor
+### The Humidity/Temperature Sensor
 
 The Humidity/Temperature Sensor used by the acoustic locator is the HIH6030-021-001 digital I2C humidity/temperature from Honeywell. This device combines a humidity and a temperature sensor in the same package. The data sheet, handling information and application notes for the HIH6030-021-001 digital I2C humidity/temperature can be found [here](https://sensing.honeywell.com/HIH6030-021-001-humidity-sensors). 
 
@@ -130,7 +130,7 @@ The pinout with the typical application circuit diagram, given in the device dat
 
                                 Figure 13
                                                            
-## The Laser LED circuit
+### The Laser LED circuit
 
 The laser LED circuit, shown in figure 14, consists of the laser diode, MOSFET transistor driver and resistor. The transistor driver is used because the Raspberry Pi cannot provide the amount of current required to operate the laser LED. The resistor is used to limit the current through the laser to the value lower than the maximum LED current. The operation of the laser is achieved by controlling the state of the GPIO6 of the Raspberry Pi.
 
@@ -138,7 +138,7 @@ The laser LED circuit, shown in figure 14, consists of the laser diode, MOSFET t
 
                                 Figure 14
                                 
-## The Servo Circuit
+### The Servo Circuit
 
 The movement of the positioning mechanism is achieved by the use of two servo motors. These motors are connected by the Raspberry Pi, through a board that is attached on the Raspberry Pi as a shield shown in figure 15. This shield also provides a connection from the Raspberry Pi to the microphones board through an IDC connector and a ribbon cable.The circuit diagram for the connection of the two servo motors to the Raspberry Pi is shown in figure 16. The speed and direction of rotation of the servo motors is achieved through the PWM signals obtained from the GPIO12 and the GPIO13 signals of the Raspberry Pi.
 
@@ -150,7 +150,7 @@ The movement of the positioning mechanism is achieved by the use of two servo mo
 
                                 Figure 16
                                 
-## Mechanical Design
+### Mechanical Design
 
 The mechanical design consists of the direction mechanism. This design features three parts: (a) the base, (b) a gimbal and (c) the head.
 
