@@ -141,6 +141,8 @@ The pan/tilt gimbal aids the movement of the device. It is capable of 180° rota
 
 The head – a 3D printed part – clicks in place on top of the gimbal. The part is designed to secure the microphones in their respective places. The PCB just slides intro the head, thus not screws are required to hold the electronics on the gimbal.
 
+## Codework
+
 ## Prerequisites
 
 ## Installation
