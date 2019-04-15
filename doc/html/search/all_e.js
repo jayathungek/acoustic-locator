@@ -1,12 +1,8 @@
 var searchData=
 [
-  ['sample_5frate',['sample_rate',['../locator_8c.html#a1c086f81c095b0efd7a87ee29fc5ba7e',1,'locator.c']]],
-  ['samplerate',['SAMPLERATE',['../locator_8c.html#a538e0cad3acb787a49e16b1e53787610',1,'locator.c']]],
-  ['sel',['sel',['../locator_8c.html#a7afcac3447636c03934613716685bbc8',1,'locator.c']]],
-  ['setupdevice',['setupdevice',['../locator_8c.html#a2b5886eb22ba27b612c693d9f6ed9228',1,'locator.c']]],
-  ['setupmicbuffers',['setupmicbuffers',['../locator_8c.html#ad581b216166dc89427eeebeb9893b1fa',1,'locator.c']]],
-  ['size',['size',['../locator_8c.html#a439227feff9d7f55384e8780cfc2eb82',1,'locator.c']]],
-  ['size_5fmic',['size_mic',['../locator_8c.html#a0e9ccdcd0aa1828a28e3fa512eac864d',1,'locator.c']]],
-  ['stopmotor',['stopMotor',['../locator_8c.html#ac51721527479fe4e5cc6a1192116a770',1,'locator.c']]],
-  ['stopmotors',['stopMotors',['../locator_8c.html#a5260da8b51f5d97f6cf2a9ba11d1aee1',1,'locator.c']]]
+  ['threshold',['THRESHOLD',['../locator_8c.html#a4679d8ea8690999a6c6c7c0cb245c879',1,'locator.c']]],
+  ['top1',['top1',['../locator_8c.html#a195834fe831b25227f2ed54948dc06e9',1,'top1():&#160;locator.c'],['../locator_8c.html#a9b0d77bf55bf55aeb2c144a2d7e63339',1,'TOP1():&#160;locator.c']]],
+  ['top2',['top2',['../locator_8c.html#aa489c260f2bf8edb93576e1d945fed13',1,'top2():&#160;locator.c'],['../locator_8c.html#af7b10168e3d3a294b97e26c36e662d55',1,'TOP2():&#160;locator.c']]],
+  ['turnmotorby',['turnMotorBy',['../servo_8c.html#ab268235c450aa6cb5615779a1b0f5b28',1,'turnMotorBy(int angle, int motor, int *curr):&#160;servo.c'],['../servo_8h.html#ab268235c450aa6cb5615779a1b0f5b28',1,'turnMotorBy(int angle, int motor, int *curr):&#160;servo.c']]],
+  ['turnmotorto',['turnMotorTo',['../servo_8c.html#ad20491cf5c1e75934f5d490a9b254e00',1,'turnMotorTo(int angle, int motor):&#160;servo.c'],['../servo_8h.html#ad20491cf5c1e75934f5d490a9b254e00',1,'turnMotorTo(int angle, int motor):&#160;servo.c']]]
 ];

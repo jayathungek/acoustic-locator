@@ -1,0 +1,287 @@
+\hypertarget{servo_8h}{}\doxysection{servo.\+h File Reference}
+\label{servo_8h}\index{servo.h@{servo.h}}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{servo_8h_a7ec8393e9445109104fd54119e06fc08}{L\+A\+S\+ER}}~22
+\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to L\+ED. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a3e4d4fc6ada25dbf92510809adde0263}{E\+L\+E\+V\+A\+T\+I\+ON}}~23
+\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to top servo. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a101a400582c692f5f5014eec55a49a30}{A\+Z\+I\+M\+U\+TH}}~26
+\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to bottom servo. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a5361356710fb7819fc6c9c3712d10db6}{B\+A\+S\+E\+\_\+\+C\+LK}}~19200000
+\begin{DoxyCompactList}\small\item\em Raspberry Pi base clock frequency (Hz). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a76fe84d83b8d236bd4f0d20d7e2ed06f}{P\+W\+M\+\_\+\+F\+R\+EQ}}~50
+\begin{DoxyCompactList}\small\item\em Desired P\+WM frequency (Hz). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a48ea2ccd8887eb8389b8043bf620d1a3}{P\+W\+M\+R\+NG}}~2000
+\begin{DoxyCompactList}\small\item\em Range of P\+WM period. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_ae23f58b84e7575a296229c23ccb8b567}{A\+Z\+\_\+\+M\+AX}}~90
+\begin{DoxyCompactList}\small\item\em Maximum azimuthal angle (degrees). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a599ca6840731539d1b83e7eda09f5000}{A\+Z\+\_\+\+M\+IN}}~-\/90
+\begin{DoxyCompactList}\small\item\em Minimum azimuthal angle (degrees). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a97f175fa73362fa14b84cfead6088124}{E\+L\+\_\+\+M\+AX}}~70
+\begin{DoxyCompactList}\small\item\em Maximum elevation angle (degrees). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_ae6a195e81a9b69d16111a762b146b14c}{E\+L\+\_\+\+M\+IN}}~-\/35
+\begin{DoxyCompactList}\small\item\em Minimum elevation angle (degrees). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{servo_8h_a62249e384b997229a3e2ae74ade334e2}{D\+E\+L\+AY}}~250
+\begin{DoxyCompactList}\small\item\em Servo delay (milliseconds). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{servo_8h_a0b4159671b6e3c2818e560def5da3dd7}{pwm\+Setup}} ()
+\begin{DoxyCompactList}\small\item\em Sets up P\+WM control for the servo motors. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_ab7037f4d33836bb66b1e31183dc70ec6}{laser\+On}} ()
+\begin{DoxyCompactList}\small\item\em Turns on the front L\+ED. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_a9c33a84099f27158bf60c78f7d2353d6}{laser\+Off}} ()
+\begin{DoxyCompactList}\small\item\em Turns off the front L\+ED. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_a5260da8b51f5d97f6cf2a9ba11d1aee1}{stop\+Motors}} ()
+\begin{DoxyCompactList}\small\item\em Stops movement of both servos. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_a7a63f5a5a10bf73d98ae5ff7efcdd57e}{zero\+Motors}} (int $\ast$\mbox{\hyperlink{locator_8c_af15ce0e091b409de25694109f11f484b}{az\+\_\+curr}}, int $\ast$\mbox{\hyperlink{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}{el\+\_\+curr}})
+\begin{DoxyCompactList}\small\item\em Brings both servos to their 0 position, i.\+e. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_ab268235c450aa6cb5615779a1b0f5b28}{turn\+Motor\+By}} (int angle, int motor, int $\ast$curr)
+\begin{DoxyCompactList}\small\item\em Turns a given motor by the specified angle in degrees. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{servo_8h_a1c860ac83dd57815216ea7f9a7c190c7}{zero\+Azimuth}} (int $\ast$curr)
+\item 
+void \mbox{\hyperlink{servo_8h_a167c0bbab7d9bb43b16c49fd43046dcf}{zero\+Elevation}} (int $\ast$curr)
+\item 
+int \mbox{\hyperlink{servo_8h_a5adeec951f9dff5479c74d8a8a9ad4fd}{get\+Pwm\+Clk}} (int pwm\+Range)
+\item 
+int \mbox{\hyperlink{servo_8h_a9d197f8487cd224eed120cc78dc611fa}{get\+Pwm\+Value}} (int angle)
+\item 
+void \mbox{\hyperlink{servo_8h_ad20491cf5c1e75934f5d490a9b254e00}{turn\+Motor\+To}} (int angle, int motor)
+\item 
+void \mbox{\hyperlink{servo_8h_ac51721527479fe4e5cc6a1192116a770}{stop\+Motor}} (int motor)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{servo_8h_ae23f58b84e7575a296229c23ccb8b567}\label{servo_8h_ae23f58b84e7575a296229c23ccb8b567}} 
+\index{servo.h@{servo.h}!AZ\_MAX@{AZ\_MAX}}
+\index{AZ\_MAX@{AZ\_MAX}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{AZ\_MAX}{AZ\_MAX}}
+{\footnotesize\ttfamily \#define A\+Z\+\_\+\+M\+AX~90}
+
+
+
+Maximum azimuthal angle (degrees). 
+
+Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{servo_8h_a599ca6840731539d1b83e7eda09f5000}\label{servo_8h_a599ca6840731539d1b83e7eda09f5000}} 
+\index{servo.h@{servo.h}!AZ\_MIN@{AZ\_MIN}}
+\index{AZ\_MIN@{AZ\_MIN}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{AZ\_MIN}{AZ\_MIN}}
+{\footnotesize\ttfamily \#define A\+Z\+\_\+\+M\+IN~-\/90}
+
+
+
+Minimum azimuthal angle (degrees). 
+
+Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{servo_8h_a101a400582c692f5f5014eec55a49a30}\label{servo_8h_a101a400582c692f5f5014eec55a49a30}} 
+\index{servo.h@{servo.h}!AZIMUTH@{AZIMUTH}}
+\index{AZIMUTH@{AZIMUTH}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{AZIMUTH}{AZIMUTH}}
+{\footnotesize\ttfamily \#define A\+Z\+I\+M\+U\+TH~26}
+
+
+
+wiring\+Pi pin connected to bottom servo. 
+
+\mbox{\Hypertarget{servo_8h_a5361356710fb7819fc6c9c3712d10db6}\label{servo_8h_a5361356710fb7819fc6c9c3712d10db6}} 
+\index{servo.h@{servo.h}!BASE\_CLK@{BASE\_CLK}}
+\index{BASE\_CLK@{BASE\_CLK}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{BASE\_CLK}{BASE\_CLK}}
+{\footnotesize\ttfamily \#define B\+A\+S\+E\+\_\+\+C\+LK~19200000}
+
+
+
+Raspberry Pi base clock frequency (Hz). 
+
+\mbox{\Hypertarget{servo_8h_a62249e384b997229a3e2ae74ade334e2}\label{servo_8h_a62249e384b997229a3e2ae74ade334e2}} 
+\index{servo.h@{servo.h}!DELAY@{DELAY}}
+\index{DELAY@{DELAY}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{DELAY}{DELAY}}
+{\footnotesize\ttfamily \#define D\+E\+L\+AY~250}
+
+
+
+Servo delay (milliseconds). 
+
+Used in preventing jitter. \mbox{\Hypertarget{servo_8h_a97f175fa73362fa14b84cfead6088124}\label{servo_8h_a97f175fa73362fa14b84cfead6088124}} 
+\index{servo.h@{servo.h}!EL\_MAX@{EL\_MAX}}
+\index{EL\_MAX@{EL\_MAX}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{EL\_MAX}{EL\_MAX}}
+{\footnotesize\ttfamily \#define E\+L\+\_\+\+M\+AX~70}
+
+
+
+Maximum elevation angle (degrees). 
+
+Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{servo_8h_ae6a195e81a9b69d16111a762b146b14c}\label{servo_8h_ae6a195e81a9b69d16111a762b146b14c}} 
+\index{servo.h@{servo.h}!EL\_MIN@{EL\_MIN}}
+\index{EL\_MIN@{EL\_MIN}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{EL\_MIN}{EL\_MIN}}
+{\footnotesize\ttfamily \#define E\+L\+\_\+\+M\+IN~-\/35}
+
+
+
+Minimum elevation angle (degrees). 
+
+Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{servo_8h_a3e4d4fc6ada25dbf92510809adde0263}\label{servo_8h_a3e4d4fc6ada25dbf92510809adde0263}} 
+\index{servo.h@{servo.h}!ELEVATION@{ELEVATION}}
+\index{ELEVATION@{ELEVATION}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{ELEVATION}{ELEVATION}}
+{\footnotesize\ttfamily \#define E\+L\+E\+V\+A\+T\+I\+ON~23}
+
+
+
+wiring\+Pi pin connected to top servo. 
+
+\mbox{\Hypertarget{servo_8h_a7ec8393e9445109104fd54119e06fc08}\label{servo_8h_a7ec8393e9445109104fd54119e06fc08}} 
+\index{servo.h@{servo.h}!LASER@{LASER}}
+\index{LASER@{LASER}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{LASER}{LASER}}
+{\footnotesize\ttfamily \#define L\+A\+S\+ER~22}
+
+
+
+wiring\+Pi pin connected to L\+ED. 
+
+\mbox{\Hypertarget{servo_8h_a76fe84d83b8d236bd4f0d20d7e2ed06f}\label{servo_8h_a76fe84d83b8d236bd4f0d20d7e2ed06f}} 
+\index{servo.h@{servo.h}!PWM\_FREQ@{PWM\_FREQ}}
+\index{PWM\_FREQ@{PWM\_FREQ}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{PWM\_FREQ}{PWM\_FREQ}}
+{\footnotesize\ttfamily \#define P\+W\+M\+\_\+\+F\+R\+EQ~50}
+
+
+
+Desired P\+WM frequency (Hz). 
+
+\mbox{\Hypertarget{servo_8h_a48ea2ccd8887eb8389b8043bf620d1a3}\label{servo_8h_a48ea2ccd8887eb8389b8043bf620d1a3}} 
+\index{servo.h@{servo.h}!PWMRNG@{PWMRNG}}
+\index{PWMRNG@{PWMRNG}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{PWMRNG}{PWMRNG}}
+{\footnotesize\ttfamily \#define P\+W\+M\+R\+NG~2000}
+
+
+
+Range of P\+WM period. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{servo_8h_a5adeec951f9dff5479c74d8a8a9ad4fd}\label{servo_8h_a5adeec951f9dff5479c74d8a8a9ad4fd}} 
+\index{servo.h@{servo.h}!getPwmClk@{getPwmClk}}
+\index{getPwmClk@{getPwmClk}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{getPwmClk()}{getPwmClk()}}
+{\footnotesize\ttfamily int get\+Pwm\+Clk (\begin{DoxyParamCaption}\item[{int}]{pwm\+Range }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a9d197f8487cd224eed120cc78dc611fa}\label{servo_8h_a9d197f8487cd224eed120cc78dc611fa}} 
+\index{servo.h@{servo.h}!getPwmValue@{getPwmValue}}
+\index{getPwmValue@{getPwmValue}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{getPwmValue()}{getPwmValue()}}
+{\footnotesize\ttfamily int get\+Pwm\+Value (\begin{DoxyParamCaption}\item[{int}]{angle }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a9c33a84099f27158bf60c78f7d2353d6}\label{servo_8h_a9c33a84099f27158bf60c78f7d2353d6}} 
+\index{servo.h@{servo.h}!laserOff@{laserOff}}
+\index{laserOff@{laserOff}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{laserOff()}{laserOff()}}
+{\footnotesize\ttfamily void laser\+Off (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Turns off the front L\+ED. 
+
+\mbox{\Hypertarget{servo_8h_ab7037f4d33836bb66b1e31183dc70ec6}\label{servo_8h_ab7037f4d33836bb66b1e31183dc70ec6}} 
+\index{servo.h@{servo.h}!laserOn@{laserOn}}
+\index{laserOn@{laserOn}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{laserOn()}{laserOn()}}
+{\footnotesize\ttfamily void laser\+On (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Turns on the front L\+ED. 
+
+\mbox{\Hypertarget{servo_8h_a0b4159671b6e3c2818e560def5da3dd7}\label{servo_8h_a0b4159671b6e3c2818e560def5da3dd7}} 
+\index{servo.h@{servo.h}!pwmSetup@{pwmSetup}}
+\index{pwmSetup@{pwmSetup}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{pwmSetup()}{pwmSetup()}}
+{\footnotesize\ttfamily void pwm\+Setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Sets up P\+WM control for the servo motors. 
+
+\mbox{\Hypertarget{servo_8h_ac51721527479fe4e5cc6a1192116a770}\label{servo_8h_ac51721527479fe4e5cc6a1192116a770}} 
+\index{servo.h@{servo.h}!stopMotor@{stopMotor}}
+\index{stopMotor@{stopMotor}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{stopMotor()}{stopMotor()}}
+{\footnotesize\ttfamily void stop\+Motor (\begin{DoxyParamCaption}\item[{int}]{motor }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a5260da8b51f5d97f6cf2a9ba11d1aee1}\label{servo_8h_a5260da8b51f5d97f6cf2a9ba11d1aee1}} 
+\index{servo.h@{servo.h}!stopMotors@{stopMotors}}
+\index{stopMotors@{stopMotors}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{stopMotors()}{stopMotors()}}
+{\footnotesize\ttfamily void stop\+Motors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Stops movement of both servos. 
+
+\mbox{\Hypertarget{servo_8h_ab268235c450aa6cb5615779a1b0f5b28}\label{servo_8h_ab268235c450aa6cb5615779a1b0f5b28}} 
+\index{servo.h@{servo.h}!turnMotorBy@{turnMotorBy}}
+\index{turnMotorBy@{turnMotorBy}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{turnMotorBy()}{turnMotorBy()}}
+{\footnotesize\ttfamily void turn\+Motor\+By (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{int}]{motor,  }\item[{int $\ast$}]{curr }\end{DoxyParamCaption})}
+
+
+
+Turns a given motor by the specified angle in degrees. 
+
+Prevents movements of the servos at their angular limits so as to avoid damage 
+\begin{DoxyParams}{Parameters}
+{\em angle} & The angle by which the motor should turn. \\
+\hline
+{\em motor} & An integer that distiguishes between the azimuthal or elevation servo. \\
+\hline
+{\em curr} & The current angular position of the servo \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{servo_8h_a101a400582c692f5f5014eec55a49a30}{A\+Z\+I\+M\+U\+TH}} 
+
+\mbox{\hyperlink{servo_8h_a3e4d4fc6ada25dbf92510809adde0263}{E\+L\+E\+V\+A\+T\+I\+ON}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{servo_8h_ad20491cf5c1e75934f5d490a9b254e00}\label{servo_8h_ad20491cf5c1e75934f5d490a9b254e00}} 
+\index{servo.h@{servo.h}!turnMotorTo@{turnMotorTo}}
+\index{turnMotorTo@{turnMotorTo}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{turnMotorTo()}{turnMotorTo()}}
+{\footnotesize\ttfamily void turn\+Motor\+To (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{int}]{motor }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a1c860ac83dd57815216ea7f9a7c190c7}\label{servo_8h_a1c860ac83dd57815216ea7f9a7c190c7}} 
+\index{servo.h@{servo.h}!zeroAzimuth@{zeroAzimuth}}
+\index{zeroAzimuth@{zeroAzimuth}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{zeroAzimuth()}{zeroAzimuth()}}
+{\footnotesize\ttfamily void zero\+Azimuth (\begin{DoxyParamCaption}\item[{int $\ast$}]{curr }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a167c0bbab7d9bb43b16c49fd43046dcf}\label{servo_8h_a167c0bbab7d9bb43b16c49fd43046dcf}} 
+\index{servo.h@{servo.h}!zeroElevation@{zeroElevation}}
+\index{zeroElevation@{zeroElevation}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{zeroElevation()}{zeroElevation()}}
+{\footnotesize\ttfamily void zero\+Elevation (\begin{DoxyParamCaption}\item[{int $\ast$}]{curr }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{servo_8h_a7a63f5a5a10bf73d98ae5ff7efcdd57e}\label{servo_8h_a7a63f5a5a10bf73d98ae5ff7efcdd57e}} 
+\index{servo.h@{servo.h}!zeroMotors@{zeroMotors}}
+\index{zeroMotors@{zeroMotors}!servo.h@{servo.h}}
+\doxysubsubsection{\texorpdfstring{zeroMotors()}{zeroMotors()}}
+{\footnotesize\ttfamily void zero\+Motors (\begin{DoxyParamCaption}\item[{int $\ast$}]{az\+\_\+curr,  }\item[{int $\ast$}]{el\+\_\+curr }\end{DoxyParamCaption})}
+
+
+
+Brings both servos to their 0 position, i.\+e. 
+
+facing straight ahead. 
+\begin{DoxyParams}{Parameters}
+{\em az\+\_\+curr} & current position of azimuthal motor (degrees) \\
+\hline
+{\em el\+\_\+curr} & current position of elevation motor (degrees) \\
+\hline
+\end{DoxyParams}

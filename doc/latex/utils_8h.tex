@@ -1,0 +1,197 @@
+\hypertarget{utils_8h}{}\doxysection{utils.\+h File Reference}
+\label{utils_8h}\index{utils.h@{utils.h}}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{utils_8h_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}~10.\+385
+\begin{DoxyCompactList}\small\item\em Distance between pairs of mics (centimetres). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{utils_8h_a331d2c16fde042d20c918c971d3f68f3}{V\+S\+O\+U\+ND}}~34600
+\begin{DoxyCompactList}\small\item\em Speed of sound in air (centimetres/second). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{utils_8h_a39f795126ae5c79f068a2c5c49d6ee59}{M\+I\+C\+RO}}~0.\+000001
+\begin{DoxyCompactList}\small\item\em Order of magnitude conversion. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{utils_8h_ad6f2b0d19e123a0153857ee6d6d6cedb}{M\+I\+C\+\_\+X}}~\mbox{\hyperlink{utils_8h_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}/2
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{utils_8h_a63ccac44f2b9151c54c119a24a6de578}{convert\+Value}} (char msb, char lsb)
+\begin{DoxyCompactList}\small\item\em Converts a 16bit big endian number to an integer. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{utils_8h_af8f76af90d4f277328b6844533715c91}{hyperbola}} (double l, double x)
+\begin{DoxyCompactList}\small\item\em A mathematical function that represents possible sound source locations for a particular timing difference. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{utils_8h_a2983de48b2dadfddfe6a3af0f1ef2a3b}{get\+Dev\+From\+Normal}} (float delta)
+\begin{DoxyCompactList}\small\item\em Uses time difference between to calculate the angular offset of the noise from the normal line, i.\+e. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_addb48bf262dd937de3a00076971a5ec7}{find\+Zero}} (signed int $\ast$\mbox{\hyperlink{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}{buffer}}, int size, int $\ast$zero\+Crossing, int threshold)
+\begin{DoxyCompactList}\small\item\em Finds index of a data buffer where the sound pressure level crosses the x-\/axis, if such a crossing exists. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_a87fdb41cbab97f4057a0caad62d1e0c2}{calc\+Delays}} (int \mbox{\hyperlink{locator_8c_a4daf39371ce88e725afdddef077ad0da}{zero\+Top1}}, int \mbox{\hyperlink{locator_8c_a81e715298ef2793d7133ced346aae6e5}{zero\+Left}}, int \mbox{\hyperlink{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}{zero\+Top2}}, int \mbox{\hyperlink{locator_8c_a6803a267f65c0269820bd931dae3f2f2}{zero\+Right}}, float $\ast$\mbox{\hyperlink{locator_8c_a196c0e2744accf42066216c9452ab1af}{del\+Top\+Left}}, float $\ast$\mbox{\hyperlink{locator_8c_afcc32c167cbf0821f350aee6ac4fb972}{del\+Top\+Right}}, float $\ast$\mbox{\hyperlink{locator_8c_a4ae30cc36621a0f0c56004247084b155}{del\+Left\+Right}}, int samplerate)
+\begin{DoxyCompactList}\small\item\em Updates delay variables, which keep track of the timing difference between mics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{utils_8h_ad6f2b0d19e123a0153857ee6d6d6cedb}\label{utils_8h_ad6f2b0d19e123a0153857ee6d6d6cedb}} 
+\index{utils.h@{utils.h}!MIC\_X@{MIC\_X}}
+\index{MIC\_X@{MIC\_X}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{MIC\_X}{MIC\_X}}
+{\footnotesize\ttfamily \#define M\+I\+C\+\_\+X~\mbox{\hyperlink{utils_8h_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}/2}
+
+\mbox{\Hypertarget{utils_8h_a5301ef230420bba512697d3943d687af}\label{utils_8h_a5301ef230420bba512697d3943d687af}} 
+\index{utils.h@{utils.h}!MICDIST@{MICDIST}}
+\index{MICDIST@{MICDIST}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{MICDIST}{MICDIST}}
+{\footnotesize\ttfamily \#define M\+I\+C\+D\+I\+ST~10.\+385}
+
+
+
+Distance between pairs of mics (centimetres). 
+
+\mbox{\Hypertarget{utils_8h_a39f795126ae5c79f068a2c5c49d6ee59}\label{utils_8h_a39f795126ae5c79f068a2c5c49d6ee59}} 
+\index{utils.h@{utils.h}!MICRO@{MICRO}}
+\index{MICRO@{MICRO}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{MICRO}{MICRO}}
+{\footnotesize\ttfamily \#define M\+I\+C\+RO~0.\+000001}
+
+
+
+Order of magnitude conversion. 
+
+\mbox{\Hypertarget{utils_8h_a331d2c16fde042d20c918c971d3f68f3}\label{utils_8h_a331d2c16fde042d20c918c971d3f68f3}} 
+\index{utils.h@{utils.h}!VSOUND@{VSOUND}}
+\index{VSOUND@{VSOUND}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{VSOUND}{VSOUND}}
+{\footnotesize\ttfamily \#define V\+S\+O\+U\+ND~34600}
+
+
+
+Speed of sound in air (centimetres/second). 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8h_a87fdb41cbab97f4057a0caad62d1e0c2}\label{utils_8h_a87fdb41cbab97f4057a0caad62d1e0c2}} 
+\index{utils.h@{utils.h}!calcDelays@{calcDelays}}
+\index{calcDelays@{calcDelays}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{calcDelays()}{calcDelays()}}
+{\footnotesize\ttfamily int calc\+Delays (\begin{DoxyParamCaption}\item[{int}]{zero\+Top1,  }\item[{int}]{zero\+Left,  }\item[{int}]{zero\+Top2,  }\item[{int}]{zero\+Right,  }\item[{float $\ast$}]{del\+Top\+Left,  }\item[{float $\ast$}]{del\+Top\+Right,  }\item[{float $\ast$}]{del\+Left\+Right,  }\item[{int}]{samplerate }\end{DoxyParamCaption})}
+
+
+
+Updates delay variables, which keep track of the timing difference between mics. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em zero\+Top1} & Index of top1 buffer\textquotesingle{}s zero crossing \\
+\hline
+{\em zero\+Left} & Index of left buffer\textquotesingle{}s zero crossing \\
+\hline
+{\em zero\+Top2} & Index of top2 buffer\textquotesingle{}s zero crossing \\
+\hline
+{\em zero\+Right} & Index of right buffer\textquotesingle{}s zero crossing \\
+\hline
+{\em del\+Top\+Left} & Pointer to a float where the delay between top and left mics will be stored if found. Do not use if Calc\+Delays() returns error. \\
+\hline
+{\em del\+Top\+Right} & Pointer to a float where the delay between top and right mics will be stored if found. Do not use if Calc\+Delays() returns error. \\
+\hline
+{\em del\+Left\+Right} & Pointer to a float where the delay between left and right mics will be stored if found. Do not use if Calc\+Delays() returns error. \\
+\hline
+{\em samplerate} & The sampling frequency (Hz) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Error code (0 on success). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a63ccac44f2b9151c54c119a24a6de578}\label{utils_8h_a63ccac44f2b9151c54c119a24a6de578}} 
+\index{utils.h@{utils.h}!convertValue@{convertValue}}
+\index{convertValue@{convertValue}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{convertValue()}{convertValue()}}
+{\footnotesize\ttfamily int convert\+Value (\begin{DoxyParamCaption}\item[{char}]{msb,  }\item[{char}]{lsb }\end{DoxyParamCaption})}
+
+
+
+Converts a 16bit big endian number to an integer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msb} & Most significant byte of the 16bit number. \\
+\hline
+{\em lsb} & Least significant byte of the 16bit number. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Signed integer. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_addb48bf262dd937de3a00076971a5ec7}\label{utils_8h_addb48bf262dd937de3a00076971a5ec7}} 
+\index{utils.h@{utils.h}!findZero@{findZero}}
+\index{findZero@{findZero}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{findZero()}{findZero()}}
+{\footnotesize\ttfamily int find\+Zero (\begin{DoxyParamCaption}\item[{signed int $\ast$}]{buffer,  }\item[{int}]{size,  }\item[{int $\ast$}]{zero\+Crossing,  }\item[{int}]{threshold }\end{DoxyParamCaption})}
+
+
+
+Finds index of a data buffer where the sound pressure level crosses the x-\/axis, if such a crossing exists. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Audio data buffer. \\
+\hline
+{\em size} & Size of the data biffer \\
+\hline
+{\em zero\+Crossing} & Pointer to an integer where the zero crossing index will be stored if found. Do not use if \mbox{\hyperlink{utils_8h_addb48bf262dd937de3a00076971a5ec7}{find\+Zero()}} returns error. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Error code (0 on success). 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em threshold} & Minimum sound pressure level for detection \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{locator_8c_a4daf39371ce88e725afdddef077ad0da}{zero\+Top1}} 
+
+\mbox{\hyperlink{locator_8c_a81e715298ef2793d7133ced346aae6e5}{zero\+Left}} 
+
+\mbox{\hyperlink{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}{zero\+Top2}} 
+
+\mbox{\hyperlink{locator_8c_a6803a267f65c0269820bd931dae3f2f2}{zero\+Right}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{utils_8h_a2983de48b2dadfddfe6a3af0f1ef2a3b}\label{utils_8h_a2983de48b2dadfddfe6a3af0f1ef2a3b}} 
+\index{utils.h@{utils.h}!getDevFromNormal@{getDevFromNormal}}
+\index{getDevFromNormal@{getDevFromNormal}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{getDevFromNormal()}{getDevFromNormal()}}
+{\footnotesize\ttfamily float get\+Dev\+From\+Normal (\begin{DoxyParamCaption}\item[{float}]{delta }\end{DoxyParamCaption})}
+
+
+
+Uses time difference between to calculate the angular offset of the noise from the normal line, i.\+e. 
+
+line that bisects the line that joins the mics. 
+\begin{DoxyParams}{Parameters}
+{\em delta} & Time difference (microseconds) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Angular offset from normal (degrees). 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{utils_8h_af8f76af90d4f277328b6844533715c91}{hyperbola()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{utils_8h_af8f76af90d4f277328b6844533715c91}\label{utils_8h_af8f76af90d4f277328b6844533715c91}} 
+\index{utils.h@{utils.h}!hyperbola@{hyperbola}}
+\index{hyperbola@{hyperbola}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{hyperbola()}{hyperbola()}}
+{\footnotesize\ttfamily double hyperbola (\begin{DoxyParamCaption}\item[{double}]{l,  }\item[{double}]{x }\end{DoxyParamCaption})}
+
+
+
+A mathematical function that represents possible sound source locations for a particular timing difference. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l} & Extra distance travelled by sound from closer to further mic \\
+\hline
+{\em x} & Arbitrary x-\/coordinate greater than mic\textquotesingle{}s x coordinate \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Possible Y-\/coordinate of sound source. 
+\end{DoxyReturn}

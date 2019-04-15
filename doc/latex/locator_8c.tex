@@ -7,11 +7,17 @@
 {\ttfamily \#include $<$math.\+h$>$}\newline
 {\ttfamily \#include $<$wiring\+Pi.\+h$>$}\newline
 {\ttfamily \#include $<$alsa/asoundlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}servo.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
+\#define \mbox{\hyperlink{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}{D\+E\+V\+I\+CE}}~\char`\"{}plughw\+:1\char`\"{}
+\begin{DoxyCompactList}\small\item\em Name of the A\+L\+SA P\+CM device. \end{DoxyCompactList}\item 
 \#define \mbox{\hyperlink{locator_8c_a51a51480d875f80355412fa95fd48c6c}{F\+R\+A\+M\+ES}}~128
 \begin{DoxyCompactList}\small\item\em Number of frames to read in. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}{T\+H\+R\+E\+S\+H\+O\+LD}}~600
+\begin{DoxyCompactList}\small\item\em Minimum detectable sound pressure level. \end{DoxyCompactList}\item 
 \#define \mbox{\hyperlink{locator_8c_a538e0cad3acb787a49e16b1e53787610}{S\+A\+M\+P\+L\+E\+R\+A\+TE}}~44100
 \begin{DoxyCompactList}\small\item\em Audio sampling frequency (Hz) \end{DoxyCompactList}\item 
 \#define \mbox{\hyperlink{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}{T\+O\+P1}}~0
@@ -23,93 +29,29 @@
 \#define \mbox{\hyperlink{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}{R\+I\+G\+HT}}~3
 \begin{DoxyCompactList}\small\item\em Enumeration for right microphone buffer. \end{DoxyCompactList}\item 
 \#define \mbox{\hyperlink{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}{M\+U\+X\+SE}}~21
-\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to multiplexer. \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a7ec8393e9445109104fd54119e06fc08}{L\+A\+S\+ER}}~22
-\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to L\+ED. \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a3e4d4fc6ada25dbf92510809adde0263}{E\+L\+E\+V\+A\+T\+I\+ON}}~23
-\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to top servo. \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a101a400582c692f5f5014eec55a49a30}{A\+Z\+I\+M\+U\+TH}}~26
-\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to bottom servo. \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a5361356710fb7819fc6c9c3712d10db6}{B\+A\+S\+E\+\_\+\+C\+LK}}~19200000
-\begin{DoxyCompactList}\small\item\em Raspberry Pi base clock frequency (Hz). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a76fe84d83b8d236bd4f0d20d7e2ed06f}{P\+W\+M\+\_\+\+F\+R\+EQ}}~50
-\begin{DoxyCompactList}\small\item\em Desired P\+WM frequency (Hz). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a48ea2ccd8887eb8389b8043bf620d1a3}{P\+W\+M\+R\+NG}}~2000
-\begin{DoxyCompactList}\small\item\em Range of P\+WM period. \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a62249e384b997229a3e2ae74ade334e2}{D\+E\+L\+AY}}~500
-\begin{DoxyCompactList}\small\item\em Motor delay (milliseconds). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_ae23f58b84e7575a296229c23ccb8b567}{A\+Z\+\_\+\+M\+AX}}~90
-\begin{DoxyCompactList}\small\item\em Maximum azimuthal angle (degrees). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a599ca6840731539d1b83e7eda09f5000}{A\+Z\+\_\+\+M\+IN}}~-\/90
-\begin{DoxyCompactList}\small\item\em Minimum azimuthal angle (degrees). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a97f175fa73362fa14b84cfead6088124}{E\+L\+\_\+\+M\+AX}}~70
-\begin{DoxyCompactList}\small\item\em Maximum elevation angle (degrees). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_ae6a195e81a9b69d16111a762b146b14c}{E\+L\+\_\+\+M\+IN}}~-\/35
-\begin{DoxyCompactList}\small\item\em Minimum elevation angle (degrees). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a62249e384b997229a3e2ae74ade334e2}{D\+E\+L\+AY}}~500
-\begin{DoxyCompactList}\small\item\em Motor delay (milliseconds). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}~10.\+385
-\begin{DoxyCompactList}\small\item\em Distance between pairs of mics (centimetres). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a331d2c16fde042d20c918c971d3f68f3}{V\+S\+O\+U\+ND}}~34600
-\begin{DoxyCompactList}\small\item\em Speed of sound in air (centimetres/second). \end{DoxyCompactList}\item 
-\#define \mbox{\hyperlink{locator_8c_a39f795126ae5c79f068a2c5c49d6ee59}{M\+I\+C\+RO}}~0.\+000001
-\begin{DoxyCompactList}\small\item\em Order of magnitude conversion. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to multiplexer. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{locator_8c_a5e250a67c49473a3c4b02995be1d5655}{printbuf}} (signed int $\ast$buf, int \mbox{\hyperlink{locator_8c_a439227feff9d7f55384e8780cfc2eb82}{size}})
+void \mbox{\hyperlink{locator_8c_a5e250a67c49473a3c4b02995be1d5655}{printbuf}} (signed int $\ast$buf, int size)
 \begin{DoxyCompactList}\small\item\em A function that takes an integer buffer and renders its contents to sdout for debugging. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_afab5f34a4aca7b851d41424729988c53}{print\+Buf\+To\+File}} (F\+I\+LE $\ast$file, signed int $\ast$buf, int \mbox{\hyperlink{locator_8c_a439227feff9d7f55384e8780cfc2eb82}{size}})
+void \mbox{\hyperlink{locator_8c_afab5f34a4aca7b851d41424729988c53}{print\+Buf\+To\+File}} (F\+I\+LE $\ast$file, signed int $\ast$buf, int size)
 \begin{DoxyCompactList}\small\item\em A function that takes an integer buffer and renders its contents to the specified file descriptor for debugging. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a0b4159671b6e3c2818e560def5da3dd7}{pwm\+Setup}} ()
-\begin{DoxyCompactList}\small\item\em Sets up P\+WM control for the servo motors. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_ab7037f4d33836bb66b1e31183dc70ec6}{laser\+On}} ()
-\begin{DoxyCompactList}\small\item\em Turns on the front L\+ED. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a9c33a84099f27158bf60c78f7d2353d6}{laser\+Off}} ()
-\begin{DoxyCompactList}\small\item\em Turns off the front L\+ED. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a5260da8b51f5d97f6cf2a9ba11d1aee1}{stop\+Motors}} ()
-\begin{DoxyCompactList}\small\item\em Stops movement of both servos. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a41c62b9ecee63a70563fffb6be2d36f2}{zero\+Motors}} ()
-\begin{DoxyCompactList}\small\item\em Brings both servos to their 0 position, i.\+e. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a0ddd758f2465bf826670895ebf831667}{turn\+Motor\+By}} (int angle, int motor)
-\begin{DoxyCompactList}\small\item\em Turns a given motor by the specified angle in degrees. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_af5a49d591667a22acf6b75ee6236c3be}{update\+Position}} (float del\+TL, float del\+TR, float del\+LR)
-\begin{DoxyCompactList}\small\item\em Moves servos in response to timing difference data. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{locator_8c_a83acc97b5eb0950b759e18dcbcb8c899}{zero\+Azimuth}} ()
-\item 
-void \mbox{\hyperlink{locator_8c_a6be645678ba744b617f05f0a8ded6c24}{zero\+Elevation}} ()
-\item 
-int \mbox{\hyperlink{locator_8c_a5adeec951f9dff5479c74d8a8a9ad4fd}{get\+Pwm\+Clk}} (int pwm\+Range)
-\item 
-int \mbox{\hyperlink{locator_8c_a9d197f8487cd224eed120cc78dc611fa}{get\+Pwm\+Value}} (int angle)
-\item 
-void \mbox{\hyperlink{locator_8c_ad20491cf5c1e75934f5d490a9b254e00}{turn\+Motor\+To}} (int angle, int motor)
-\item 
-void \mbox{\hyperlink{locator_8c_ac51721527479fe4e5cc6a1192116a770}{stop\+Motor}} (int motor)
-\item 
-void \mbox{\hyperlink{locator_8c_a483a9b1d6b4e45d60d47ba9cd5c2746f}{fillbuf}} (int tobuf, char $\ast$frombuf, int sizefrom)
+void \mbox{\hyperlink{locator_8c_a6633207217364c8d34a60d09de941625}{fillbuf}} (int tobuf\+Code, int $\ast$tobuf, char $\ast$frombuf, int sizefrom)
 \begin{DoxyCompactList}\small\item\em Splits data in the P\+CM buffer so that the correct channel is sent to the destination buffer. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}{setupdevice}} (char $\ast$device, unsigned int rate)
 \begin{DoxyCompactList}\small\item\em Initialises the A\+L\+SA P\+CM interface. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{locator_8c_ad581b216166dc89427eeebeb9893b1fa}{setupmicbuffers}} ()
+int \mbox{\hyperlink{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}{setupmicbuffers}} (int \mbox{\hyperlink{locator_8c_a281c5134f826917fef45ddaf523ce49a}{frames}}, int $\ast$pcm\+\_\+size, int $\ast$mic\+\_\+size)
 \begin{DoxyCompactList}\small\item\em Allocates memory for P\+CM and mic data buffers. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{locator_8c_a49138c5791a45f3d722eb19390839c34}{freebuffers}} ()
 \begin{DoxyCompactList}\small\item\em Frees memory allocated to P\+CM and mic data buffers. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}{read\+Mics}} ()
 \begin{DoxyCompactList}\small\item\em Updates top1, left, top2 and right buffers. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{locator_8c_a63ccac44f2b9151c54c119a24a6de578}{convert\+Value}} (char msb, char lsb)
-\begin{DoxyCompactList}\small\item\em Converts a 16bit big endian number to an integer. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{locator_8c_a3afbd8e7212754951a1c156ddfd77a22}{find\+Zero}} (signed int $\ast$\mbox{\hyperlink{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}{buffer}}, int $\ast$zero\+Crossing)
-\begin{DoxyCompactList}\small\item\em Finds index of a data buffer where the sound pressure level crosses the x-\/axis, if such a crossing exists. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{locator_8c_af11afcd8d729b900bf904b7c37bd909d}{calc\+Delays}} ()
-\begin{DoxyCompactList}\small\item\em Updates delay variables, which keep track of the timing difference between mics. \end{DoxyCompactList}\item 
-double \mbox{\hyperlink{locator_8c_af8f76af90d4f277328b6844533715c91}{hyperbola}} (double l, double x)
-\begin{DoxyCompactList}\small\item\em A mathematical function that represents possible sound source locations for a particular timing difference. \end{DoxyCompactList}\item 
-float \mbox{\hyperlink{locator_8c_a2983de48b2dadfddfe6a3af0f1ef2a3b}{get\+Dev\+From\+Normal}} (float delta)
-\begin{DoxyCompactList}\small\item\em Uses time difference between to calculate the angular offset of the noise from the normal line, i.\+e. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_af5a49d591667a22acf6b75ee6236c3be}{update\+Position}} (float del\+TL, float del\+TR, float del\+LR)
+\begin{DoxyCompactList}\small\item\em Moves servos in response to timing difference data. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
 \item 
-int \mbox{\hyperlink{locator_8c_a1c1716807ea81fedd1559ba2a57384c3}{find\+Zero}} (int $\ast$\mbox{\hyperlink{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}{buffer}}, int $\ast$zero\+Crossing)
+void \mbox{\hyperlink{locator_8c_a73fb9687dd54fc486114ef158fa29330}{read\+Mics}} (int $\ast$\mbox{\hyperlink{locator_8c_a195834fe831b25227f2ed54948dc06e9}{top1}}, int $\ast$\mbox{\hyperlink{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}{left}}, int $\ast$\mbox{\hyperlink{locator_8c_aa489c260f2bf8edb93576e1d945fed13}{top2}}, int $\ast$\mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}})
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -128,8 +70,6 @@ unsigned int \mbox{\hyperlink{locator_8c_a1c086f81c095b0efd7a87ee29fc5ba7e}{samp
 \item 
 int \mbox{\hyperlink{locator_8c_a7afcac3447636c03934613716685bbc8}{sel}}
 \item 
-double \mbox{\hyperlink{locator_8c_ade5df362d87e43f0c647bf5de369981a}{mic\+\_\+x}} = (double)\mbox{\hyperlink{locator_8c_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}/2
-\item 
 char $\ast$ \mbox{\hyperlink{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}{buffer}}
 \item 
 signed int $\ast$ \mbox{\hyperlink{locator_8c_a195834fe831b25227f2ed54948dc06e9}{top1}}
@@ -140,15 +80,13 @@ signed int $\ast$ \mbox{\hyperlink{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}
 \begin{DoxyCompactList}\small\item\em Buffer for left mic. \end{DoxyCompactList}\item 
 signed int $\ast$ \mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}}
 \begin{DoxyCompactList}\small\item\em Buffer for right mic. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{locator_8c_a439227feff9d7f55384e8780cfc2eb82}{size}}
+int \mbox{\hyperlink{locator_8c_a1f14db325606d8f825754cff1cc21123}{pcm\+\_\+bufsize}} = 0
 \item 
-int \mbox{\hyperlink{locator_8c_a0e9ccdcd0aa1828a28e3fa512eac864d}{size\+\_\+mic}}
+int \mbox{\hyperlink{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}{mic\+\_\+bufsize}} = 0
 \item 
-int \mbox{\hyperlink{locator_8c_af15ce0e091b409de25694109f11f484b}{az\+\_\+curr}}
+int \mbox{\hyperlink{locator_8c_af15ce0e091b409de25694109f11f484b}{az\+\_\+curr}} = 0
 \item 
-int \mbox{\hyperlink{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}{el\+\_\+curr}}
-\item 
-signed int \mbox{\hyperlink{locator_8c_a7d4277ac2d42bff819f713caf0511a6f}{threshold}} = 600
+int \mbox{\hyperlink{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}{el\+\_\+curr}} = 0
 \item 
 int \mbox{\hyperlink{locator_8c_a4daf39371ce88e725afdddef077ad0da}{zero\+Top1}}
 \begin{DoxyCompactList}\small\item\em Index of zero crossing in top1 mic buffer. \end{DoxyCompactList}\item 
@@ -167,99 +105,15 @@ float \mbox{\hyperlink{locator_8c_a4ae30cc36621a0f0c56004247084b155}{del\+Left\+
 
 
 \doxysubsection{Macro Definition Documentation}
-\mbox{\Hypertarget{locator_8c_ae23f58b84e7575a296229c23ccb8b567}\label{locator_8c_ae23f58b84e7575a296229c23ccb8b567}} 
-\index{locator.c@{locator.c}!AZ\_MAX@{AZ\_MAX}}
-\index{AZ\_MAX@{AZ\_MAX}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{AZ\_MAX}{AZ\_MAX}}
-{\footnotesize\ttfamily \#define A\+Z\+\_\+\+M\+AX~90}
+\mbox{\Hypertarget{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}\label{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}} 
+\index{locator.c@{locator.c}!DEVICE@{DEVICE}}
+\index{DEVICE@{DEVICE}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{DEVICE}{DEVICE}}
+{\footnotesize\ttfamily \#define D\+E\+V\+I\+CE~\char`\"{}plughw\+:1\char`\"{}}
 
 
 
-Maximum azimuthal angle (degrees). 
-
-Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{locator_8c_a599ca6840731539d1b83e7eda09f5000}\label{locator_8c_a599ca6840731539d1b83e7eda09f5000}} 
-\index{locator.c@{locator.c}!AZ\_MIN@{AZ\_MIN}}
-\index{AZ\_MIN@{AZ\_MIN}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{AZ\_MIN}{AZ\_MIN}}
-{\footnotesize\ttfamily \#define A\+Z\+\_\+\+M\+IN~-\/90}
-
-
-
-Minimum azimuthal angle (degrees). 
-
-Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{locator_8c_a101a400582c692f5f5014eec55a49a30}\label{locator_8c_a101a400582c692f5f5014eec55a49a30}} 
-\index{locator.c@{locator.c}!AZIMUTH@{AZIMUTH}}
-\index{AZIMUTH@{AZIMUTH}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{AZIMUTH}{AZIMUTH}}
-{\footnotesize\ttfamily \#define A\+Z\+I\+M\+U\+TH~26}
-
-
-
-wiring\+Pi pin connected to bottom servo. 
-
-\mbox{\Hypertarget{locator_8c_a5361356710fb7819fc6c9c3712d10db6}\label{locator_8c_a5361356710fb7819fc6c9c3712d10db6}} 
-\index{locator.c@{locator.c}!BASE\_CLK@{BASE\_CLK}}
-\index{BASE\_CLK@{BASE\_CLK}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{BASE\_CLK}{BASE\_CLK}}
-{\footnotesize\ttfamily \#define B\+A\+S\+E\+\_\+\+C\+LK~19200000}
-
-
-
-Raspberry Pi base clock frequency (Hz). 
-
-\mbox{\Hypertarget{locator_8c_a62249e384b997229a3e2ae74ade334e2}\label{locator_8c_a62249e384b997229a3e2ae74ade334e2}} 
-\index{locator.c@{locator.c}!DELAY@{DELAY}}
-\index{DELAY@{DELAY}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{DELAY}{DELAY}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \#define D\+E\+L\+AY~500}
-
-
-
-Motor delay (milliseconds). 
-
-Servo delay (milliseconds).
-
-Used in preventing jitter. \mbox{\Hypertarget{locator_8c_a62249e384b997229a3e2ae74ade334e2}\label{locator_8c_a62249e384b997229a3e2ae74ade334e2}} 
-\index{locator.c@{locator.c}!DELAY@{DELAY}}
-\index{DELAY@{DELAY}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{DELAY}{DELAY}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \#define D\+E\+L\+AY~500}
-
-
-
-Motor delay (milliseconds). 
-
-Servo delay (milliseconds).
-
-Used in preventing jitter. \mbox{\Hypertarget{locator_8c_a97f175fa73362fa14b84cfead6088124}\label{locator_8c_a97f175fa73362fa14b84cfead6088124}} 
-\index{locator.c@{locator.c}!EL\_MAX@{EL\_MAX}}
-\index{EL\_MAX@{EL\_MAX}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{EL\_MAX}{EL\_MAX}}
-{\footnotesize\ttfamily \#define E\+L\+\_\+\+M\+AX~70}
-
-
-
-Maximum elevation angle (degrees). 
-
-Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{locator_8c_ae6a195e81a9b69d16111a762b146b14c}\label{locator_8c_ae6a195e81a9b69d16111a762b146b14c}} 
-\index{locator.c@{locator.c}!EL\_MIN@{EL\_MIN}}
-\index{EL\_MIN@{EL\_MIN}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{EL\_MIN}{EL\_MIN}}
-{\footnotesize\ttfamily \#define E\+L\+\_\+\+M\+IN~-\/35}
-
-
-
-Minimum elevation angle (degrees). 
-
-Used in limiting range of motion to prevent damage. \mbox{\Hypertarget{locator_8c_a3e4d4fc6ada25dbf92510809adde0263}\label{locator_8c_a3e4d4fc6ada25dbf92510809adde0263}} 
-\index{locator.c@{locator.c}!ELEVATION@{ELEVATION}}
-\index{ELEVATION@{ELEVATION}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{ELEVATION}{ELEVATION}}
-{\footnotesize\ttfamily \#define E\+L\+E\+V\+A\+T\+I\+ON~23}
-
-
-
-wiring\+Pi pin connected to top servo. 
+Name of the A\+L\+SA P\+CM device. 
 
 \mbox{\Hypertarget{locator_8c_a51a51480d875f80355412fa95fd48c6c}\label{locator_8c_a51a51480d875f80355412fa95fd48c6c}} 
 \index{locator.c@{locator.c}!FRAMES@{FRAMES}}
@@ -271,17 +125,7 @@ wiring\+Pi pin connected to top servo.
 
 Number of frames to read in. 
 
-Frames contain both left-\/ and right-\/channel samples and are read into the P\+CM buffer \mbox{\Hypertarget{locator_8c_a7ec8393e9445109104fd54119e06fc08}\label{locator_8c_a7ec8393e9445109104fd54119e06fc08}} 
-\index{locator.c@{locator.c}!LASER@{LASER}}
-\index{LASER@{LASER}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{LASER}{LASER}}
-{\footnotesize\ttfamily \#define L\+A\+S\+ER~22}
-
-
-
-wiring\+Pi pin connected to L\+ED. 
-
-\mbox{\Hypertarget{locator_8c_a437ef08681e7210d6678427030446a54}\label{locator_8c_a437ef08681e7210d6678427030446a54}} 
+Frames contain both left-\/ and right-\/channel samples and are read into the P\+CM buffer \mbox{\Hypertarget{locator_8c_a437ef08681e7210d6678427030446a54}\label{locator_8c_a437ef08681e7210d6678427030446a54}} 
 \index{locator.c@{locator.c}!LEFT@{LEFT}}
 \index{LEFT@{LEFT}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{LEFT}{LEFT}}
@@ -290,26 +134,6 @@ wiring\+Pi pin connected to L\+ED.
 
 
 Enumeration for left microphone buffer. 
-
-\mbox{\Hypertarget{locator_8c_a5301ef230420bba512697d3943d687af}\label{locator_8c_a5301ef230420bba512697d3943d687af}} 
-\index{locator.c@{locator.c}!MICDIST@{MICDIST}}
-\index{MICDIST@{MICDIST}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{MICDIST}{MICDIST}}
-{\footnotesize\ttfamily \#define M\+I\+C\+D\+I\+ST~10.\+385}
-
-
-
-Distance between pairs of mics (centimetres). 
-
-\mbox{\Hypertarget{locator_8c_a39f795126ae5c79f068a2c5c49d6ee59}\label{locator_8c_a39f795126ae5c79f068a2c5c49d6ee59}} 
-\index{locator.c@{locator.c}!MICRO@{MICRO}}
-\index{MICRO@{MICRO}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{MICRO}{MICRO}}
-{\footnotesize\ttfamily \#define M\+I\+C\+RO~0.\+000001}
-
-
-
-Order of magnitude conversion. 
 
 \mbox{\Hypertarget{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}\label{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}} 
 \index{locator.c@{locator.c}!MUXSE@{MUXSE}}
@@ -320,26 +144,6 @@ Order of magnitude conversion.
 
 
 wiring\+Pi pin connected to multiplexer. 
-
-\mbox{\Hypertarget{locator_8c_a76fe84d83b8d236bd4f0d20d7e2ed06f}\label{locator_8c_a76fe84d83b8d236bd4f0d20d7e2ed06f}} 
-\index{locator.c@{locator.c}!PWM\_FREQ@{PWM\_FREQ}}
-\index{PWM\_FREQ@{PWM\_FREQ}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{PWM\_FREQ}{PWM\_FREQ}}
-{\footnotesize\ttfamily \#define P\+W\+M\+\_\+\+F\+R\+EQ~50}
-
-
-
-Desired P\+WM frequency (Hz). 
-
-\mbox{\Hypertarget{locator_8c_a48ea2ccd8887eb8389b8043bf620d1a3}\label{locator_8c_a48ea2ccd8887eb8389b8043bf620d1a3}} 
-\index{locator.c@{locator.c}!PWMRNG@{PWMRNG}}
-\index{PWMRNG@{PWMRNG}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{PWMRNG}{PWMRNG}}
-{\footnotesize\ttfamily \#define P\+W\+M\+R\+NG~2000}
-
-
-
-Range of P\+WM period. 
 
 \mbox{\Hypertarget{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}\label{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}} 
 \index{locator.c@{locator.c}!RIGHT@{RIGHT}}
@@ -361,6 +165,16 @@ Enumeration for right microphone buffer.
 
 Audio sampling frequency (Hz) 
 
+\mbox{\Hypertarget{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}\label{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}} 
+\index{locator.c@{locator.c}!THRESHOLD@{THRESHOLD}}
+\index{THRESHOLD@{THRESHOLD}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{THRESHOLD}{THRESHOLD}}
+{\footnotesize\ttfamily \#define T\+H\+R\+E\+S\+H\+O\+LD~600}
+
+
+
+Minimum detectable sound pressure level. 
+
 \mbox{\Hypertarget{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}\label{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}} 
 \index{locator.c@{locator.c}!TOP1@{TOP1}}
 \index{TOP1@{TOP1}!locator.c@{locator.c}}
@@ -381,64 +195,14 @@ Enumeration for top microphone buffer.
 
 Enumeration for top microphone buffer. 
 
-(Multiplexer select = 1) \mbox{\Hypertarget{locator_8c_a331d2c16fde042d20c918c971d3f68f3}\label{locator_8c_a331d2c16fde042d20c918c971d3f68f3}} 
-\index{locator.c@{locator.c}!VSOUND@{VSOUND}}
-\index{VSOUND@{VSOUND}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{VSOUND}{VSOUND}}
-{\footnotesize\ttfamily \#define V\+S\+O\+U\+ND~34600}
-
-
-
-Speed of sound in air (centimetres/second). 
-
-
+(Multiplexer select = 1) 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{locator_8c_af11afcd8d729b900bf904b7c37bd909d}\label{locator_8c_af11afcd8d729b900bf904b7c37bd909d}} 
-\index{locator.c@{locator.c}!calcDelays@{calcDelays}}
-\index{calcDelays@{calcDelays}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{calcDelays()}{calcDelays()}}
-{\footnotesize\ttfamily int calc\+Delays (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Updates delay variables, which keep track of the timing difference between mics. 
-
-\begin{DoxyReturn}{Returns}
-Error code (0 on success). 
-\end{DoxyReturn}
-\begin{DoxySeeAlso}{See also}
-\mbox{\hyperlink{locator_8c_a196c0e2744accf42066216c9452ab1af}{del\+Top\+Left}} 
-
-\mbox{\hyperlink{locator_8c_afcc32c167cbf0821f350aee6ac4fb972}{del\+Top\+Right}} 
-
-\mbox{\hyperlink{locator_8c_a4ae30cc36621a0f0c56004247084b155}{del\+Left\+Right}} 
-\end{DoxySeeAlso}
-\mbox{\Hypertarget{locator_8c_a63ccac44f2b9151c54c119a24a6de578}\label{locator_8c_a63ccac44f2b9151c54c119a24a6de578}} 
-\index{locator.c@{locator.c}!convertValue@{convertValue}}
-\index{convertValue@{convertValue}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{convertValue()}{convertValue()}}
-{\footnotesize\ttfamily int convert\+Value (\begin{DoxyParamCaption}\item[{char}]{msb,  }\item[{char}]{lsb }\end{DoxyParamCaption})}
-
-
-
-Converts a 16bit big endian number to an integer. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em msb} & Most significant byte of the 16bit number. \\
-\hline
-{\em lsb} & Least significant byte of the 16bit number. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Signed integer. 
-\end{DoxyReturn}
-\mbox{\Hypertarget{locator_8c_a483a9b1d6b4e45d60d47ba9cd5c2746f}\label{locator_8c_a483a9b1d6b4e45d60d47ba9cd5c2746f}} 
+\mbox{\Hypertarget{locator_8c_a6633207217364c8d34a60d09de941625}\label{locator_8c_a6633207217364c8d34a60d09de941625}} 
 \index{locator.c@{locator.c}!fillbuf@{fillbuf}}
 \index{fillbuf@{fillbuf}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{fillbuf()}{fillbuf()}}
-{\footnotesize\ttfamily void fillbuf (\begin{DoxyParamCaption}\item[{int}]{tobuf,  }\item[{char $\ast$}]{frombuf,  }\item[{int}]{sizefrom }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void fillbuf (\begin{DoxyParamCaption}\item[{int}]{tobuf\+Code,  }\item[{int $\ast$}]{tobuf,  }\item[{char $\ast$}]{frombuf,  }\item[{int}]{sizefrom }\end{DoxyParamCaption})}
 
 
 
@@ -446,7 +210,9 @@ Splits data in the P\+CM buffer so that the correct channel is sent to the desti
 
 
 \begin{DoxyParams}{Parameters}
-{\em tobuf} & Character code for destination buffer \\
+{\em tobuf\+Code} & Character code for destination buffer \\
+\hline
+{\em tobuf} & Pointer to destination buffer \\
 \hline
 {\em frombuf} & Pointer to P\+CM buffer \\
 \hline
@@ -462,41 +228,6 @@ Splits data in the P\+CM buffer so that the correct channel is sent to the desti
 
 \mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}} 
 \end{DoxySeeAlso}
-\mbox{\Hypertarget{locator_8c_a1c1716807ea81fedd1559ba2a57384c3}\label{locator_8c_a1c1716807ea81fedd1559ba2a57384c3}} 
-\index{locator.c@{locator.c}!findZero@{findZero}}
-\index{findZero@{findZero}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{findZero()}{findZero()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily int find\+Zero (\begin{DoxyParamCaption}\item[{int $\ast$}]{buffer,  }\item[{int $\ast$}]{zero\+Crossing }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_a3afbd8e7212754951a1c156ddfd77a22}\label{locator_8c_a3afbd8e7212754951a1c156ddfd77a22}} 
-\index{locator.c@{locator.c}!findZero@{findZero}}
-\index{findZero@{findZero}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{findZero()}{findZero()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily int find\+Zero (\begin{DoxyParamCaption}\item[{signed int $\ast$}]{buffer,  }\item[{int $\ast$}]{zero\+Crossing }\end{DoxyParamCaption})}
-
-
-
-Finds index of a data buffer where the sound pressure level crosses the x-\/axis, if such a crossing exists. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em buffer} & Audio data buffer. \\
-\hline
-{\em zero\+Crossing} & Pointer to an integer where the zero crossing index will be stored if found. Do not use if \mbox{\hyperlink{locator_8c_a3afbd8e7212754951a1c156ddfd77a22}{find\+Zero()}} returns error. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Error code (0 on success). 
-\end{DoxyReturn}
-\begin{DoxySeeAlso}{See also}
-\mbox{\hyperlink{locator_8c_a4daf39371ce88e725afdddef077ad0da}{zero\+Top1}} 
-
-\mbox{\hyperlink{locator_8c_a81e715298ef2793d7133ced346aae6e5}{zero\+Left}} 
-
-\mbox{\hyperlink{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}{zero\+Top2}} 
-
-\mbox{\hyperlink{locator_8c_a6803a267f65c0269820bd931dae3f2f2}{zero\+Right}} 
-\end{DoxySeeAlso}
 \mbox{\Hypertarget{locator_8c_a49138c5791a45f3d722eb19390839c34}\label{locator_8c_a49138c5791a45f3d722eb19390839c34}} 
 \index{locator.c@{locator.c}!freebuffers@{freebuffers}}
 \index{freebuffers@{freebuffers}!locator.c@{locator.c}}
@@ -506,79 +237,6 @@ Error code (0 on success).
 
 
 Frees memory allocated to P\+CM and mic data buffers. 
-
-\mbox{\Hypertarget{locator_8c_a2983de48b2dadfddfe6a3af0f1ef2a3b}\label{locator_8c_a2983de48b2dadfddfe6a3af0f1ef2a3b}} 
-\index{locator.c@{locator.c}!getDevFromNormal@{getDevFromNormal}}
-\index{getDevFromNormal@{getDevFromNormal}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{getDevFromNormal()}{getDevFromNormal()}}
-{\footnotesize\ttfamily float get\+Dev\+From\+Normal (\begin{DoxyParamCaption}\item[{float}]{delta }\end{DoxyParamCaption})}
-
-
-
-Uses time difference between to calculate the angular offset of the noise from the normal line, i.\+e. 
-
-line that bisects the line that joins the mics. 
-\begin{DoxyParams}{Parameters}
-{\em delta} & Time difference (microseconds) \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Angular offset from normal (degrees). 
-\end{DoxyReturn}
-\begin{DoxySeeAlso}{See also}
-\mbox{\hyperlink{locator_8c_af8f76af90d4f277328b6844533715c91}{hyperbola()}} 
-\end{DoxySeeAlso}
-\mbox{\Hypertarget{locator_8c_a5adeec951f9dff5479c74d8a8a9ad4fd}\label{locator_8c_a5adeec951f9dff5479c74d8a8a9ad4fd}} 
-\index{locator.c@{locator.c}!getPwmClk@{getPwmClk}}
-\index{getPwmClk@{getPwmClk}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{getPwmClk()}{getPwmClk()}}
-{\footnotesize\ttfamily int get\+Pwm\+Clk (\begin{DoxyParamCaption}\item[{int}]{pwm\+Range }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_a9d197f8487cd224eed120cc78dc611fa}\label{locator_8c_a9d197f8487cd224eed120cc78dc611fa}} 
-\index{locator.c@{locator.c}!getPwmValue@{getPwmValue}}
-\index{getPwmValue@{getPwmValue}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{getPwmValue()}{getPwmValue()}}
-{\footnotesize\ttfamily int get\+Pwm\+Value (\begin{DoxyParamCaption}\item[{int}]{angle }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_af8f76af90d4f277328b6844533715c91}\label{locator_8c_af8f76af90d4f277328b6844533715c91}} 
-\index{locator.c@{locator.c}!hyperbola@{hyperbola}}
-\index{hyperbola@{hyperbola}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{hyperbola()}{hyperbola()}}
-{\footnotesize\ttfamily double hyperbola (\begin{DoxyParamCaption}\item[{double}]{l,  }\item[{double}]{x }\end{DoxyParamCaption})}
-
-
-
-A mathematical function that represents possible sound source locations for a particular timing difference. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em l} & Extra distance travelled by sound from closer to further mic \\
-\hline
-{\em x} & Arbitrary x-\/coordinate greater than mic\textquotesingle{}s x coordinate \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Possible Y-\/coordinate of sound source. 
-\end{DoxyReturn}
-\mbox{\Hypertarget{locator_8c_a9c33a84099f27158bf60c78f7d2353d6}\label{locator_8c_a9c33a84099f27158bf60c78f7d2353d6}} 
-\index{locator.c@{locator.c}!laserOff@{laserOff}}
-\index{laserOff@{laserOff}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{laserOff()}{laserOff()}}
-{\footnotesize\ttfamily void laser\+Off (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Turns off the front L\+ED. 
-
-\mbox{\Hypertarget{locator_8c_ab7037f4d33836bb66b1e31183dc70ec6}\label{locator_8c_ab7037f4d33836bb66b1e31183dc70ec6}} 
-\index{locator.c@{locator.c}!laserOn@{laserOn}}
-\index{laserOn@{laserOn}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{laserOn()}{laserOn()}}
-{\footnotesize\ttfamily void laser\+On (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Turns on the front L\+ED. 
 
 \mbox{\Hypertarget{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}\label{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}} 
 \index{locator.c@{locator.c}!main@{main}}
@@ -598,7 +256,7 @@ A function that takes an integer buffer and renders its contents to sdout for de
 
 
 \begin{DoxyParams}{Parameters}
-{\em buf} & A pointer to a signed integer. \\
+{\em buf} & A pointer to the buffer. \\
 \hline
 {\em size} & The number of elements in the array. \\
 \hline
@@ -622,25 +280,21 @@ A function that takes an integer buffer and renders its contents to the specifie
 {\em size} & The number of elements in the array. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{locator_8c_a0b4159671b6e3c2818e560def5da3dd7}\label{locator_8c_a0b4159671b6e3c2818e560def5da3dd7}} 
-\index{locator.c@{locator.c}!pwmSetup@{pwmSetup}}
-\index{pwmSetup@{pwmSetup}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{pwmSetup()}{pwmSetup()}}
-{\footnotesize\ttfamily void pwm\+Setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Sets up P\+WM control for the servo motors. 
-
 \mbox{\Hypertarget{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}\label{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}} 
 \index{locator.c@{locator.c}!readMics@{readMics}}
 \index{readMics@{readMics}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{readMics()}{readMics()}}
+\doxysubsubsection{\texorpdfstring{readMics()}{readMics()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily void read\+Mics (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
 Updates top1, left, top2 and right buffers. 
+
+\mbox{\Hypertarget{locator_8c_a73fb9687dd54fc486114ef158fa29330}\label{locator_8c_a73fb9687dd54fc486114ef158fa29330}} 
+\index{locator.c@{locator.c}!readMics@{readMics}}
+\index{readMics@{readMics}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{readMics()}{readMics()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void read\+Mics (\begin{DoxyParamCaption}\item[{int $\ast$}]{top1,  }\item[{int $\ast$}]{left,  }\item[{int $\ast$}]{top2,  }\item[{int $\ast$}]{right }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}\label{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}} 
 \index{locator.c@{locator.c}!setupdevice@{setupdevice}}
@@ -662,64 +316,17 @@ Initialises the A\+L\+SA P\+CM interface.
 \begin{DoxyReturn}{Returns}
 Error code (0 on success) 
 \end{DoxyReturn}
-\mbox{\Hypertarget{locator_8c_ad581b216166dc89427eeebeb9893b1fa}\label{locator_8c_ad581b216166dc89427eeebeb9893b1fa}} 
+\mbox{\Hypertarget{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}\label{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}} 
 \index{locator.c@{locator.c}!setupmicbuffers@{setupmicbuffers}}
 \index{setupmicbuffers@{setupmicbuffers}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{setupmicbuffers()}{setupmicbuffers()}}
-{\footnotesize\ttfamily int setupmicbuffers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int setupmicbuffers (\begin{DoxyParamCaption}\item[{int}]{frames,  }\item[{int $\ast$}]{pcm\+\_\+size,  }\item[{int $\ast$}]{mic\+\_\+size }\end{DoxyParamCaption})}
 
 
 
 Allocates memory for P\+CM and mic data buffers. 
 
-\begin{DoxyReturn}{Returns}
-Error code (0 on success) 
-\end{DoxyReturn}
-\mbox{\Hypertarget{locator_8c_ac51721527479fe4e5cc6a1192116a770}\label{locator_8c_ac51721527479fe4e5cc6a1192116a770}} 
-\index{locator.c@{locator.c}!stopMotor@{stopMotor}}
-\index{stopMotor@{stopMotor}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{stopMotor()}{stopMotor()}}
-{\footnotesize\ttfamily void stop\+Motor (\begin{DoxyParamCaption}\item[{int}]{motor }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_a5260da8b51f5d97f6cf2a9ba11d1aee1}\label{locator_8c_a5260da8b51f5d97f6cf2a9ba11d1aee1}} 
-\index{locator.c@{locator.c}!stopMotors@{stopMotors}}
-\index{stopMotors@{stopMotors}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{stopMotors()}{stopMotors()}}
-{\footnotesize\ttfamily void stop\+Motors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Stops movement of both servos. 
-
-\mbox{\Hypertarget{locator_8c_a0ddd758f2465bf826670895ebf831667}\label{locator_8c_a0ddd758f2465bf826670895ebf831667}} 
-\index{locator.c@{locator.c}!turnMotorBy@{turnMotorBy}}
-\index{turnMotorBy@{turnMotorBy}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{turnMotorBy()}{turnMotorBy()}}
-{\footnotesize\ttfamily void turn\+Motor\+By (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{int}]{motor }\end{DoxyParamCaption})}
-
-
-
-Turns a given motor by the specified angle in degrees. 
-
-Prevents movements of the servos at their angular limits so as to avoid damage 
-\begin{DoxyParams}{Parameters}
-{\em angle} & The angle by which the motor should turn. \\
-\hline
-{\em motor} & An integer that distiguishes between the azimuthal or elevation servo. \\
-\hline
-\end{DoxyParams}
-\begin{DoxySeeAlso}{See also}
-\mbox{\hyperlink{locator_8c_a101a400582c692f5f5014eec55a49a30}{A\+Z\+I\+M\+U\+TH}} 
-
-\mbox{\hyperlink{locator_8c_a3e4d4fc6ada25dbf92510809adde0263}{E\+L\+E\+V\+A\+T\+I\+ON}} 
-\end{DoxySeeAlso}
-\mbox{\Hypertarget{locator_8c_ad20491cf5c1e75934f5d490a9b254e00}\label{locator_8c_ad20491cf5c1e75934f5d490a9b254e00}} 
-\index{locator.c@{locator.c}!turnMotorTo@{turnMotorTo}}
-\index{turnMotorTo@{turnMotorTo}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{turnMotorTo()}{turnMotorTo()}}
-{\footnotesize\ttfamily void turn\+Motor\+To (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{int}]{motor }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_af5a49d591667a22acf6b75ee6236c3be}\label{locator_8c_af5a49d591667a22acf6b75ee6236c3be}} 
+@ param frames The number of frames in the P\+CM buffer @ param pcm\+\_\+size A pointer to the integer that contains the pcm buffer size @ param mic\+\_\+size A pointer to the integer that contains the pcm buffer size @ return Error code (0 on success) \mbox{\Hypertarget{locator_8c_af5a49d591667a22acf6b75ee6236c3be}\label{locator_8c_af5a49d591667a22acf6b75ee6236c3be}} 
 \index{locator.c@{locator.c}!updatePosition@{updatePosition}}
 \index{updatePosition@{updatePosition}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{updatePosition()}{updatePosition()}}
@@ -738,36 +345,14 @@ Moves servos in response to timing difference data.
 {\em del\+LR} & Time difference between sound reaching left and right mics (seconds) \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{locator_8c_a83acc97b5eb0950b759e18dcbcb8c899}\label{locator_8c_a83acc97b5eb0950b759e18dcbcb8c899}} 
-\index{locator.c@{locator.c}!zeroAzimuth@{zeroAzimuth}}
-\index{zeroAzimuth@{zeroAzimuth}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{zeroAzimuth()}{zeroAzimuth()}}
-{\footnotesize\ttfamily void zero\+Azimuth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{locator_8c_a6be645678ba744b617f05f0a8ded6c24}\label{locator_8c_a6be645678ba744b617f05f0a8ded6c24}} 
-\index{locator.c@{locator.c}!zeroElevation@{zeroElevation}}
-\index{zeroElevation@{zeroElevation}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{zeroElevation()}{zeroElevation()}}
-{\footnotesize\ttfamily void zero\+Elevation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{locator_8c_a41c62b9ecee63a70563fffb6be2d36f2}\label{locator_8c_a41c62b9ecee63a70563fffb6be2d36f2}} 
-\index{locator.c@{locator.c}!zeroMotors@{zeroMotors}}
-\index{zeroMotors@{zeroMotors}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{zeroMotors()}{zeroMotors()}}
-{\footnotesize\ttfamily void zero\+Motors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Brings both servos to their 0 position, i.\+e. 
-
-facing straight ahead 
 
 \doxysubsection{Variable Documentation}
 \mbox{\Hypertarget{locator_8c_af15ce0e091b409de25694109f11f484b}\label{locator_8c_af15ce0e091b409de25694109f11f484b}} 
 \index{locator.c@{locator.c}!az\_curr@{az\_curr}}
 \index{az\_curr@{az\_curr}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{az\_curr}{az\_curr}}
-{\footnotesize\ttfamily int az\+\_\+curr}
+{\footnotesize\ttfamily int az\+\_\+curr = 0}
 
 \mbox{\Hypertarget{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}\label{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}} 
 \index{locator.c@{locator.c}!buffer@{buffer}}
@@ -815,7 +400,7 @@ Time delay of zero crossing between top and right mics (seconds).
 \index{locator.c@{locator.c}!el\_curr@{el\_curr}}
 \index{el\_curr@{el\_curr}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{el\_curr}{el\_curr}}
-{\footnotesize\ttfamily int el\+\_\+curr}
+{\footnotesize\ttfamily int el\+\_\+curr = 0}
 
 \mbox{\Hypertarget{locator_8c_a281c5134f826917fef45ddaf523ce49a}\label{locator_8c_a281c5134f826917fef45ddaf523ce49a}} 
 \index{locator.c@{locator.c}!frames@{frames}}
@@ -839,11 +424,11 @@ Time delay of zero crossing between top and right mics (seconds).
 
 Buffer for left mic. 
 
-This buffer is read into when the multiplexer select is 0. \mbox{\Hypertarget{locator_8c_ade5df362d87e43f0c647bf5de369981a}\label{locator_8c_ade5df362d87e43f0c647bf5de369981a}} 
-\index{locator.c@{locator.c}!mic\_x@{mic\_x}}
-\index{mic\_x@{mic\_x}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{mic\_x}{mic\_x}}
-{\footnotesize\ttfamily double mic\+\_\+x = (double)\mbox{\hyperlink{locator_8c_a5301ef230420bba512697d3943d687af}{M\+I\+C\+D\+I\+ST}}/2}
+This buffer is read into when the multiplexer select is 0. \mbox{\Hypertarget{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}\label{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}} 
+\index{locator.c@{locator.c}!mic\_bufsize@{mic\_bufsize}}
+\index{mic\_bufsize@{mic\_bufsize}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{mic\_bufsize}{mic\_bufsize}}
+{\footnotesize\ttfamily int mic\+\_\+bufsize = 0}
 
 \mbox{\Hypertarget{locator_8c_a1277960b5f2b37137fe9b0b5a1ea0beb}\label{locator_8c_a1277960b5f2b37137fe9b0b5a1ea0beb}} 
 \index{locator.c@{locator.c}!out@{out}}
@@ -856,6 +441,12 @@ This buffer is read into when the multiplexer select is 0. \mbox{\Hypertarget{lo
 \index{params@{params}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{params}{params}}
 {\footnotesize\ttfamily snd\+\_\+pcm\+\_\+hw\+\_\+params\+\_\+t$\ast$ params}
+
+\mbox{\Hypertarget{locator_8c_a1f14db325606d8f825754cff1cc21123}\label{locator_8c_a1f14db325606d8f825754cff1cc21123}} 
+\index{locator.c@{locator.c}!pcm\_bufsize@{pcm\_bufsize}}
+\index{pcm\_bufsize@{pcm\_bufsize}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{pcm\_bufsize}{pcm\_bufsize}}
+{\footnotesize\ttfamily int pcm\+\_\+bufsize = 0}
 
 \mbox{\Hypertarget{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}\label{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}} 
 \index{locator.c@{locator.c}!right@{right}}
@@ -878,24 +469,6 @@ This buffer is read into when the multiplexer select is 1. \mbox{\Hypertarget{lo
 \index{sel@{sel}!locator.c@{locator.c}}
 \doxysubsubsection{\texorpdfstring{sel}{sel}}
 {\footnotesize\ttfamily int sel}
-
-\mbox{\Hypertarget{locator_8c_a439227feff9d7f55384e8780cfc2eb82}\label{locator_8c_a439227feff9d7f55384e8780cfc2eb82}} 
-\index{locator.c@{locator.c}!size@{size}}
-\index{size@{size}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{size}{size}}
-{\footnotesize\ttfamily int size}
-
-\mbox{\Hypertarget{locator_8c_a0e9ccdcd0aa1828a28e3fa512eac864d}\label{locator_8c_a0e9ccdcd0aa1828a28e3fa512eac864d}} 
-\index{locator.c@{locator.c}!size\_mic@{size\_mic}}
-\index{size\_mic@{size\_mic}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{size\_mic}{size\_mic}}
-{\footnotesize\ttfamily int size\+\_\+mic}
-
-\mbox{\Hypertarget{locator_8c_a7d4277ac2d42bff819f713caf0511a6f}\label{locator_8c_a7d4277ac2d42bff819f713caf0511a6f}} 
-\index{locator.c@{locator.c}!threshold@{threshold}}
-\index{threshold@{threshold}!locator.c@{locator.c}}
-\doxysubsubsection{\texorpdfstring{threshold}{threshold}}
-{\footnotesize\ttfamily signed int threshold = 600}
 
 \mbox{\Hypertarget{locator_8c_a195834fe831b25227f2ed54948dc06e9}\label{locator_8c_a195834fe831b25227f2ed54948dc06e9}} 
 \index{locator.c@{locator.c}!top1@{top1}}

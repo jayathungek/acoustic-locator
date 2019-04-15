@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mic_5fx',['mic_x',['../locator_8c.html#ade5df362d87e43f0c647bf5de369981a',1,'locator.c']]]
+  ['mic_5fbufsize',['mic_bufsize',['../locator_8c.html#ab6adac1d000df58e1f54bfef3f2d5081',1,'locator.c']]]
 ];

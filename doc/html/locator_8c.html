@@ -77,12 +77,20 @@ $(function() {
 <code>#include &lt;math.h&gt;</code><br />
 <code>#include &lt;wiringPi.h&gt;</code><br />
 <code>#include &lt;alsa/asoundlib.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="servo_8h_source.html">servo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a775d096fbc3988fb7ed858b79ef44e22"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a775d096fbc3988fb7ed858b79ef44e22">DEVICE</a>&#160;&#160;&#160;&quot;plughw:1&quot;</td></tr>
+<tr class="memdesc:a775d096fbc3988fb7ed858b79ef44e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the ALSA PCM device.  <a href="#a775d096fbc3988fb7ed858b79ef44e22">More...</a><br /></td></tr>
+<tr class="separator:a775d096fbc3988fb7ed858b79ef44e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51a51480d875f80355412fa95fd48c6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a51a51480d875f80355412fa95fd48c6c">FRAMES</a>&#160;&#160;&#160;128</td></tr>
 <tr class="memdesc:a51a51480d875f80355412fa95fd48c6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of frames to read in.  <a href="#a51a51480d875f80355412fa95fd48c6c">More...</a><br /></td></tr>
 <tr class="separator:a51a51480d875f80355412fa95fd48c6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4679d8ea8690999a6c6c7c0cb245c879"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a4679d8ea8690999a6c6c7c0cb245c879">THRESHOLD</a>&#160;&#160;&#160;600</td></tr>
+<tr class="memdesc:a4679d8ea8690999a6c6c7c0cb245c879"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum detectable sound pressure level.  <a href="#a4679d8ea8690999a6c6c7c0cb245c879">More...</a><br /></td></tr>
+<tr class="separator:a4679d8ea8690999a6c6c7c0cb245c879"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a538e0cad3acb787a49e16b1e53787610"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a538e0cad3acb787a49e16b1e53787610">SAMPLERATE</a>&#160;&#160;&#160;44100</td></tr>
 <tr class="memdesc:a538e0cad3acb787a49e16b1e53787610"><td class="mdescLeft">&#160;</td><td class="mdescRight">Audio sampling frequency (Hz)  <a href="#a538e0cad3acb787a49e16b1e53787610">More...</a><br /></td></tr>
 <tr class="separator:a538e0cad3acb787a49e16b1e53787610"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -101,127 +109,37 @@ Macros</h2></td></tr>
 <tr class="memitem:a725b2d406a9e08983d25ebc6f6bfb02d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a725b2d406a9e08983d25ebc6f6bfb02d">MUXSE</a>&#160;&#160;&#160;21</td></tr>
 <tr class="memdesc:a725b2d406a9e08983d25ebc6f6bfb02d"><td class="mdescLeft">&#160;</td><td class="mdescRight">wiringPi pin connected to multiplexer.  <a href="#a725b2d406a9e08983d25ebc6f6bfb02d">More...</a><br /></td></tr>
 <tr class="separator:a725b2d406a9e08983d25ebc6f6bfb02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ec8393e9445109104fd54119e06fc08"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a7ec8393e9445109104fd54119e06fc08">LASER</a>&#160;&#160;&#160;22</td></tr>
-<tr class="memdesc:a7ec8393e9445109104fd54119e06fc08"><td class="mdescLeft">&#160;</td><td class="mdescRight">wiringPi pin connected to LED.  <a href="#a7ec8393e9445109104fd54119e06fc08">More...</a><br /></td></tr>
-<tr class="separator:a7ec8393e9445109104fd54119e06fc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e4d4fc6ada25dbf92510809adde0263"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a3e4d4fc6ada25dbf92510809adde0263">ELEVATION</a>&#160;&#160;&#160;23</td></tr>
-<tr class="memdesc:a3e4d4fc6ada25dbf92510809adde0263"><td class="mdescLeft">&#160;</td><td class="mdescRight">wiringPi pin connected to top servo.  <a href="#a3e4d4fc6ada25dbf92510809adde0263">More...</a><br /></td></tr>
-<tr class="separator:a3e4d4fc6ada25dbf92510809adde0263"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a101a400582c692f5f5014eec55a49a30"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a101a400582c692f5f5014eec55a49a30">AZIMUTH</a>&#160;&#160;&#160;26</td></tr>
-<tr class="memdesc:a101a400582c692f5f5014eec55a49a30"><td class="mdescLeft">&#160;</td><td class="mdescRight">wiringPi pin connected to bottom servo.  <a href="#a101a400582c692f5f5014eec55a49a30">More...</a><br /></td></tr>
-<tr class="separator:a101a400582c692f5f5014eec55a49a30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5361356710fb7819fc6c9c3712d10db6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5361356710fb7819fc6c9c3712d10db6">BASE_CLK</a>&#160;&#160;&#160;19200000</td></tr>
-<tr class="memdesc:a5361356710fb7819fc6c9c3712d10db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raspberry Pi base clock frequency (Hz).  <a href="#a5361356710fb7819fc6c9c3712d10db6">More...</a><br /></td></tr>
-<tr class="separator:a5361356710fb7819fc6c9c3712d10db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76fe84d83b8d236bd4f0d20d7e2ed06f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a76fe84d83b8d236bd4f0d20d7e2ed06f">PWM_FREQ</a>&#160;&#160;&#160;50</td></tr>
-<tr class="memdesc:a76fe84d83b8d236bd4f0d20d7e2ed06f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Desired PWM frequency (Hz).  <a href="#a76fe84d83b8d236bd4f0d20d7e2ed06f">More...</a><br /></td></tr>
-<tr class="separator:a76fe84d83b8d236bd4f0d20d7e2ed06f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48ea2ccd8887eb8389b8043bf620d1a3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a48ea2ccd8887eb8389b8043bf620d1a3">PWMRNG</a>&#160;&#160;&#160;2000</td></tr>
-<tr class="memdesc:a48ea2ccd8887eb8389b8043bf620d1a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range of PWM period.  <a href="#a48ea2ccd8887eb8389b8043bf620d1a3">More...</a><br /></td></tr>
-<tr class="separator:a48ea2ccd8887eb8389b8043bf620d1a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62249e384b997229a3e2ae74ade334e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a62249e384b997229a3e2ae74ade334e2">DELAY</a>&#160;&#160;&#160;500</td></tr>
-<tr class="memdesc:a62249e384b997229a3e2ae74ade334e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Motor delay (milliseconds).  <a href="#a62249e384b997229a3e2ae74ade334e2">More...</a><br /></td></tr>
-<tr class="separator:a62249e384b997229a3e2ae74ade334e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae23f58b84e7575a296229c23ccb8b567"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ae23f58b84e7575a296229c23ccb8b567">AZ_MAX</a>&#160;&#160;&#160;90</td></tr>
-<tr class="memdesc:ae23f58b84e7575a296229c23ccb8b567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum azimuthal angle (degrees).  <a href="#ae23f58b84e7575a296229c23ccb8b567">More...</a><br /></td></tr>
-<tr class="separator:ae23f58b84e7575a296229c23ccb8b567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a599ca6840731539d1b83e7eda09f5000"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a599ca6840731539d1b83e7eda09f5000">AZ_MIN</a>&#160;&#160;&#160;-90</td></tr>
-<tr class="memdesc:a599ca6840731539d1b83e7eda09f5000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum azimuthal angle (degrees).  <a href="#a599ca6840731539d1b83e7eda09f5000">More...</a><br /></td></tr>
-<tr class="separator:a599ca6840731539d1b83e7eda09f5000"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97f175fa73362fa14b84cfead6088124"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a97f175fa73362fa14b84cfead6088124">EL_MAX</a>&#160;&#160;&#160;70</td></tr>
-<tr class="memdesc:a97f175fa73362fa14b84cfead6088124"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum elevation angle (degrees).  <a href="#a97f175fa73362fa14b84cfead6088124">More...</a><br /></td></tr>
-<tr class="separator:a97f175fa73362fa14b84cfead6088124"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6a195e81a9b69d16111a762b146b14c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ae6a195e81a9b69d16111a762b146b14c">EL_MIN</a>&#160;&#160;&#160;-35</td></tr>
-<tr class="memdesc:ae6a195e81a9b69d16111a762b146b14c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum elevation angle (degrees).  <a href="#ae6a195e81a9b69d16111a762b146b14c">More...</a><br /></td></tr>
-<tr class="separator:ae6a195e81a9b69d16111a762b146b14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62249e384b997229a3e2ae74ade334e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a62249e384b997229a3e2ae74ade334e2">DELAY</a>&#160;&#160;&#160;500</td></tr>
-<tr class="memdesc:a62249e384b997229a3e2ae74ade334e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Motor delay (milliseconds).  <a href="#a62249e384b997229a3e2ae74ade334e2">More...</a><br /></td></tr>
-<tr class="separator:a62249e384b997229a3e2ae74ade334e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5301ef230420bba512697d3943d687af"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5301ef230420bba512697d3943d687af">MICDIST</a>&#160;&#160;&#160;10.385</td></tr>
-<tr class="memdesc:a5301ef230420bba512697d3943d687af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distance between pairs of mics (centimetres).  <a href="#a5301ef230420bba512697d3943d687af">More...</a><br /></td></tr>
-<tr class="separator:a5301ef230420bba512697d3943d687af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a331d2c16fde042d20c918c971d3f68f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a331d2c16fde042d20c918c971d3f68f3">VSOUND</a>&#160;&#160;&#160;34600</td></tr>
-<tr class="memdesc:a331d2c16fde042d20c918c971d3f68f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed of sound in air (centimetres/second).  <a href="#a331d2c16fde042d20c918c971d3f68f3">More...</a><br /></td></tr>
-<tr class="separator:a331d2c16fde042d20c918c971d3f68f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39f795126ae5c79f068a2c5c49d6ee59"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a39f795126ae5c79f068a2c5c49d6ee59">MICRO</a>&#160;&#160;&#160;0.000001</td></tr>
-<tr class="memdesc:a39f795126ae5c79f068a2c5c49d6ee59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Order of magnitude conversion.  <a href="#a39f795126ae5c79f068a2c5c49d6ee59">More...</a><br /></td></tr>
-<tr class="separator:a39f795126ae5c79f068a2c5c49d6ee59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5e250a67c49473a3c4b02995be1d5655"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5e250a67c49473a3c4b02995be1d5655">printbuf</a> (signed int *buf, int <a class="el" href="locator_8c.html#a439227feff9d7f55384e8780cfc2eb82">size</a>)</td></tr>
+<tr class="memitem:a5e250a67c49473a3c4b02995be1d5655"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5e250a67c49473a3c4b02995be1d5655">printbuf</a> (signed int *buf, int size)</td></tr>
 <tr class="memdesc:a5e250a67c49473a3c4b02995be1d5655"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function that takes an integer buffer and renders its contents to sdout for debugging.  <a href="#a5e250a67c49473a3c4b02995be1d5655">More...</a><br /></td></tr>
 <tr class="separator:a5e250a67c49473a3c4b02995be1d5655"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afab5f34a4aca7b851d41424729988c53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#afab5f34a4aca7b851d41424729988c53">printBufToFile</a> (FILE *file, signed int *buf, int <a class="el" href="locator_8c.html#a439227feff9d7f55384e8780cfc2eb82">size</a>)</td></tr>
+<tr class="memitem:afab5f34a4aca7b851d41424729988c53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#afab5f34a4aca7b851d41424729988c53">printBufToFile</a> (FILE *file, signed int *buf, int size)</td></tr>
 <tr class="memdesc:afab5f34a4aca7b851d41424729988c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function that takes an integer buffer and renders its contents to the specified file descriptor for debugging.  <a href="#afab5f34a4aca7b851d41424729988c53">More...</a><br /></td></tr>
 <tr class="separator:afab5f34a4aca7b851d41424729988c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b4159671b6e3c2818e560def5da3dd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a0b4159671b6e3c2818e560def5da3dd7">pwmSetup</a> ()</td></tr>
-<tr class="memdesc:a0b4159671b6e3c2818e560def5da3dd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up PWM control for the servo motors.  <a href="#a0b4159671b6e3c2818e560def5da3dd7">More...</a><br /></td></tr>
-<tr class="separator:a0b4159671b6e3c2818e560def5da3dd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7037f4d33836bb66b1e31183dc70ec6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ab7037f4d33836bb66b1e31183dc70ec6">laserOn</a> ()</td></tr>
-<tr class="memdesc:ab7037f4d33836bb66b1e31183dc70ec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns on the front LED.  <a href="#ab7037f4d33836bb66b1e31183dc70ec6">More...</a><br /></td></tr>
-<tr class="separator:ab7037f4d33836bb66b1e31183dc70ec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c33a84099f27158bf60c78f7d2353d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a9c33a84099f27158bf60c78f7d2353d6">laserOff</a> ()</td></tr>
-<tr class="memdesc:a9c33a84099f27158bf60c78f7d2353d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns off the front LED.  <a href="#a9c33a84099f27158bf60c78f7d2353d6">More...</a><br /></td></tr>
-<tr class="separator:a9c33a84099f27158bf60c78f7d2353d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5260da8b51f5d97f6cf2a9ba11d1aee1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5260da8b51f5d97f6cf2a9ba11d1aee1">stopMotors</a> ()</td></tr>
-<tr class="memdesc:a5260da8b51f5d97f6cf2a9ba11d1aee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops movement of both servos.  <a href="#a5260da8b51f5d97f6cf2a9ba11d1aee1">More...</a><br /></td></tr>
-<tr class="separator:a5260da8b51f5d97f6cf2a9ba11d1aee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41c62b9ecee63a70563fffb6be2d36f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a41c62b9ecee63a70563fffb6be2d36f2">zeroMotors</a> ()</td></tr>
-<tr class="memdesc:a41c62b9ecee63a70563fffb6be2d36f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Brings both servos to their 0 position, i.e.  <a href="#a41c62b9ecee63a70563fffb6be2d36f2">More...</a><br /></td></tr>
-<tr class="separator:a41c62b9ecee63a70563fffb6be2d36f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ddd758f2465bf826670895ebf831667"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a0ddd758f2465bf826670895ebf831667">turnMotorBy</a> (int angle, int motor)</td></tr>
-<tr class="memdesc:a0ddd758f2465bf826670895ebf831667"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns a given motor by the specified angle in degrees.  <a href="#a0ddd758f2465bf826670895ebf831667">More...</a><br /></td></tr>
-<tr class="separator:a0ddd758f2465bf826670895ebf831667"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5a49d591667a22acf6b75ee6236c3be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af5a49d591667a22acf6b75ee6236c3be">updatePosition</a> (float delTL, float delTR, float delLR)</td></tr>
-<tr class="memdesc:af5a49d591667a22acf6b75ee6236c3be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves servos in response to timing difference data.  <a href="#af5a49d591667a22acf6b75ee6236c3be">More...</a><br /></td></tr>
-<tr class="separator:af5a49d591667a22acf6b75ee6236c3be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83acc97b5eb0950b759e18dcbcb8c899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a83acc97b5eb0950b759e18dcbcb8c899">zeroAzimuth</a> ()</td></tr>
-<tr class="separator:a83acc97b5eb0950b759e18dcbcb8c899"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6be645678ba744b617f05f0a8ded6c24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a6be645678ba744b617f05f0a8ded6c24">zeroElevation</a> ()</td></tr>
-<tr class="separator:a6be645678ba744b617f05f0a8ded6c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5adeec951f9dff5479c74d8a8a9ad4fd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a5adeec951f9dff5479c74d8a8a9ad4fd">getPwmClk</a> (int pwmRange)</td></tr>
-<tr class="separator:a5adeec951f9dff5479c74d8a8a9ad4fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d197f8487cd224eed120cc78dc611fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a9d197f8487cd224eed120cc78dc611fa">getPwmValue</a> (int angle)</td></tr>
-<tr class="separator:a9d197f8487cd224eed120cc78dc611fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad20491cf5c1e75934f5d490a9b254e00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ad20491cf5c1e75934f5d490a9b254e00">turnMotorTo</a> (int angle, int motor)</td></tr>
-<tr class="separator:ad20491cf5c1e75934f5d490a9b254e00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac51721527479fe4e5cc6a1192116a770"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ac51721527479fe4e5cc6a1192116a770">stopMotor</a> (int motor)</td></tr>
-<tr class="separator:ac51721527479fe4e5cc6a1192116a770"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a483a9b1d6b4e45d60d47ba9cd5c2746f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a483a9b1d6b4e45d60d47ba9cd5c2746f">fillbuf</a> (int tobuf, char *frombuf, int sizefrom)</td></tr>
-<tr class="memdesc:a483a9b1d6b4e45d60d47ba9cd5c2746f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits data in the PCM buffer so that the correct channel is sent to the destination buffer.  <a href="#a483a9b1d6b4e45d60d47ba9cd5c2746f">More...</a><br /></td></tr>
-<tr class="separator:a483a9b1d6b4e45d60d47ba9cd5c2746f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6633207217364c8d34a60d09de941625"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a6633207217364c8d34a60d09de941625">fillbuf</a> (int tobufCode, int *tobuf, char *frombuf, int sizefrom)</td></tr>
+<tr class="memdesc:a6633207217364c8d34a60d09de941625"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits data in the PCM buffer so that the correct channel is sent to the destination buffer.  <a href="#a6633207217364c8d34a60d09de941625">More...</a><br /></td></tr>
+<tr class="separator:a6633207217364c8d34a60d09de941625"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b5886eb22ba27b612c693d9f6ed9228"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a2b5886eb22ba27b612c693d9f6ed9228">setupdevice</a> (char *device, unsigned int rate)</td></tr>
 <tr class="memdesc:a2b5886eb22ba27b612c693d9f6ed9228"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the ALSA PCM interface.  <a href="#a2b5886eb22ba27b612c693d9f6ed9228">More...</a><br /></td></tr>
 <tr class="separator:a2b5886eb22ba27b612c693d9f6ed9228"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad581b216166dc89427eeebeb9893b1fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ad581b216166dc89427eeebeb9893b1fa">setupmicbuffers</a> ()</td></tr>
-<tr class="memdesc:ad581b216166dc89427eeebeb9893b1fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates memory for PCM and mic data buffers.  <a href="#ad581b216166dc89427eeebeb9893b1fa">More...</a><br /></td></tr>
-<tr class="separator:ad581b216166dc89427eeebeb9893b1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a153f2dd1fc7aefa8daa15ea644641b43"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a153f2dd1fc7aefa8daa15ea644641b43">setupmicbuffers</a> (int <a class="el" href="locator_8c.html#a281c5134f826917fef45ddaf523ce49a">frames</a>, int *pcm_size, int *mic_size)</td></tr>
+<tr class="memdesc:a153f2dd1fc7aefa8daa15ea644641b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates memory for PCM and mic data buffers.  <a href="#a153f2dd1fc7aefa8daa15ea644641b43">More...</a><br /></td></tr>
+<tr class="separator:a153f2dd1fc7aefa8daa15ea644641b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49138c5791a45f3d722eb19390839c34"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a49138c5791a45f3d722eb19390839c34">freebuffers</a> ()</td></tr>
 <tr class="memdesc:a49138c5791a45f3d722eb19390839c34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory allocated to PCM and mic data buffers.  <a href="#a49138c5791a45f3d722eb19390839c34">More...</a><br /></td></tr>
 <tr class="separator:a49138c5791a45f3d722eb19390839c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53d63e1aafd4fe1439cfc392bd97fb07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a53d63e1aafd4fe1439cfc392bd97fb07">readMics</a> ()</td></tr>
 <tr class="memdesc:a53d63e1aafd4fe1439cfc392bd97fb07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates top1, left, top2 and right buffers.  <a href="#a53d63e1aafd4fe1439cfc392bd97fb07">More...</a><br /></td></tr>
 <tr class="separator:a53d63e1aafd4fe1439cfc392bd97fb07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63ccac44f2b9151c54c119a24a6de578"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a63ccac44f2b9151c54c119a24a6de578">convertValue</a> (char msb, char lsb)</td></tr>
-<tr class="memdesc:a63ccac44f2b9151c54c119a24a6de578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a 16bit big endian number to an integer.  <a href="#a63ccac44f2b9151c54c119a24a6de578">More...</a><br /></td></tr>
-<tr class="separator:a63ccac44f2b9151c54c119a24a6de578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3afbd8e7212754951a1c156ddfd77a22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a3afbd8e7212754951a1c156ddfd77a22">findZero</a> (signed int *<a class="el" href="locator_8c.html#aff2566f4c366b48d73479bef43ee4d2e">buffer</a>, int *zeroCrossing)</td></tr>
-<tr class="memdesc:a3afbd8e7212754951a1c156ddfd77a22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds index of a data buffer where the sound pressure level crosses the x-axis, if such a crossing exists.  <a href="#a3afbd8e7212754951a1c156ddfd77a22">More...</a><br /></td></tr>
-<tr class="separator:a3afbd8e7212754951a1c156ddfd77a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af11afcd8d729b900bf904b7c37bd909d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af11afcd8d729b900bf904b7c37bd909d">calcDelays</a> ()</td></tr>
-<tr class="memdesc:af11afcd8d729b900bf904b7c37bd909d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates delay variables, which keep track of the timing difference between mics.  <a href="#af11afcd8d729b900bf904b7c37bd909d">More...</a><br /></td></tr>
-<tr class="separator:af11afcd8d729b900bf904b7c37bd909d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8f76af90d4f277328b6844533715c91"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af8f76af90d4f277328b6844533715c91">hyperbola</a> (double l, double x)</td></tr>
-<tr class="memdesc:af8f76af90d4f277328b6844533715c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">A mathematical function that represents possible sound source locations for a particular timing difference.  <a href="#af8f76af90d4f277328b6844533715c91">More...</a><br /></td></tr>
-<tr class="separator:af8f76af90d4f277328b6844533715c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2983de48b2dadfddfe6a3af0f1ef2a3b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a2983de48b2dadfddfe6a3af0f1ef2a3b">getDevFromNormal</a> (float delta)</td></tr>
-<tr class="memdesc:a2983de48b2dadfddfe6a3af0f1ef2a3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uses time difference between to calculate the angular offset of the noise from the normal line, i.e.  <a href="#a2983de48b2dadfddfe6a3af0f1ef2a3b">More...</a><br /></td></tr>
-<tr class="separator:a2983de48b2dadfddfe6a3af0f1ef2a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5a49d591667a22acf6b75ee6236c3be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af5a49d591667a22acf6b75ee6236c3be">updatePosition</a> (float delTL, float delTR, float delLR)</td></tr>
+<tr class="memdesc:af5a49d591667a22acf6b75ee6236c3be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves servos in response to timing difference data.  <a href="#af5a49d591667a22acf6b75ee6236c3be">More...</a><br /></td></tr>
+<tr class="separator:af5a49d591667a22acf6b75ee6236c3be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
 <tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c1716807ea81fedd1559ba2a57384c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a1c1716807ea81fedd1559ba2a57384c3">findZero</a> (int *<a class="el" href="locator_8c.html#aff2566f4c366b48d73479bef43ee4d2e">buffer</a>, int *zeroCrossing)</td></tr>
-<tr class="separator:a1c1716807ea81fedd1559ba2a57384c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73fb9687dd54fc486114ef158fa29330"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a73fb9687dd54fc486114ef158fa29330">readMics</a> (int *<a class="el" href="locator_8c.html#a195834fe831b25227f2ed54948dc06e9">top1</a>, int *<a class="el" href="locator_8c.html#a3d953171fbedb4b128bd6fe5e6257f49">left</a>, int *<a class="el" href="locator_8c.html#aa489c260f2bf8edb93576e1d945fed13">top2</a>, int *<a class="el" href="locator_8c.html#aa246ca2e7708de6457661f06ff4ecf8f">right</a>)</td></tr>
+<tr class="separator:a73fb9687dd54fc486114ef158fa29330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -239,8 +157,6 @@ Variables</h2></td></tr>
 <tr class="separator:a1c086f81c095b0efd7a87ee29fc5ba7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7afcac3447636c03934613716685bbc8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a7afcac3447636c03934613716685bbc8">sel</a></td></tr>
 <tr class="separator:a7afcac3447636c03934613716685bbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade5df362d87e43f0c647bf5de369981a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ade5df362d87e43f0c647bf5de369981a">mic_x</a> = (double)<a class="el" href="locator_8c.html#a5301ef230420bba512697d3943d687af">MICDIST</a>/2</td></tr>
-<tr class="separator:ade5df362d87e43f0c647bf5de369981a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff2566f4c366b48d73479bef43ee4d2e"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#aff2566f4c366b48d73479bef43ee4d2e">buffer</a></td></tr>
 <tr class="separator:aff2566f4c366b48d73479bef43ee4d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a195834fe831b25227f2ed54948dc06e9"><td class="memItemLeft" align="right" valign="top">signed int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a195834fe831b25227f2ed54948dc06e9">top1</a></td></tr>
@@ -255,16 +171,14 @@ Variables</h2></td></tr>
 <tr class="memitem:aa246ca2e7708de6457661f06ff4ecf8f"><td class="memItemLeft" align="right" valign="top">signed int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#aa246ca2e7708de6457661f06ff4ecf8f">right</a></td></tr>
 <tr class="memdesc:aa246ca2e7708de6457661f06ff4ecf8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer for right mic.  <a href="#aa246ca2e7708de6457661f06ff4ecf8f">More...</a><br /></td></tr>
 <tr class="separator:aa246ca2e7708de6457661f06ff4ecf8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a439227feff9d7f55384e8780cfc2eb82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a439227feff9d7f55384e8780cfc2eb82">size</a></td></tr>
-<tr class="separator:a439227feff9d7f55384e8780cfc2eb82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e9ccdcd0aa1828a28e3fa512eac864d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a0e9ccdcd0aa1828a28e3fa512eac864d">size_mic</a></td></tr>
-<tr class="separator:a0e9ccdcd0aa1828a28e3fa512eac864d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af15ce0e091b409de25694109f11f484b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af15ce0e091b409de25694109f11f484b">az_curr</a></td></tr>
+<tr class="memitem:a1f14db325606d8f825754cff1cc21123"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a1f14db325606d8f825754cff1cc21123">pcm_bufsize</a> = 0</td></tr>
+<tr class="separator:a1f14db325606d8f825754cff1cc21123"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6adac1d000df58e1f54bfef3f2d5081"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#ab6adac1d000df58e1f54bfef3f2d5081">mic_bufsize</a> = 0</td></tr>
+<tr class="separator:ab6adac1d000df58e1f54bfef3f2d5081"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af15ce0e091b409de25694109f11f484b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#af15ce0e091b409de25694109f11f484b">az_curr</a> = 0</td></tr>
 <tr class="separator:af15ce0e091b409de25694109f11f484b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfd48dc66211fce52f7d14f4e780ae02"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#adfd48dc66211fce52f7d14f4e780ae02">el_curr</a></td></tr>
+<tr class="memitem:adfd48dc66211fce52f7d14f4e780ae02"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#adfd48dc66211fce52f7d14f4e780ae02">el_curr</a> = 0</td></tr>
 <tr class="separator:adfd48dc66211fce52f7d14f4e780ae02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d4277ac2d42bff819f713caf0511a6f"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a7d4277ac2d42bff819f713caf0511a6f">threshold</a> = 600</td></tr>
-<tr class="separator:a7d4277ac2d42bff819f713caf0511a6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4daf39371ce88e725afdddef077ad0da"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="locator_8c.html#a4daf39371ce88e725afdddef077ad0da">zeroTop1</a></td></tr>
 <tr class="memdesc:a4daf39371ce88e725afdddef077ad0da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of zero crossing in top1 mic buffer.  <a href="#a4daf39371ce88e725afdddef077ad0da">More...</a><br /></td></tr>
 <tr class="separator:a4daf39371ce88e725afdddef077ad0da"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -288,155 +202,19 @@ Variables</h2></td></tr>
 <tr class="separator:a4ae30cc36621a0f0c56004247084b155"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ae23f58b84e7575a296229c23ccb8b567"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae23f58b84e7575a296229c23ccb8b567">&#9670;&nbsp;</a></span>AZ_MAX</h2>
+<a id="a775d096fbc3988fb7ed858b79ef44e22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a775d096fbc3988fb7ed858b79ef44e22">&#9670;&nbsp;</a></span>DEVICE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define AZ_MAX&#160;&#160;&#160;90</td>
+          <td class="memname">#define DEVICE&#160;&#160;&#160;&quot;plughw:1&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Maximum azimuthal angle (degrees). </p>
-<p>Used in limiting range of motion to prevent damage. </p>
-
-</div>
-</div>
-<a id="a599ca6840731539d1b83e7eda09f5000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a599ca6840731539d1b83e7eda09f5000">&#9670;&nbsp;</a></span>AZ_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define AZ_MIN&#160;&#160;&#160;-90</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Minimum azimuthal angle (degrees). </p>
-<p>Used in limiting range of motion to prevent damage. </p>
-
-</div>
-</div>
-<a id="a101a400582c692f5f5014eec55a49a30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a101a400582c692f5f5014eec55a49a30">&#9670;&nbsp;</a></span>AZIMUTH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define AZIMUTH&#160;&#160;&#160;26</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>wiringPi pin connected to bottom servo. </p>
-
-</div>
-</div>
-<a id="a5361356710fb7819fc6c9c3712d10db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5361356710fb7819fc6c9c3712d10db6">&#9670;&nbsp;</a></span>BASE_CLK</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define BASE_CLK&#160;&#160;&#160;19200000</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Raspberry Pi base clock frequency (Hz). </p>
-
-</div>
-</div>
-<a id="a62249e384b997229a3e2ae74ade334e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62249e384b997229a3e2ae74ade334e2">&#9670;&nbsp;</a></span>DELAY <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DELAY&#160;&#160;&#160;500</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Motor delay (milliseconds). </p>
-<p>Servo delay (milliseconds).</p>
-<p>Used in preventing jitter. </p>
-
-</div>
-</div>
-<a id="a62249e384b997229a3e2ae74ade334e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62249e384b997229a3e2ae74ade334e2">&#9670;&nbsp;</a></span>DELAY <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DELAY&#160;&#160;&#160;500</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Motor delay (milliseconds). </p>
-<p>Servo delay (milliseconds).</p>
-<p>Used in preventing jitter. </p>
-
-</div>
-</div>
-<a id="a97f175fa73362fa14b84cfead6088124"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97f175fa73362fa14b84cfead6088124">&#9670;&nbsp;</a></span>EL_MAX</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define EL_MAX&#160;&#160;&#160;70</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Maximum elevation angle (degrees). </p>
-<p>Used in limiting range of motion to prevent damage. </p>
-
-</div>
-</div>
-<a id="ae6a195e81a9b69d16111a762b146b14c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6a195e81a9b69d16111a762b146b14c">&#9670;&nbsp;</a></span>EL_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define EL_MIN&#160;&#160;&#160;-35</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Minimum elevation angle (degrees). </p>
-<p>Used in limiting range of motion to prevent damage. </p>
-
-</div>
-</div>
-<a id="a3e4d4fc6ada25dbf92510809adde0263"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e4d4fc6ada25dbf92510809adde0263">&#9670;&nbsp;</a></span>ELEVATION</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ELEVATION&#160;&#160;&#160;23</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>wiringPi pin connected to top servo. </p>
+<p>Name of the ALSA PCM device. </p>
 
 </div>
 </div>
@@ -457,22 +235,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7ec8393e9445109104fd54119e06fc08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ec8393e9445109104fd54119e06fc08">&#9670;&nbsp;</a></span>LASER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LASER&#160;&#160;&#160;22</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>wiringPi pin connected to LED. </p>
-
-</div>
-</div>
 <a id="a437ef08681e7210d6678427030446a54"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a437ef08681e7210d6678427030446a54">&#9670;&nbsp;</a></span>LEFT</h2>
 
@@ -489,38 +251,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5301ef230420bba512697d3943d687af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5301ef230420bba512697d3943d687af">&#9670;&nbsp;</a></span>MICDIST</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MICDIST&#160;&#160;&#160;10.385</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Distance between pairs of mics (centimetres). </p>
-
-</div>
-</div>
-<a id="a39f795126ae5c79f068a2c5c49d6ee59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39f795126ae5c79f068a2c5c49d6ee59">&#9670;&nbsp;</a></span>MICRO</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MICRO&#160;&#160;&#160;0.000001</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Order of magnitude conversion. </p>
-
-</div>
-</div>
 <a id="a725b2d406a9e08983d25ebc6f6bfb02d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a725b2d406a9e08983d25ebc6f6bfb02d">&#9670;&nbsp;</a></span>MUXSE</h2>
 
@@ -534,38 +264,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>wiringPi pin connected to multiplexer. </p>
-
-</div>
-</div>
-<a id="a76fe84d83b8d236bd4f0d20d7e2ed06f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76fe84d83b8d236bd4f0d20d7e2ed06f">&#9670;&nbsp;</a></span>PWM_FREQ</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PWM_FREQ&#160;&#160;&#160;50</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Desired PWM frequency (Hz). </p>
-
-</div>
-</div>
-<a id="a48ea2ccd8887eb8389b8043bf620d1a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48ea2ccd8887eb8389b8043bf620d1a3">&#9670;&nbsp;</a></span>PWMRNG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PWMRNG&#160;&#160;&#160;2000</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Range of PWM period. </p>
 
 </div>
 </div>
@@ -598,6 +296,22 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Audio sampling frequency (Hz) </p>
+
+</div>
+</div>
+<a id="a4679d8ea8690999a6c6c7c0cb245c879"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4679d8ea8690999a6c6c7c0cb245c879">&#9670;&nbsp;</a></span>THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THRESHOLD&#160;&#160;&#160;600</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Minimum detectable sound pressure level. </p>
 
 </div>
 </div>
@@ -635,88 +349,9 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a331d2c16fde042d20c918c971d3f68f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a331d2c16fde042d20c918c971d3f68f3">&#9670;&nbsp;</a></span>VSOUND</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define VSOUND&#160;&#160;&#160;34600</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Speed of sound in air (centimetres/second). </p>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="af11afcd8d729b900bf904b7c37bd909d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af11afcd8d729b900bf904b7c37bd909d">&#9670;&nbsp;</a></span>calcDelays()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int calcDelays </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Updates delay variables, which keep track of the timing difference between mics. </p>
-<dl class="section return"><dt>Returns</dt><dd>Error code (0 on success). </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="locator_8c.html#a196c0e2744accf42066216c9452ab1af" title="Time delay of zero crossing between top and left mics (seconds).">delTopLeft</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#afcc32c167cbf0821f350aee6ac4fb972" title="Time delay of zero crossing between top and right mics (seconds).">delTopRight</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#a4ae30cc36621a0f0c56004247084b155" title="Time delay of zero crossing between left and right mics (seconds).">delLeftRight</a> </dd></dl>
-
-</div>
-</div>
-<a id="a63ccac44f2b9151c54c119a24a6de578"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63ccac44f2b9151c54c119a24a6de578">&#9670;&nbsp;</a></span>convertValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int convertValue </td>
-          <td>(</td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>msb</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>lsb</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Converts a 16bit big endian number to an integer. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">msb</td><td>Most significant byte of the 16bit number. </td></tr>
-    <tr><td class="paramname">lsb</td><td>Least significant byte of the 16bit number. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Signed integer. </dd></dl>
-
-</div>
-</div>
-<a id="a483a9b1d6b4e45d60d47ba9cd5c2746f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a483a9b1d6b4e45d60d47ba9cd5c2746f">&#9670;&nbsp;</a></span>fillbuf()</h2>
+<a id="a6633207217364c8d34a60d09de941625"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6633207217364c8d34a60d09de941625">&#9670;&nbsp;</a></span>fillbuf()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -725,6 +360,12 @@ Variables</h2></td></tr>
           <td class="memname">void fillbuf </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tobufCode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
           <td class="paramname"><em>tobuf</em>, </td>
         </tr>
         <tr>
@@ -750,7 +391,8 @@ Variables</h2></td></tr>
 <p>Splits data in the PCM buffer so that the correct channel is sent to the destination buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tobuf</td><td>Character code for destination buffer </td></tr>
+    <tr><td class="paramname">tobufCode</td><td>Character code for destination buffer </td></tr>
+    <tr><td class="paramname">tobuf</td><td>Pointer to destination buffer </td></tr>
     <tr><td class="paramname">frombuf</td><td>Pointer to PCM buffer </td></tr>
     <tr><td class="paramname">sizefrom</td><td>Size of PCM buffer </td></tr>
   </table>
@@ -763,79 +405,6 @@ Variables</h2></td></tr>
 <a class="el" href="locator_8c.html#a3d953171fbedb4b128bd6fe5e6257f49" title="Buffer for left mic.">left</a> </dd>
 <dd>
 <a class="el" href="locator_8c.html#aa246ca2e7708de6457661f06ff4ecf8f" title="Buffer for right mic.">right</a> </dd></dl>
-
-</div>
-</div>
-<a id="a1c1716807ea81fedd1559ba2a57384c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c1716807ea81fedd1559ba2a57384c3">&#9670;&nbsp;</a></span>findZero() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int findZero </td>
-          <td>(</td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>zeroCrossing</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3afbd8e7212754951a1c156ddfd77a22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3afbd8e7212754951a1c156ddfd77a22">&#9670;&nbsp;</a></span>findZero() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int findZero </td>
-          <td>(</td>
-          <td class="paramtype">signed int *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>zeroCrossing</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Finds index of a data buffer where the sound pressure level crosses the x-axis, if such a crossing exists. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">buffer</td><td>Audio data buffer. </td></tr>
-    <tr><td class="paramname">zeroCrossing</td><td>Pointer to an integer where the zero crossing index will be stored if found. Do not use if <a class="el" href="locator_8c.html#a3afbd8e7212754951a1c156ddfd77a22" title="Finds index of a data buffer where the sound pressure level crosses the x-axis, if such a crossing ex...">findZero()</a> returns error. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Error code (0 on success). </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="locator_8c.html#a4daf39371ce88e725afdddef077ad0da" title="Index of zero crossing in top1 mic buffer.">zeroTop1</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#a81e715298ef2793d7133ced346aae6e5" title="Index of zero crossing in left mic buffer.">zeroLeft</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#ab7af76e9f538eb8576c1435dccd847d1" title="Index of zero crossing in top2 mic buffer.">zeroTop2</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#a6803a267f65c0269820bd931dae3f2f2" title="Index of zero crossing in right mic buffer.">zeroRight</a> </dd></dl>
 
 </div>
 </div>
@@ -855,146 +424,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Frees memory allocated to PCM and mic data buffers. </p>
-
-</div>
-</div>
-<a id="a2983de48b2dadfddfe6a3af0f1ef2a3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2983de48b2dadfddfe6a3af0f1ef2a3b">&#9670;&nbsp;</a></span>getDevFromNormal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float getDevFromNormal </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>delta</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Uses time difference between to calculate the angular offset of the noise from the normal line, i.e. </p>
-<p>line that bisects the line that joins the mics. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">delta</td><td>Time difference (microseconds) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Angular offset from normal (degrees). </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="locator_8c.html#af8f76af90d4f277328b6844533715c91" title="A mathematical function that represents possible sound source locations for a particular timing diffe...">hyperbola()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a5adeec951f9dff5479c74d8a8a9ad4fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5adeec951f9dff5479c74d8a8a9ad4fd">&#9670;&nbsp;</a></span>getPwmClk()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int getPwmClk </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>pwmRange</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9d197f8487cd224eed120cc78dc611fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d197f8487cd224eed120cc78dc611fa">&#9670;&nbsp;</a></span>getPwmValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int getPwmValue </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>angle</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af8f76af90d4f277328b6844533715c91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8f76af90d4f277328b6844533715c91">&#9670;&nbsp;</a></span>hyperbola()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double hyperbola </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>l</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>x</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>A mathematical function that represents possible sound source locations for a particular timing difference. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">l</td><td>Extra distance travelled by sound from closer to further mic </td></tr>
-    <tr><td class="paramname">x</td><td>Arbitrary x-coordinate greater than mic's x coordinate </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Possible Y-coordinate of sound source. </dd></dl>
-
-</div>
-</div>
-<a id="a9c33a84099f27158bf60c78f7d2353d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c33a84099f27158bf60c78f7d2353d6">&#9670;&nbsp;</a></span>laserOff()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void laserOff </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Turns off the front LED. </p>
-
-</div>
-</div>
-<a id="ab7037f4d33836bb66b1e31183dc70ec6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7037f4d33836bb66b1e31183dc70ec6">&#9670;&nbsp;</a></span>laserOn()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void laserOn </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Turns on the front LED. </p>
 
 </div>
 </div>
@@ -1055,7 +484,7 @@ Variables</h2></td></tr>
 <p>A function that takes an integer buffer and renders its contents to sdout for debugging. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">buf</td><td>A pointer to a signed integer. </td></tr>
+    <tr><td class="paramname">buf</td><td>A pointer to the buffer. </td></tr>
     <tr><td class="paramname">size</td><td>The number of elements in the array. </td></tr>
   </table>
   </dd>
@@ -1107,27 +536,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0b4159671b6e3c2818e560def5da3dd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b4159671b6e3c2818e560def5da3dd7">&#9670;&nbsp;</a></span>pwmSetup()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pwmSetup </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets up PWM control for the servo motors. </p>
-
-</div>
-</div>
 <a id="a53d63e1aafd4fe1439cfc392bd97fb07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53d63e1aafd4fe1439cfc392bd97fb07">&#9670;&nbsp;</a></span>readMics()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a53d63e1aafd4fe1439cfc392bd97fb07">&#9670;&nbsp;</a></span>readMics() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1142,6 +552,46 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Updates top1, left, top2 and right buffers. </p>
+
+</div>
+</div>
+<a id="a73fb9687dd54fc486114ef158fa29330"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73fb9687dd54fc486114ef158fa29330">&#9670;&nbsp;</a></span>readMics() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void readMics </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>top1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>left</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>top2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>right</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1183,8 +633,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad581b216166dc89427eeebeb9893b1fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad581b216166dc89427eeebeb9893b1fa">&#9670;&nbsp;</a></span>setupmicbuffers()</h2>
+<a id="a153f2dd1fc7aefa8daa15ea644641b43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a153f2dd1fc7aefa8daa15ea644641b43">&#9670;&nbsp;</a></span>setupmicbuffers()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1192,119 +642,31 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int setupmicbuffers </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>frames</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>pcm_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>mic_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Allocates memory for PCM and mic data buffers. </p>
-<dl class="section return"><dt>Returns</dt><dd>Error code (0 on success) </dd></dl>
-
-</div>
-</div>
-<a id="ac51721527479fe4e5cc6a1192116a770"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac51721527479fe4e5cc6a1192116a770">&#9670;&nbsp;</a></span>stopMotor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void stopMotor </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>motor</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5260da8b51f5d97f6cf2a9ba11d1aee1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5260da8b51f5d97f6cf2a9ba11d1aee1">&#9670;&nbsp;</a></span>stopMotors()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void stopMotors </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Stops movement of both servos. </p>
-
-</div>
-</div>
-<a id="a0ddd758f2465bf826670895ebf831667"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ddd758f2465bf826670895ebf831667">&#9670;&nbsp;</a></span>turnMotorBy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turnMotorBy </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>angle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>motor</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Turns a given motor by the specified angle in degrees. </p>
-<p>Prevents movements of the servos at their angular limits so as to avoid damage </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">angle</td><td>The angle by which the motor should turn. </td></tr>
-    <tr><td class="paramname">motor</td><td>An integer that distiguishes between the azimuthal or elevation servo. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="locator_8c.html#a101a400582c692f5f5014eec55a49a30" title="wiringPi pin connected to bottom servo.">AZIMUTH</a> </dd>
-<dd>
-<a class="el" href="locator_8c.html#a3e4d4fc6ada25dbf92510809adde0263" title="wiringPi pin connected to top servo.">ELEVATION</a> </dd></dl>
-
-</div>
-</div>
-<a id="ad20491cf5c1e75934f5d490a9b254e00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad20491cf5c1e75934f5d490a9b254e00">&#9670;&nbsp;</a></span>turnMotorTo()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turnMotorTo </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>angle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>motor</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>@ param frames The number of frames in the PCM buffer @ param pcm_size A pointer to the integer that contains the pcm buffer size @ param mic_size A pointer to the integer that contains the pcm buffer size @ return Error code (0 on success) </p>
 
 </div>
 </div>
@@ -1352,60 +714,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a83acc97b5eb0950b759e18dcbcb8c899"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83acc97b5eb0950b759e18dcbcb8c899">&#9670;&nbsp;</a></span>zeroAzimuth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void zeroAzimuth </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6be645678ba744b617f05f0a8ded6c24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6be645678ba744b617f05f0a8ded6c24">&#9670;&nbsp;</a></span>zeroElevation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void zeroElevation </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a41c62b9ecee63a70563fffb6be2d36f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41c62b9ecee63a70563fffb6be2d36f2">&#9670;&nbsp;</a></span>zeroMotors()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void zeroMotors </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Brings both servos to their 0 position, i.e. </p>
-<p>facing straight ahead </p>
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="af15ce0e091b409de25694109f11f484b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af15ce0e091b409de25694109f11f484b">&#9670;&nbsp;</a></span>az_curr</h2>
@@ -1414,7 +722,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int az_curr</td>
+          <td class="memname">int az_curr = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1504,7 +812,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int el_curr</td>
+          <td class="memname">int el_curr = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1556,14 +864,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ade5df362d87e43f0c647bf5de369981a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade5df362d87e43f0c647bf5de369981a">&#9670;&nbsp;</a></span>mic_x</h2>
+<a id="ab6adac1d000df58e1f54bfef3f2d5081"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6adac1d000df58e1f54bfef3f2d5081">&#9670;&nbsp;</a></span>mic_bufsize</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double mic_x = (double)<a class="el" href="locator_8c.html#a5301ef230420bba512697d3943d687af">MICDIST</a>/2</td>
+          <td class="memname">int mic_bufsize = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1592,6 +900,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">snd_pcm_hw_params_t* params</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1f14db325606d8f825754cff1cc21123"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f14db325606d8f825754cff1cc21123">&#9670;&nbsp;</a></span>pcm_bufsize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pcm_bufsize = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1637,48 +959,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int sel</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a439227feff9d7f55384e8780cfc2eb82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a439227feff9d7f55384e8780cfc2eb82">&#9670;&nbsp;</a></span>size</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int size</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0e9ccdcd0aa1828a28e3fa512eac864d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e9ccdcd0aa1828a28e3fa512eac864d">&#9670;&nbsp;</a></span>size_mic</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int size_mic</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7d4277ac2d42bff819f713caf0511a6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d4277ac2d42bff819f713caf0511a6f">&#9670;&nbsp;</a></span>threshold</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">signed int threshold = 600</td>
         </tr>
       </table>
 </div><div class="memdoc">

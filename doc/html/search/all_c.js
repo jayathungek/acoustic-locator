@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['params',['params',['../locator_8c.html#a651b4eec34e0ce0ad2b7234fe1689fcb',1,'locator.c']]],
-  ['printbuf',['printbuf',['../locator_8c.html#a5e250a67c49473a3c4b02995be1d5655',1,'locator.c']]],
-  ['printbuftofile',['printBufToFile',['../locator_8c.html#afab5f34a4aca7b851d41424729988c53',1,'locator.c']]],
-  ['pwm_5ffreq',['PWM_FREQ',['../locator_8c.html#a76fe84d83b8d236bd4f0d20d7e2ed06f',1,'locator.c']]],
-  ['pwmrng',['PWMRNG',['../locator_8c.html#a48ea2ccd8887eb8389b8043bf620d1a3',1,'locator.c']]],
-  ['pwmsetup',['pwmSetup',['../locator_8c.html#a0b4159671b6e3c2818e560def5da3dd7',1,'locator.c']]]
+  ['readmics',['readMics',['../locator_8c.html#a53d63e1aafd4fe1439cfc392bd97fb07',1,'readMics():&#160;locator.c'],['../locator_8c.html#a73fb9687dd54fc486114ef158fa29330',1,'readMics(int *top1, int *left, int *top2, int *right):&#160;locator.c']]],
+  ['right',['RIGHT',['../locator_8c.html#a80fb826a684cf3f0d306b22aa100ddac',1,'RIGHT():&#160;locator.c'],['../locator_8c.html#aa246ca2e7708de6457661f06ff4ecf8f',1,'right():&#160;locator.c']]]
 ];

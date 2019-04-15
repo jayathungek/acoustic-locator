@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['laser',['LASER',['../locator_8c.html#a7ec8393e9445109104fd54119e06fc08',1,'locator.c']]],
-  ['laseroff',['laserOff',['../locator_8c.html#a9c33a84099f27158bf60c78f7d2353d6',1,'locator.c']]],
-  ['laseron',['laserOn',['../locator_8c.html#ab7037f4d33836bb66b1e31183dc70ec6',1,'locator.c']]],
-  ['left',['left',['../locator_8c.html#a3d953171fbedb4b128bd6fe5e6257f49',1,'left():&#160;locator.c'],['../locator_8c.html#a437ef08681e7210d6678427030446a54',1,'LEFT():&#160;locator.c']]],
-  ['locator_2ec',['locator.c',['../locator_8c.html',1,'']]]
+  ['main',['main',['../locator_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'locator.c']]],
+  ['mic_5fbufsize',['mic_bufsize',['../locator_8c.html#ab6adac1d000df58e1f54bfef3f2d5081',1,'locator.c']]],
+  ['mic_5fx',['MIC_X',['../utils_8h.html#ad6f2b0d19e123a0153857ee6d6d6cedb',1,'utils.h']]],
+  ['micdist',['MICDIST',['../utils_8h.html#a5301ef230420bba512697d3943d687af',1,'utils.h']]],
+  ['micro',['MICRO',['../utils_8h.html#a39f795126ae5c79f068a2c5c49d6ee59',1,'utils.h']]],
+  ['muxse',['MUXSE',['../locator_8c.html#a725b2d406a9e08983d25ebc6f6bfb02d',1,'locator.c']]]
 ];
