@@ -94,7 +94,9 @@ The I2C signals are the ‘SCK’ (Serial Data Clock for the I2S interface) inpu
             
                               Figure 11
                               
-The circuit diagram of the acoustic locator microphone board is shown in figure 12. Because the acoustic locator uses three microphones and the I2S interface supports only two, a demultiplexer is used to allow two microphone to share the same I2S channel. The demultiplexer used is the TS3A24159 dual 2-channel SPDT bidirectional analogue switch. As shown in the circuit diagram, the select input (In1) of the analogue switch is connected to the GPIO9 signal of the Raspberry Pi, while the Com input is connected to the WS signal (signal GPIO19). Setting the In1 pin to low, the WS signal is switched to the WS signal of the Mic1 microphone, thus reading the data from Mic1.  Setting the In1 pin to high, the WS signal is switched to the WS signal of the Mic2 microphone, thus reading the data from Mic2. Since the LR inputs for Mic1 and Mic2 are connected to the supply voltage, both microphones are treated as Right channel microphones. The LS signal of microphone Mic3 is connected to the ground, therefore, this microphone is treated as the Left channel microphone.
+The circuit diagram of the acoustic locator microphone board is shown in figure 12. Because the acoustic locator uses three microphones and the I2S interface supports only two, a demultiplexer is used to allow two microphone to share the same I2S channel. The demultiplexer used is the TS3A24159 dual 2-channel SPDT bidirectional analogue switch. As shown in the circuit diagram, the select input (In1) of the analogue switch is connected to the GPIO9 signal of the Raspberry Pi, while the Com input is connected to the WS signal (signal GPIO19).
+
+Setting the In1 pin to low, the WS signal is switched to the WS signal of the Mic1 microphone, thus reading the data from Mic1.  Setting the In1 pin to high, the WS signal is switched to the WS signal of the Mic2 microphone, thus reading the data from Mic2. Since the LR inputs for Mic1 and Mic2 are connected to the supply voltage, both microphones are treated as Right channel microphones. The LS signal of microphone Mic3 is connected to the ground, therefore, this microphone is treated as the Left channel microphone.
 
 ![Mic_board_Cct(1)](https://user-images.githubusercontent.com/45922282/56164616-c50cc080-5fd9-11e9-8555-11345f65d8f9.jpg)
 
@@ -102,7 +104,9 @@ The circuit diagram of the acoustic locator microphone board is shown in figure 
 
 ## The Humidity/Temperature Sensor
 
-The Humidity/Temperature Sensor used by the acoustic locator is the HIH6030-021-001 digital I2C humidity/temperature from Honeywell. This device combines a humidity and a temperature sensor in the same package. The data sheet, handling information and application notes for the HIH6030-021-001 digital I2C humidity/temperature can be found [here](https://sensing.honeywell.com/HIH6030-021-001-humidity-sensors). The pinout with the typical application circuit diagram, given in the device datasheet is shown in figure 13.The same circuit is used  by the acoustic locator as shown in the circuit diagram in figure 12.The SCL pin is connected to the I2C clock, while the SDA pin is connected to the I2C data line. Both the SCL and the SDA pins must be pulled up with a 2.2K resistor each. The supply pin must be decoupled with a 0.1µF capacitor, while the Vcore pin must be connected to the ground through a 0.22µF capacitor. The AL_L (Alarm Low) and the AL_H (Alarm High) pins are used in the case an external device such as a relay or a LED are needed to be controlled directly by the sensor.
+The Humidity/Temperature Sensor used by the acoustic locator is the HIH6030-021-001 digital I2C humidity/temperature from Honeywell. This device combines a humidity and a temperature sensor in the same package. The data sheet, handling information and application notes for the HIH6030-021-001 digital I2C humidity/temperature can be found [here](https://sensing.honeywell.com/HIH6030-021-001-humidity-sensors). 
+
+The pinout with the typical application circuit diagram, given in the device datasheet is shown in figure 13.The same circuit is used  by the acoustic locator as shown in the circuit diagram in figure 12.The SCL pin is connected to the I2C clock, while the SDA pin is connected to the I2C data line. Both the SCL and the SDA pins must be pulled up with a 2.2K resistor each. The supply pin must be decoupled with a 0.1µF capacitor, while the Vcore pin must be connected to the ground through a 0.22µF capacitor. The AL_L (Alarm Low) and the AL_H (Alarm High) pins are used in the case an external device such as a relay or a LED are needed to be controlled directly by the sensor.
 
 ![Hum_cct](https://user-images.githubusercontent.com/45922282/56164728-feddc700-5fd9-11e9-859e-fef8f67ae147.jpg)
 
@@ -131,8 +135,10 @@ The movement of the positioning mechanism is achieved by the use of two servo mo
 ## Mechanical Design
 
 The mechanical design consists of the direction mechanism. This design features three parts: (a) the base, (b) a gimbal and (c) the head.
+
 The base serves two functions: it supports the device as well as houses the Raspberry Pi, along with the locator interface board. The design allows the Raspberry Pi to be connected to a PC/laptop without opening the base.
 The pan/tilt gimbal aids the movement of the device. It is capable of 180° rotation around the vertical axis as well as 100° up and down. The gimbal is mounts on top of the base as well as holding the head.
+
 The head – a 3D printed part – clicks in place on top of the gimbal. The part is designed to secure the microphones in their respective places. The PCB just slides intro the head, thus not screws are required to hold the electronics on the gimbal.
 
 ## Prerequisites
