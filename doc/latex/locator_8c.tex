@@ -1,0 +1,532 @@
+\hypertarget{locator_8c}{}\doxysection{locator.\+c File Reference}
+\label{locator_8c}\index{locator.c@{locator.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$wiring\+Pi.\+h$>$}\newline
+{\ttfamily \#include $<$alsa/asoundlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}servo.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}{D\+E\+V\+I\+CE}}~\char`\"{}plughw\+:1\char`\"{}
+\begin{DoxyCompactList}\small\item\em Name of the A\+L\+SA P\+CM device. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a51a51480d875f80355412fa95fd48c6c}{F\+R\+A\+M\+ES}}~128
+\begin{DoxyCompactList}\small\item\em Number of frames to read in. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}{T\+H\+R\+E\+S\+H\+O\+LD}}~600
+\begin{DoxyCompactList}\small\item\em Minimum detectable sound pressure level. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a538e0cad3acb787a49e16b1e53787610}{S\+A\+M\+P\+L\+E\+R\+A\+TE}}~44100
+\begin{DoxyCompactList}\small\item\em Audio sampling frequency (Hz) \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}{T\+O\+P1}}~0
+\begin{DoxyCompactList}\small\item\em Enumeration for top microphone buffer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_af7b10168e3d3a294b97e26c36e662d55}{T\+O\+P2}}~1
+\begin{DoxyCompactList}\small\item\em Enumeration for top microphone buffer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a437ef08681e7210d6678427030446a54}{L\+E\+FT}}~2
+\begin{DoxyCompactList}\small\item\em Enumeration for left microphone buffer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}{R\+I\+G\+HT}}~3
+\begin{DoxyCompactList}\small\item\em Enumeration for right microphone buffer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}{M\+U\+X\+SE}}~21
+\begin{DoxyCompactList}\small\item\em wiring\+Pi pin connected to multiplexer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{locator_8c_a5e250a67c49473a3c4b02995be1d5655}{printbuf}} (signed int $\ast$buf, int size)
+\begin{DoxyCompactList}\small\item\em A function that takes an integer buffer and renders its contents to sdout for debugging. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_afab5f34a4aca7b851d41424729988c53}{print\+Buf\+To\+File}} (F\+I\+LE $\ast$file, signed int $\ast$buf, int size)
+\begin{DoxyCompactList}\small\item\em A function that takes an integer buffer and renders its contents to the specified file descriptor for debugging. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_a6633207217364c8d34a60d09de941625}{fillbuf}} (int tobuf\+Code, int $\ast$tobuf, char $\ast$frombuf, int sizefrom)
+\begin{DoxyCompactList}\small\item\em Splits data in the P\+CM buffer so that the correct channel is sent to the destination buffer. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}{setupdevice}} (char $\ast$device, unsigned int rate)
+\begin{DoxyCompactList}\small\item\em Initialises the A\+L\+SA P\+CM interface. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}{setupmicbuffers}} (int \mbox{\hyperlink{locator_8c_a281c5134f826917fef45ddaf523ce49a}{frames}}, int $\ast$pcm\+\_\+size, int $\ast$mic\+\_\+size)
+\begin{DoxyCompactList}\small\item\em Allocates memory for P\+CM and mic data buffers. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_a49138c5791a45f3d722eb19390839c34}{freebuffers}} ()
+\begin{DoxyCompactList}\small\item\em Frees memory allocated to P\+CM and mic data buffers. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}{read\+Mics}} ()
+\begin{DoxyCompactList}\small\item\em Updates top1, left, top2 and right buffers. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{locator_8c_af5a49d591667a22acf6b75ee6236c3be}{update\+Position}} (float del\+TL, float del\+TR, float del\+LR)
+\begin{DoxyCompactList}\small\item\em Moves servos in response to timing difference data. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{locator_8c_a73fb9687dd54fc486114ef158fa29330}{read\+Mics}} (int $\ast$\mbox{\hyperlink{locator_8c_a195834fe831b25227f2ed54948dc06e9}{top1}}, int $\ast$\mbox{\hyperlink{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}{left}}, int $\ast$\mbox{\hyperlink{locator_8c_aa489c260f2bf8edb93576e1d945fed13}{top2}}, int $\ast$\mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+F\+I\+LE $\ast$ \mbox{\hyperlink{locator_8c_a1277960b5f2b37137fe9b0b5a1ea0beb}{out}}
+\item 
+int \mbox{\hyperlink{locator_8c_ac3e1795766a80ec63b157951b4b9a7d4}{debug}} = 0
+\item 
+snd\+\_\+pcm\+\_\+t $\ast$ \mbox{\hyperlink{locator_8c_a8530736c0c7f7f4dc724c8246e301f83}{handle}}
+\item 
+snd\+\_\+pcm\+\_\+hw\+\_\+params\+\_\+t $\ast$ \mbox{\hyperlink{locator_8c_a651b4eec34e0ce0ad2b7234fe1689fcb}{params}}
+\item 
+snd\+\_\+pcm\+\_\+uframes\+\_\+t \mbox{\hyperlink{locator_8c_a281c5134f826917fef45ddaf523ce49a}{frames}} = \mbox{\hyperlink{locator_8c_a51a51480d875f80355412fa95fd48c6c}{F\+R\+A\+M\+ES}}
+\item 
+unsigned int \mbox{\hyperlink{locator_8c_a1c086f81c095b0efd7a87ee29fc5ba7e}{sample\+\_\+rate}}
+\item 
+int \mbox{\hyperlink{locator_8c_a7afcac3447636c03934613716685bbc8}{sel}}
+\item 
+char $\ast$ \mbox{\hyperlink{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}{buffer}}
+\item 
+signed int $\ast$ \mbox{\hyperlink{locator_8c_a195834fe831b25227f2ed54948dc06e9}{top1}}
+\begin{DoxyCompactList}\small\item\em Buffer for top mic. \end{DoxyCompactList}\item 
+signed int $\ast$ \mbox{\hyperlink{locator_8c_aa489c260f2bf8edb93576e1d945fed13}{top2}}
+\begin{DoxyCompactList}\small\item\em Buffer for top mic. \end{DoxyCompactList}\item 
+signed int $\ast$ \mbox{\hyperlink{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}{left}}
+\begin{DoxyCompactList}\small\item\em Buffer for left mic. \end{DoxyCompactList}\item 
+signed int $\ast$ \mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}}
+\begin{DoxyCompactList}\small\item\em Buffer for right mic. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a1f14db325606d8f825754cff1cc21123}{pcm\+\_\+bufsize}} = 0
+\item 
+int \mbox{\hyperlink{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}{mic\+\_\+bufsize}} = 0
+\item 
+int \mbox{\hyperlink{locator_8c_af15ce0e091b409de25694109f11f484b}{az\+\_\+curr}} = 0
+\item 
+int \mbox{\hyperlink{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}{el\+\_\+curr}} = 0
+\item 
+int \mbox{\hyperlink{locator_8c_a4daf39371ce88e725afdddef077ad0da}{zero\+Top1}}
+\begin{DoxyCompactList}\small\item\em Index of zero crossing in top1 mic buffer. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a81e715298ef2793d7133ced346aae6e5}{zero\+Left}}
+\begin{DoxyCompactList}\small\item\em Index of zero crossing in left mic buffer. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}{zero\+Top2}}
+\begin{DoxyCompactList}\small\item\em Index of zero crossing in top2 mic buffer. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{locator_8c_a6803a267f65c0269820bd931dae3f2f2}{zero\+Right}}
+\begin{DoxyCompactList}\small\item\em Index of zero crossing in right mic buffer. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{locator_8c_a196c0e2744accf42066216c9452ab1af}{del\+Top\+Left}}
+\begin{DoxyCompactList}\small\item\em Time delay of zero crossing between top and left mics (seconds). \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{locator_8c_afcc32c167cbf0821f350aee6ac4fb972}{del\+Top\+Right}}
+\begin{DoxyCompactList}\small\item\em Time delay of zero crossing between top and right mics (seconds). \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{locator_8c_a4ae30cc36621a0f0c56004247084b155}{del\+Left\+Right}}
+\begin{DoxyCompactList}\small\item\em Time delay of zero crossing between left and right mics (seconds). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}\label{locator_8c_a775d096fbc3988fb7ed858b79ef44e22}} 
+\index{locator.c@{locator.c}!DEVICE@{DEVICE}}
+\index{DEVICE@{DEVICE}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{DEVICE}{DEVICE}}
+{\footnotesize\ttfamily \#define D\+E\+V\+I\+CE~\char`\"{}plughw\+:1\char`\"{}}
+
+
+
+Name of the A\+L\+SA P\+CM device. 
+
+\mbox{\Hypertarget{locator_8c_a51a51480d875f80355412fa95fd48c6c}\label{locator_8c_a51a51480d875f80355412fa95fd48c6c}} 
+\index{locator.c@{locator.c}!FRAMES@{FRAMES}}
+\index{FRAMES@{FRAMES}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{FRAMES}{FRAMES}}
+{\footnotesize\ttfamily \#define F\+R\+A\+M\+ES~128}
+
+
+
+Number of frames to read in. 
+
+Frames contain both left-\/ and right-\/channel samples and are read into the P\+CM buffer \mbox{\Hypertarget{locator_8c_a437ef08681e7210d6678427030446a54}\label{locator_8c_a437ef08681e7210d6678427030446a54}} 
+\index{locator.c@{locator.c}!LEFT@{LEFT}}
+\index{LEFT@{LEFT}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{LEFT}{LEFT}}
+{\footnotesize\ttfamily \#define L\+E\+FT~2}
+
+
+
+Enumeration for left microphone buffer. 
+
+\mbox{\Hypertarget{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}\label{locator_8c_a725b2d406a9e08983d25ebc6f6bfb02d}} 
+\index{locator.c@{locator.c}!MUXSE@{MUXSE}}
+\index{MUXSE@{MUXSE}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{MUXSE}{MUXSE}}
+{\footnotesize\ttfamily \#define M\+U\+X\+SE~21}
+
+
+
+wiring\+Pi pin connected to multiplexer. 
+
+\mbox{\Hypertarget{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}\label{locator_8c_a80fb826a684cf3f0d306b22aa100ddac}} 
+\index{locator.c@{locator.c}!RIGHT@{RIGHT}}
+\index{RIGHT@{RIGHT}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{RIGHT}{RIGHT}}
+{\footnotesize\ttfamily \#define R\+I\+G\+HT~3}
+
+
+
+Enumeration for right microphone buffer. 
+
+\mbox{\Hypertarget{locator_8c_a538e0cad3acb787a49e16b1e53787610}\label{locator_8c_a538e0cad3acb787a49e16b1e53787610}} 
+\index{locator.c@{locator.c}!SAMPLERATE@{SAMPLERATE}}
+\index{SAMPLERATE@{SAMPLERATE}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{SAMPLERATE}{SAMPLERATE}}
+{\footnotesize\ttfamily \#define S\+A\+M\+P\+L\+E\+R\+A\+TE~44100}
+
+
+
+Audio sampling frequency (Hz) 
+
+\mbox{\Hypertarget{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}\label{locator_8c_a4679d8ea8690999a6c6c7c0cb245c879}} 
+\index{locator.c@{locator.c}!THRESHOLD@{THRESHOLD}}
+\index{THRESHOLD@{THRESHOLD}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{THRESHOLD}{THRESHOLD}}
+{\footnotesize\ttfamily \#define T\+H\+R\+E\+S\+H\+O\+LD~600}
+
+
+
+Minimum detectable sound pressure level. 
+
+\mbox{\Hypertarget{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}\label{locator_8c_a9b0d77bf55bf55aeb2c144a2d7e63339}} 
+\index{locator.c@{locator.c}!TOP1@{TOP1}}
+\index{TOP1@{TOP1}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{TOP1}{TOP1}}
+{\footnotesize\ttfamily \#define T\+O\+P1~0}
+
+
+
+Enumeration for top microphone buffer. 
+
+(Multiplexer select = 0) \mbox{\Hypertarget{locator_8c_af7b10168e3d3a294b97e26c36e662d55}\label{locator_8c_af7b10168e3d3a294b97e26c36e662d55}} 
+\index{locator.c@{locator.c}!TOP2@{TOP2}}
+\index{TOP2@{TOP2}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{TOP2}{TOP2}}
+{\footnotesize\ttfamily \#define T\+O\+P2~1}
+
+
+
+Enumeration for top microphone buffer. 
+
+(Multiplexer select = 1) 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{locator_8c_a6633207217364c8d34a60d09de941625}\label{locator_8c_a6633207217364c8d34a60d09de941625}} 
+\index{locator.c@{locator.c}!fillbuf@{fillbuf}}
+\index{fillbuf@{fillbuf}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{fillbuf()}{fillbuf()}}
+{\footnotesize\ttfamily void fillbuf (\begin{DoxyParamCaption}\item[{int}]{tobuf\+Code,  }\item[{int $\ast$}]{tobuf,  }\item[{char $\ast$}]{frombuf,  }\item[{int}]{sizefrom }\end{DoxyParamCaption})}
+
+
+
+Splits data in the P\+CM buffer so that the correct channel is sent to the destination buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tobuf\+Code} & Character code for destination buffer \\
+\hline
+{\em tobuf} & Pointer to destination buffer \\
+\hline
+{\em frombuf} & Pointer to P\+CM buffer \\
+\hline
+{\em sizefrom} & Size of P\+CM buffer \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{locator_8c_a195834fe831b25227f2ed54948dc06e9}{top1}} 
+
+\mbox{\hyperlink{locator_8c_aa489c260f2bf8edb93576e1d945fed13}{top2}} 
+
+\mbox{\hyperlink{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}{left}} 
+
+\mbox{\hyperlink{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}{right}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{locator_8c_a49138c5791a45f3d722eb19390839c34}\label{locator_8c_a49138c5791a45f3d722eb19390839c34}} 
+\index{locator.c@{locator.c}!freebuffers@{freebuffers}}
+\index{freebuffers@{freebuffers}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{freebuffers()}{freebuffers()}}
+{\footnotesize\ttfamily void freebuffers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Frees memory allocated to P\+CM and mic data buffers. 
+
+\mbox{\Hypertarget{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}\label{locator_8c_a0ddf1224851353fc92bfbff6f499fa97}} 
+\index{locator.c@{locator.c}!main@{main}}
+\index{main@{main}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{locator_8c_a5e250a67c49473a3c4b02995be1d5655}\label{locator_8c_a5e250a67c49473a3c4b02995be1d5655}} 
+\index{locator.c@{locator.c}!printbuf@{printbuf}}
+\index{printbuf@{printbuf}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{printbuf()}{printbuf()}}
+{\footnotesize\ttfamily void printbuf (\begin{DoxyParamCaption}\item[{signed int $\ast$}]{buf,  }\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+A function that takes an integer buffer and renders its contents to sdout for debugging. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buf} & A pointer to the buffer. \\
+\hline
+{\em size} & The number of elements in the array. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{locator_8c_afab5f34a4aca7b851d41424729988c53}\label{locator_8c_afab5f34a4aca7b851d41424729988c53}} 
+\index{locator.c@{locator.c}!printBufToFile@{printBufToFile}}
+\index{printBufToFile@{printBufToFile}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{printBufToFile()}{printBufToFile()}}
+{\footnotesize\ttfamily void print\+Buf\+To\+File (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{file,  }\item[{signed int $\ast$}]{buf,  }\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+A function that takes an integer buffer and renders its contents to the specified file descriptor for debugging. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & A pointer to a file descriptor. \\
+\hline
+{\em buf} & A pointer to a signed integer. \\
+\hline
+{\em size} & The number of elements in the array. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}\label{locator_8c_a53d63e1aafd4fe1439cfc392bd97fb07}} 
+\index{locator.c@{locator.c}!readMics@{readMics}}
+\index{readMics@{readMics}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{readMics()}{readMics()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void read\+Mics (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Updates top1, left, top2 and right buffers. 
+
+\mbox{\Hypertarget{locator_8c_a73fb9687dd54fc486114ef158fa29330}\label{locator_8c_a73fb9687dd54fc486114ef158fa29330}} 
+\index{locator.c@{locator.c}!readMics@{readMics}}
+\index{readMics@{readMics}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{readMics()}{readMics()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void read\+Mics (\begin{DoxyParamCaption}\item[{int $\ast$}]{top1,  }\item[{int $\ast$}]{left,  }\item[{int $\ast$}]{top2,  }\item[{int $\ast$}]{right }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}\label{locator_8c_a2b5886eb22ba27b612c693d9f6ed9228}} 
+\index{locator.c@{locator.c}!setupdevice@{setupdevice}}
+\index{setupdevice@{setupdevice}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{setupdevice()}{setupdevice()}}
+{\footnotesize\ttfamily int setupdevice (\begin{DoxyParamCaption}\item[{char $\ast$}]{device,  }\item[{unsigned int}]{rate }\end{DoxyParamCaption})}
+
+
+
+Initialises the A\+L\+SA P\+CM interface. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Name of the I2S device \\
+\hline
+{\em rate} & Audio sampling rate (Hz) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Error code (0 on success) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}\label{locator_8c_a153f2dd1fc7aefa8daa15ea644641b43}} 
+\index{locator.c@{locator.c}!setupmicbuffers@{setupmicbuffers}}
+\index{setupmicbuffers@{setupmicbuffers}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{setupmicbuffers()}{setupmicbuffers()}}
+{\footnotesize\ttfamily int setupmicbuffers (\begin{DoxyParamCaption}\item[{int}]{frames,  }\item[{int $\ast$}]{pcm\+\_\+size,  }\item[{int $\ast$}]{mic\+\_\+size }\end{DoxyParamCaption})}
+
+
+
+Allocates memory for P\+CM and mic data buffers. 
+
+@ param frames The number of frames in the P\+CM buffer @ param pcm\+\_\+size A pointer to the integer that contains the pcm buffer size @ param mic\+\_\+size A pointer to the integer that contains the pcm buffer size @ return Error code (0 on success) \mbox{\Hypertarget{locator_8c_af5a49d591667a22acf6b75ee6236c3be}\label{locator_8c_af5a49d591667a22acf6b75ee6236c3be}} 
+\index{locator.c@{locator.c}!updatePosition@{updatePosition}}
+\index{updatePosition@{updatePosition}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{updatePosition()}{updatePosition()}}
+{\footnotesize\ttfamily void update\+Position (\begin{DoxyParamCaption}\item[{float}]{del\+TL,  }\item[{float}]{del\+TR,  }\item[{float}]{del\+LR }\end{DoxyParamCaption})}
+
+
+
+Moves servos in response to timing difference data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em del\+TL} & Time difference between sound reaching top and left mics (seconds) \\
+\hline
+{\em del\+TR} & Time difference between sound reaching top and right mics (seconds) \\
+\hline
+{\em del\+LR} & Time difference between sound reaching left and right mics (seconds) \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{locator_8c_af15ce0e091b409de25694109f11f484b}\label{locator_8c_af15ce0e091b409de25694109f11f484b}} 
+\index{locator.c@{locator.c}!az\_curr@{az\_curr}}
+\index{az\_curr@{az\_curr}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{az\_curr}{az\_curr}}
+{\footnotesize\ttfamily int az\+\_\+curr = 0}
+
+\mbox{\Hypertarget{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}\label{locator_8c_aff2566f4c366b48d73479bef43ee4d2e}} 
+\index{locator.c@{locator.c}!buffer@{buffer}}
+\index{buffer@{buffer}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{buffer}{buffer}}
+{\footnotesize\ttfamily char$\ast$ buffer}
+
+\mbox{\Hypertarget{locator_8c_ac3e1795766a80ec63b157951b4b9a7d4}\label{locator_8c_ac3e1795766a80ec63b157951b4b9a7d4}} 
+\index{locator.c@{locator.c}!debug@{debug}}
+\index{debug@{debug}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{debug}{debug}}
+{\footnotesize\ttfamily int debug = 0}
+
+\mbox{\Hypertarget{locator_8c_a4ae30cc36621a0f0c56004247084b155}\label{locator_8c_a4ae30cc36621a0f0c56004247084b155}} 
+\index{locator.c@{locator.c}!delLeftRight@{delLeftRight}}
+\index{delLeftRight@{delLeftRight}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{delLeftRight}{delLeftRight}}
+{\footnotesize\ttfamily float del\+Left\+Right}
+
+
+
+Time delay of zero crossing between left and right mics (seconds). 
+
+\mbox{\Hypertarget{locator_8c_a196c0e2744accf42066216c9452ab1af}\label{locator_8c_a196c0e2744accf42066216c9452ab1af}} 
+\index{locator.c@{locator.c}!delTopLeft@{delTopLeft}}
+\index{delTopLeft@{delTopLeft}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{delTopLeft}{delTopLeft}}
+{\footnotesize\ttfamily float del\+Top\+Left}
+
+
+
+Time delay of zero crossing between top and left mics (seconds). 
+
+\mbox{\Hypertarget{locator_8c_afcc32c167cbf0821f350aee6ac4fb972}\label{locator_8c_afcc32c167cbf0821f350aee6ac4fb972}} 
+\index{locator.c@{locator.c}!delTopRight@{delTopRight}}
+\index{delTopRight@{delTopRight}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{delTopRight}{delTopRight}}
+{\footnotesize\ttfamily float del\+Top\+Right}
+
+
+
+Time delay of zero crossing between top and right mics (seconds). 
+
+\mbox{\Hypertarget{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}\label{locator_8c_adfd48dc66211fce52f7d14f4e780ae02}} 
+\index{locator.c@{locator.c}!el\_curr@{el\_curr}}
+\index{el\_curr@{el\_curr}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{el\_curr}{el\_curr}}
+{\footnotesize\ttfamily int el\+\_\+curr = 0}
+
+\mbox{\Hypertarget{locator_8c_a281c5134f826917fef45ddaf523ce49a}\label{locator_8c_a281c5134f826917fef45ddaf523ce49a}} 
+\index{locator.c@{locator.c}!frames@{frames}}
+\index{frames@{frames}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{frames}{frames}}
+{\footnotesize\ttfamily snd\+\_\+pcm\+\_\+uframes\+\_\+t frames = \mbox{\hyperlink{locator_8c_a51a51480d875f80355412fa95fd48c6c}{F\+R\+A\+M\+ES}}}
+
+\mbox{\Hypertarget{locator_8c_a8530736c0c7f7f4dc724c8246e301f83}\label{locator_8c_a8530736c0c7f7f4dc724c8246e301f83}} 
+\index{locator.c@{locator.c}!handle@{handle}}
+\index{handle@{handle}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{handle}{handle}}
+{\footnotesize\ttfamily snd\+\_\+pcm\+\_\+t$\ast$ handle}
+
+\mbox{\Hypertarget{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}\label{locator_8c_a3d953171fbedb4b128bd6fe5e6257f49}} 
+\index{locator.c@{locator.c}!left@{left}}
+\index{left@{left}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{left}{left}}
+{\footnotesize\ttfamily signed int$\ast$ left}
+
+
+
+Buffer for left mic. 
+
+This buffer is read into when the multiplexer select is 0. \mbox{\Hypertarget{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}\label{locator_8c_ab6adac1d000df58e1f54bfef3f2d5081}} 
+\index{locator.c@{locator.c}!mic\_bufsize@{mic\_bufsize}}
+\index{mic\_bufsize@{mic\_bufsize}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{mic\_bufsize}{mic\_bufsize}}
+{\footnotesize\ttfamily int mic\+\_\+bufsize = 0}
+
+\mbox{\Hypertarget{locator_8c_a1277960b5f2b37137fe9b0b5a1ea0beb}\label{locator_8c_a1277960b5f2b37137fe9b0b5a1ea0beb}} 
+\index{locator.c@{locator.c}!out@{out}}
+\index{out@{out}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{out}{out}}
+{\footnotesize\ttfamily F\+I\+LE$\ast$ out}
+
+\mbox{\Hypertarget{locator_8c_a651b4eec34e0ce0ad2b7234fe1689fcb}\label{locator_8c_a651b4eec34e0ce0ad2b7234fe1689fcb}} 
+\index{locator.c@{locator.c}!params@{params}}
+\index{params@{params}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{params}{params}}
+{\footnotesize\ttfamily snd\+\_\+pcm\+\_\+hw\+\_\+params\+\_\+t$\ast$ params}
+
+\mbox{\Hypertarget{locator_8c_a1f14db325606d8f825754cff1cc21123}\label{locator_8c_a1f14db325606d8f825754cff1cc21123}} 
+\index{locator.c@{locator.c}!pcm\_bufsize@{pcm\_bufsize}}
+\index{pcm\_bufsize@{pcm\_bufsize}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{pcm\_bufsize}{pcm\_bufsize}}
+{\footnotesize\ttfamily int pcm\+\_\+bufsize = 0}
+
+\mbox{\Hypertarget{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}\label{locator_8c_aa246ca2e7708de6457661f06ff4ecf8f}} 
+\index{locator.c@{locator.c}!right@{right}}
+\index{right@{right}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{right}{right}}
+{\footnotesize\ttfamily signed int$\ast$ right}
+
+
+
+Buffer for right mic. 
+
+This buffer is read into when the multiplexer select is 1. \mbox{\Hypertarget{locator_8c_a1c086f81c095b0efd7a87ee29fc5ba7e}\label{locator_8c_a1c086f81c095b0efd7a87ee29fc5ba7e}} 
+\index{locator.c@{locator.c}!sample\_rate@{sample\_rate}}
+\index{sample\_rate@{sample\_rate}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{sample\_rate}{sample\_rate}}
+{\footnotesize\ttfamily unsigned int sample\+\_\+rate}
+
+\mbox{\Hypertarget{locator_8c_a7afcac3447636c03934613716685bbc8}\label{locator_8c_a7afcac3447636c03934613716685bbc8}} 
+\index{locator.c@{locator.c}!sel@{sel}}
+\index{sel@{sel}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{sel}{sel}}
+{\footnotesize\ttfamily int sel}
+
+\mbox{\Hypertarget{locator_8c_a195834fe831b25227f2ed54948dc06e9}\label{locator_8c_a195834fe831b25227f2ed54948dc06e9}} 
+\index{locator.c@{locator.c}!top1@{top1}}
+\index{top1@{top1}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{top1}{top1}}
+{\footnotesize\ttfamily signed int$\ast$ top1}
+
+
+
+Buffer for top mic. 
+
+This buffer, along with left is read into when the multiplexer select is 0. \mbox{\Hypertarget{locator_8c_aa489c260f2bf8edb93576e1d945fed13}\label{locator_8c_aa489c260f2bf8edb93576e1d945fed13}} 
+\index{locator.c@{locator.c}!top2@{top2}}
+\index{top2@{top2}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{top2}{top2}}
+{\footnotesize\ttfamily signed int$\ast$ top2}
+
+
+
+Buffer for top mic. 
+
+This buffer, along with right is read into when the multiplexer select is 1. \mbox{\Hypertarget{locator_8c_a81e715298ef2793d7133ced346aae6e5}\label{locator_8c_a81e715298ef2793d7133ced346aae6e5}} 
+\index{locator.c@{locator.c}!zeroLeft@{zeroLeft}}
+\index{zeroLeft@{zeroLeft}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{zeroLeft}{zeroLeft}}
+{\footnotesize\ttfamily int zero\+Left}
+
+
+
+Index of zero crossing in left mic buffer. 
+
+\mbox{\Hypertarget{locator_8c_a6803a267f65c0269820bd931dae3f2f2}\label{locator_8c_a6803a267f65c0269820bd931dae3f2f2}} 
+\index{locator.c@{locator.c}!zeroRight@{zeroRight}}
+\index{zeroRight@{zeroRight}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{zeroRight}{zeroRight}}
+{\footnotesize\ttfamily int zero\+Right}
+
+
+
+Index of zero crossing in right mic buffer. 
+
+\mbox{\Hypertarget{locator_8c_a4daf39371ce88e725afdddef077ad0da}\label{locator_8c_a4daf39371ce88e725afdddef077ad0da}} 
+\index{locator.c@{locator.c}!zeroTop1@{zeroTop1}}
+\index{zeroTop1@{zeroTop1}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{zeroTop1}{zeroTop1}}
+{\footnotesize\ttfamily int zero\+Top1}
+
+
+
+Index of zero crossing in top1 mic buffer. 
+
+\mbox{\Hypertarget{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}\label{locator_8c_ab7af76e9f538eb8576c1435dccd847d1}} 
+\index{locator.c@{locator.c}!zeroTop2@{zeroTop2}}
+\index{zeroTop2@{zeroTop2}!locator.c@{locator.c}}
+\doxysubsubsection{\texorpdfstring{zeroTop2}{zeroTop2}}
+{\footnotesize\ttfamily int zero\+Top2}
+
+
+
+Index of zero crossing in top2 mic buffer. 
+
