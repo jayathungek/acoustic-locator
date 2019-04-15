@@ -2,8 +2,8 @@
 
 //hardware stuff
 #define DEVICE     "plughw:1" /**< Name of the ALSA PCM device. */
-#define FRAMES     128 /**< Number of frames to read in. Frames contain both left- and right-channel samples and are read into the PCM buffer */
-#define THRESHOLD  600 /**< Minimum detectable sound pressure level. */
+#define FRAMES     256 /**< Number of frames to read in. Frames contain both left- and right-channel samples and are read into the PCM buffer */
+#define THRESHOLD  30000 /**< Minimum detectable sound pressure level. */
 #define SAMPLERATE 44100 /**< Audio sampling frequency (Hz) */
 #define TOP1       0 /**< Enumeration for top microphone buffer. (Multiplexer select = 0)*/
 #define TOP2       1 /**< Enumeration for top microphone buffer. (Multiplexer select = 1)*/
@@ -171,10 +171,6 @@ int main (int argc, char *argv[])
 		    printbuf(top2, mic_bufsize);
 		    printf("right:\n");
 		    printbuf(right, mic_bufsize);
-		    printBufToFile(out, top1, mic_bufsize);
-		    printBufToFile(out, left, mic_bufsize);
-		    printBufToFile(out, top2, mic_bufsize);
-		    printBufToFile(out, right, mic_bufsize);
         }
         // 2) if we can find 0 crossings, calculate angles, else goto 1)
         if (!findZero(top1, FRAMES, &zeroTop1, THRESHOLD)){
@@ -194,13 +190,13 @@ int main (int argc, char *argv[])
 
         // 4) update position and turn on LED
         //updatePosition(delTopLeft, delTopRight, delLeftRight);
-        updatePosition(0, delTopRight, delLeftRight);
+        updatePosition(delTopLeft, delTopRight, delLeftRight);
 
         // delay for a bit to prevent jittering
         delay(DELAY);
     }
     freebuffers();
-    if(debug) fclose(out);
+    stopMotors();
 }
 
 void printbuf(signed int *buf, int size){
@@ -442,7 +438,7 @@ void readMics(int *top1, int *left, int *top2, int *right)
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
 void updatePosition(float delTL, float delTR, float delLR){
     int azimuth_angle   = round(getDevFromNormal(delLR));
-    int elevation_angle = round(getDevFromNormal(delTR));
+    int elevation_angle = round(getDevFromNormal(delTL));
     turnMotorBy(azimuth_angle, AZIMUTH, &az_curr);
     turnMotorBy(elevation_angle, ELEVATION, &el_curr);
     laserOn();
