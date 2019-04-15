@@ -1,3 +1,21 @@
+Table of Contents
+=================
+
+   * [acoustic-locator](#acoustic-locator)
+      * [Principle of Operation](#principle-of-operation)
+      * [Accuracy Limitations and Aliasing](#accuracy-limitations-and-aliasing)
+      * [Hardware setup](#hardware-setup)
+      * [The Microphone Circuit](#the-microphone-circuit)
+      * [The Humidity/Temperature Sensor](#the-humiditytemperature-sensor)
+      * [The Laser LED circuit](#the-laser-led-circuit)
+      * [The Servo Circuit](#the-servo-circuit)
+      * [Mechanical Design](#mechanical-design)
+      * [Codework](#codework)
+      * [Prerequisites](#prerequisites)
+      * [Installation](#installation)
+      * [How to use](#how-to-use)
+      * [Social media links](#social-media-links)
+      
 # acoustic-locator
 
 The work presented in this project concerns the implementation of an acoustic locator system. As its name implies, its main function is the detection of the direction of a sound source. Once the direction of the sound source is determined, a positioning system is activated to point to the direction of the sound source. In the case of a multiple speaker setting, the system will control the positioning mechanism to point towards the speaker currently speaking. In the case of a single moving speaker, the system will control positioning unitin order to track the speaker as he moves. 
