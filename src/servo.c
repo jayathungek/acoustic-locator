@@ -1,7 +1,19 @@
+#ifdef TEST
+#define TURNMOTORTO mock_turnMotorTo
+#else
+#define TURNMOTORTO turnMotorTo
+#endif
+
 #include "servo.h"
 #include <wiringPi.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+//Mock function for testing
+void mock_turnMotorTo(int angle, int motor){
+	return;
+}
+
 //Function definitions
 
 
@@ -45,17 +57,29 @@ void turnMotorBy(int angle, int motor, int *curr){
 	switch(motor){
     	case AZIMUTH:
     		new_angle = *curr + angle;
-    		if(new_angle > AZ_MIN && new_angle < AZ_MAX){
+    		if(new_angle >= AZ_MIN && new_angle <= AZ_MAX){
     			*curr = new_angle;
-    			turnMotorTo(*curr, AZIMUTH);
+    			TURNMOTORTO(*curr, AZIMUTH);
+    		}else if(new_angle > AZ_MAX){
+    			*curr = AZ_MAX;
+    			TURNMOTORTO(*curr, AZIMUTH);
+    		}else if(new_angle < AZ_MIN){
+    			*curr = AZ_MIN;
+    			TURNMOTORTO(*curr, AZIMUTH);
     		}
     		break;
 
     	case ELEVATION:
     		new_angle = *curr + angle;
-    		if(new_angle > EL_MIN && new_angle < EL_MAX){
+    		if(new_angle >= EL_MIN && new_angle <= EL_MAX){
     			*curr = new_angle;
-    			turnMotorTo(*curr, ELEVATION);
+    			TURNMOTORTO(*curr, ELEVATION);
+    		}else if(new_angle > EL_MAX){
+    			*curr = EL_MAX;
+    			TURNMOTORTO(*curr, ELEVATION);
+    		}else if(new_angle < EL_MIN){
+    			*curr = EL_MIN;
+    			TURNMOTORTO(*curr, ELEVATION);
     		}
     		break;
     	default:
