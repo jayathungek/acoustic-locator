@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 int convertValue(char msb, char lsb){
-	int usingned =  (msb | lsb << 8);
+	int usingned =  (lsb | msb << 8);
 	return -(usingned & 0x8000) | (usingned & 0x7fff);
 }
 
