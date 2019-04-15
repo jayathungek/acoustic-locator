@@ -250,14 +250,14 @@ int main (int argc, char *argv[])
 	setupdevice(dev, SAMPLERATE);
 	setupmicbuffers(); //sets size_mic
 
-	laserOff();
+	laserOn();
 	zeroMotors();
 	delay(DELAY);
 /*	updatePosition(0, 200*MICRO, -297*MICRO);*/
 /*	delay(DELAY);*/
 	stopMotors();
 
-	int loops = 100000;
+	int loops = 0;
     for (int i = 0; i < loops; i++) //change to while(1) for real use
     {
         // 1) read data from microphone
