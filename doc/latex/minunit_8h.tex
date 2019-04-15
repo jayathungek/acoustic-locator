@@ -1,0 +1,44 @@
+\hypertarget{minunit_8h}{}\doxysection{minunit.\+h File Reference}
+\label{minunit_8h}\index{minunit.h@{minunit.h}}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{minunit_8h_aad83ba6b11df552879dd0f0a4ce43407}{mu\+\_\+assert}}(message,  test)~do \{ if (!(test)) return message; \} while (0)
+\item 
+\#define \mbox{\hyperlink{minunit_8h_a9c8e76cc15deeca6f9afa206f6caca76}{mu\+\_\+run\+\_\+test}}(test)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{minunit_8h_a91aa4203331e915f2d20dd26579791ee}{tests\+\_\+run}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{minunit_8h_aad83ba6b11df552879dd0f0a4ce43407}\label{minunit_8h_aad83ba6b11df552879dd0f0a4ce43407}} 
+\index{minunit.h@{minunit.h}!mu\_assert@{mu\_assert}}
+\index{mu\_assert@{mu\_assert}!minunit.h@{minunit.h}}
+\doxysubsubsection{\texorpdfstring{mu\_assert}{mu\_assert}}
+{\footnotesize\ttfamily \#define mu\+\_\+assert(\begin{DoxyParamCaption}\item[{}]{message,  }\item[{}]{test }\end{DoxyParamCaption})~do \{ if (!(test)) return message; \} while (0)}
+
+\mbox{\Hypertarget{minunit_8h_a9c8e76cc15deeca6f9afa206f6caca76}\label{minunit_8h_a9c8e76cc15deeca6f9afa206f6caca76}} 
+\index{minunit.h@{minunit.h}!mu\_run\_test@{mu\_run\_test}}
+\index{mu\_run\_test@{mu\_run\_test}!minunit.h@{minunit.h}}
+\doxysubsubsection{\texorpdfstring{mu\_run\_test}{mu\_run\_test}}
+{\footnotesize\ttfamily \#define mu\+\_\+run\+\_\+test(\begin{DoxyParamCaption}\item[{}]{test }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{do} \{ \textcolor{keywordtype}{char} *message = test(); \mbox{\hyperlink{minunit_8h_a91aa4203331e915f2d20dd26579791ee}{tests\_run}}++; \(\backslash\)}
+\DoxyCodeLine{                                if (message) \textcolor{keywordflow}{return} message; \} \textcolor{keywordflow}{while} (0)}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{minunit_8h_a91aa4203331e915f2d20dd26579791ee}\label{minunit_8h_a91aa4203331e915f2d20dd26579791ee}} 
+\index{minunit.h@{minunit.h}!tests\_run@{tests\_run}}
+\index{tests\_run@{tests\_run}!minunit.h@{minunit.h}}
+\doxysubsubsection{\texorpdfstring{tests\_run}{tests\_run}}
+{\footnotesize\ttfamily int tests\+\_\+run}
+
