@@ -1,11 +1,10 @@
 CC=gcc
-CFLAGS= -lwiringPi -lm -lasound
+CFLAGS=-lwiringPi -lm -lasound
+DEPS=servo.h utils.h
+OBJ=locator.o servo.o utils.o
 
-TARGET = locator
-all: $(TARGET)
+%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c
-
-clean:
-	$(RM) $(TARGET)
+locator: $(OBJ)
+	gcc $(CFLAGS) -o $@ $^
