@@ -10,7 +10,6 @@ Table of Contents
         * [The Laser LED circuit](#the-laser-led-circuit)
         * [The Servo Circuit](#the-servo-circuit)
         * [Mechanical Design](#mechanical-design)
-      * [Codework](#codework)
       * [Prerequisites](#prerequisites)
       * [Installation](#installation)
       * [How to use](#how-to-use)
