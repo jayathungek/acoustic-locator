@@ -42,8 +42,7 @@ The waveform at the lower part of figure 3(a) shows the reception of a typical s
 
                          Figure 3
 
-The direction of the position of the sound source can be determined using the distances RL, RR, the distance between the two microphones (Lm), the time difference Δt and the speed of sound.For the acoustic locator it is not necessary to calculate the exact direction of the position of the sound source. The acoustic locator needs to determine whether the sound source is at the left or at the right side of the microphones for the horizontal positioning, (or higher or lower for the vertical positioning) and signal the positioning motors to rotate the positioning mechanism (a) to the left or to the right for the horizontal direction and (b) up or down, for the vertical direction. The time difference (Δt) can be used in order to set the speed of the motors. The motors will keep running until the time difference (Δt) becomes zero. This operation is shown in figure 3(b).  However, for the current implementation of the acoustic locator, the direction (offset) of the position of the sound source is calculated using the equation derived in the Master Thesis report [Direction of arrival estimation – A two microphones approach](http://www.diva-portal.org/smash/get/diva2:830430/FULLTEXT01.pdf?fbclid=IwAR35Mnx53wnRBK2E7kFA8vvkROHdrnJgDDNvz-fwh36mWv_Z4rtGIL9IEII). The angle between the line of the two microphones and the position of the speaker is calculated using the equation: 
-a = 90 – arctan ((f(x1)-f(x2))/(x1-x2))
+The direction of the position of the sound source can be determined using the distances RL, RR, the distance between the two microphones (Lm), the time difference Δt and the speed of sound.For the acoustic locator it is not necessary to calculate the exact direction of the position of the sound source. The acoustic locator needs to determine whether the sound source is at the left or at the right side of the microphones for the horizontal positioning, (or higher or lower for the vertical positioning) and signal the positioning motors to rotate the positioning mechanism (a) to the left or to the right for the horizontal direction and (b) up or down, for the vertical direction. The time difference (Δt) can be used in order to set the speed of the motors. The motors will keep running until the time difference (Δt) becomes zero. This operation is shown in figure 3(b).  
 Where x1 is the x-coordinate of the right microphone and x2 is the x-coordinate of the difference RL-RR. The distance RL-RR is equal to time difference Δt times the speed of sound. 
 
 Figure 4 shows the case where the sound source has moved to the right. In this case it can be seen that the distance RL – RR and consequently the time difference (Δt) have been increased.
@@ -52,6 +51,24 @@ Figure 4 shows the case where the sound source has moved to the right. In this c
 ![Offset2(1)](https://user-images.githubusercontent.com/45922282/56137528-be605800-5f9d-11e9-84e8-2da892b74d46.jpg)
 
                            Figure 4
+                           
+However, for the current implementation of the acoustic locator, the direction (offset) of the position of the sound source is calculated using the equation derived in the Master Thesis report [Direction of arrival estimation – A two microphones approach](http://www.diva-portal.org/smash/get/diva2:830430/FULLTEXT01.pdf?fbclid=IwAR35Mnx53wnRBK2E7kFA8vvkROHdrnJgDDNvz-fwh36mWv_Z4rtGIL9IEII). The approach presented by this paper uses a hyperbolic graph to calculate an angular offset. When sound arrives at two microphones at slightly different times, this time delay can be used to calculate the extra length the sound wave has to travel to the further microphone. It turns out that the length resulting from all possible time delays can be used to plot a hyperbolic curve that is unique to that length, given by:
+
+![Offset1](Media/hyperbola.gif)
+
+where l is the extra length traveled by the sound, x_mic is the fixed x-coordinate of the closer microphone relative to the normal line, and x is an arbitrary value greater than x_mic/2. The linear part of the hyperbola represents all the possible sound source locations for any l: 
+
+![Offset1](Media/possiblelocs.png)
+
+By calculating the value of the hyperbola function at two different x locations, it is possible to calculate the gradient of the linear part of the hyperbola, and therefore the angle alpha' shown above.
+
+![Offset1](Media/arctan.gif)
+
+To calculate the offset from the normal line, i.e. straight ahead, which is what we're after, simply do:
+
+![Offset1](Media/alpha.gif)
+
+Of course, if the time delay is negative, this simply means that the sound reached the other mic first and we just need to reverse the sign of alpha.
                            
 ## Accuracy Limitations and Aliasing
 
