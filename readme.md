@@ -209,7 +209,7 @@ A binary called `locator` is generated in the current working directory. Running
    ```
 
 ## How to use
-Description of how to clone source code, any dependancies, how to power up components etc.
+The raspberry pi is powered by a 5V micro usb cable and is perfectly capable of driving the servo motors from its 5V pins. Assuming all the steps above have been followed, simply plugging in the device to any 5V DC supply will start the location program.
 
 ## Social media links
 Facebook: https://www.facebook.com/AcousticLocator/?modal=admin_todo_tour 
