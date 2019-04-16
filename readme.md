@@ -181,8 +181,32 @@ The head – a 3D printed part – clicks in place on top of the gimbal. The par
 ## Codework
 
 ## Prerequisites
-
+make
 ## Installation
+1. Clone this repository: `$ git clone git@github.com:jayathungek/acoustic-locator.git`
+2. Navigate to the main directory: `$ cd acoustic-locator`
+3. Run tests: `$ make runtests`. All the tests should pass.
+4. Build: `$ make`
+
+A binary called `locator` is generated in the current working directory. Running this with `$ sudo ./locator` will start the main loop of the program and the gimbals will move in response to loud noises. Alternatively, f you wish to run `locator` on boot, edit `/etc/rc.local` so that it contains the path to the binary:
+   ```
+   #!/bin/sh -e
+   #
+   # rc.local
+   #
+   # This script is executed at the end of each multiuser runlevel.
+   # Make sure that the script will "exit 0" on success or any other
+   # value on error. 
+   #
+   # In order to enable or disable this script just change the execution
+   # bits.
+   #
+   # By default this script does nothing.
+
+   sudo /home/pi/acoustic-locator/locator &
+
+   exit 0
+   ```
 
 ## How to use
 Description of how to clone source code, any dependancies, how to power up components etc.
