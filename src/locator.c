@@ -3,7 +3,7 @@
 //hardware stuff
 #define DEVICE     "plughw:1" /**< Name of the ALSA PCM device. */
 #define FRAMES     256 /**< Number of frames to read in. Frames contain both left- and right-channel samples and are read into the PCM buffer */
-#define THRESHOLD  30000 /**< Minimum detectable sound pressure level. */
+#define THRESHOLD  10000 /**< Minimum detectable sound pressure level. */
 #define SAMPLERATE 44100 /**< Audio sampling frequency (Hz) */
 #define TOP1       0 /**< Enumeration for top microphone buffer. (Multiplexer select = 0)*/
 #define TOP2       1 /**< Enumeration for top microphone buffer. (Multiplexer select = 1)*/
@@ -189,8 +189,8 @@ int main (int argc, char *argv[])
         }
 
         // 4) update position and turn on LED
-        //updatePosition(delTopLeft, delTopRight, delLeftRight);
         updatePosition(delTopLeft, delTopRight, delLeftRight);
+        //updatePosition(0, 0, delLeftRight);
 
         // delay for a bit to prevent jittering
         delay(DELAY);
@@ -438,7 +438,14 @@ void readMics(int *top1, int *left, int *top2, int *right)
 // args -- (delay between top mic and left, delay between top mic and right, delay between left mic and right) in us
 void updatePosition(float delTL, float delTR, float delLR){
     int azimuth_angle   = round(getDevFromNormal(delLR));
-    int elevation_angle = round(getDevFromNormal(delTL));
+    int elevation_angle;
+    
+    if (delTL > delTR){
+    	elevation_angle = round(getDevFromNormal(delTL));
+    }else{
+    	elevation_angle = round(getDevFromNormal(delTR));
+    }
+    
     turnMotorBy(azimuth_angle, AZIMUTH, &az_curr);
     turnMotorBy(elevation_angle, ELEVATION, &el_curr);
     laserOn();
