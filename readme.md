@@ -56,7 +56,7 @@ However, for the current implementation of the acoustic locator, the direction (
 
 ![Offset1](Media/hyperbola.gif)
 
-where l is the extra length traveled by the sound, x_mic is the fixed x-coordinate of the closer microphone relative to the normal line, and x is an arbitrary value greater than x_mic/2. The linear part of the hyperbola represents all the possible sound source locations for any l: 
+where l is the extra length traveled by the sound, x_mic is the fixed x-coordinate of the closer microphone relative to the normal line, and x is an arbitrary value greater than x_mic/2. The linear part of the hyperbola represents all the possible sound source locations for a particular l: 
 
 ![Offset1](Media/possiblelocs.png)
 
