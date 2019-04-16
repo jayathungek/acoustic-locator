@@ -178,10 +178,72 @@ The pan/tilt gimbal aids the movement of the device. It is capable of 180° rota
 
 The head – a 3D printed part – clicks in place on top of the gimbal. The part is designed to secure the microphones in their respective places. The PCB just slides intro the head, thus no screws are required to hold the electronics on the gimbal.
 
-## Codework
-
 ## Prerequisites
-make
+The following steps are needed to configure the raspberry pi for I2S microphone support:
+
+1. Enable I2S communication:- 
+  ```
+  $ sudo nano /boot/config.txt
+  ```
+  1.1 Navigate the file and uncomment the the line that contains `#dtparam=i2s=on`. 
+  
+2. Add the reference for the chip on the Raspberry Pi 3 that handles the I2S into the modules file:- 
+  ```
+  $ sudo nano  /etc/modules
+  ``` 
+  2.1 Add the line `snd-bcm2835` to this file.
+  
+3. Reboot:- 
+  ```
+  $ sudo reboot
+  ```
+  
+4. Run this command and verify that it outputs `snd_soc_bcm2835_i2s`:-
+  ```
+  $ lsmod | grep snd
+  ```
+  
+5. Install dependancies and set permissions:- 
+  ```
+  $ sudo apt-get -y install bc libncurses5-dev
+  $ sudo wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source -O /usr/bin/rpi-source`
+  $ sudo chmod +x /usr/bin/rpi-source
+  ```
+6. Update `rpi-source` and run:-
+  ```
+  $ /usr/bin/rpi-source -q --tag-update`
+  $ rpi-source
+  ```
+  
+7. Mount the developent system debugger:-
+  ```$ sudo mount -t debugfs debugs /sys/kernel/debug```
+  
+8. Check for the presence of the 3f203000.i2s module:-
+  ```$ sudo cat /sys/kernel/debug/asoc/platforms```
+  
+9. Download Paul Creaser's I2S audio module, navigate to it and build it:-
+  ```
+  $ git clone https://github.com/PaulCreaser/rpi-i2s-audio
+  $ cd rpi-i2s-audio
+  $ make -C /lib/modules/$(uname -r )/build M=$(pwd) modules
+  ```
+  
+10. Insert this module and verify its presence:-
+  ```
+  $ sudo insmod my_loader.ko
+  $ lsmod | grep my_loader
+  $ dmesg | tail
+  ```
+  
+11. To load the module every time the pi is booted up:-
+  ```
+  $ sudo cp my_loader.ko /lib/modules/$(uname -r)
+  $ echo 'my_loader' | sudo tee --append /etc/modules > /dev/null
+  $ sudo depmod -a
+  $ sudo modprobe my_loader
+  ```
+
+
 ## Installation
 1. Clone this repository: `$ git clone git@github.com:jayathungek/acoustic-locator.git`
 2. Navigate to the main directory: `$ cd acoustic-locator`
