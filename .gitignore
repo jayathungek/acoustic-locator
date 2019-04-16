@@ -2,7 +2,6 @@
 !*/
 !*.*
 *.c.save
-*.out
 build-Plotting-Desktop_Qt_5_12_2_MinGW_64_bit-Debug/
 *.wav
 *.c.save.1
