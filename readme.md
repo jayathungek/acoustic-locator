@@ -56,7 +56,7 @@ However, for the current implementation of the acoustic locator, the direction (
 
 ![Offset1](Media/hyperbola.gif)
 
-where l is the extra length traveled by the sound, x_mic is the fixed x-coordinate of the closer microphone relative to the normal line, and x is an arbitrary value greater than x_mic/2. The linear part of the hyperbola represents all the possible sound source locations for any l: 
+where l is the extra length traveled by the sound, x_mic is the fixed x-coordinate of the closer microphone relative to the normal line, and x is an arbitrary value greater than x_mic/2. The linear part of the hyperbola represents all the possible sound source locations for a particular l: 
 
 ![Offset1](Media/possiblelocs.png)
 
@@ -176,7 +176,7 @@ The mechanical design consists of the direction mechanism. This design features 
 The base serves two functions: it supports the device as well as houses the Raspberry Pi, along with the locator interface board. The design allows the Raspberry Pi to be connected to a PC/laptop without opening the base.
 The pan/tilt gimbal aids the movement of the device. It is capable of 180° rotation around the vertical axis as well as 100° up and down. The gimbal is mounts on top of the base as well as holding the head.
 
-The head – a 3D printed part – clicks in place on top of the gimbal. The part is designed to secure the microphones in their respective places. The PCB just slides intro the head, thus not screws are required to hold the electronics on the gimbal.
+The head – a 3D printed part – clicks in place on top of the gimbal. The part is designed to secure the microphones in their respective places. The PCB just slides intro the head, thus no screws are required to hold the electronics on the gimbal.
 
 ## Codework
 
