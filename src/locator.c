@@ -3,7 +3,7 @@
 //hardware stuff
 #define DEVICE     "plughw:1" /**< Name of the ALSA PCM device. */
 #define FRAMES     256 /**< Number of frames to read in. Frames contain both left- and right-channel samples and are read into the PCM buffer */
-#define THRESHOLD  10000 /**< Minimum detectable sound pressure level. */
+#define THRESHOLD  25000 /**< Minimum detectable sound pressure level. */
 #define SAMPLERATE 44100 /**< Audio sampling frequency (Hz) */
 #define TOP1       0 /**< Enumeration for top microphone buffer. (Multiplexer select = 0)*/
 #define TOP2       1 /**< Enumeration for top microphone buffer. (Multiplexer select = 1)*/
@@ -23,6 +23,7 @@
 
 #include "servo.h"
 #include "utils.h"
+#include "lopass.h"
 
 
 FILE *out;
@@ -41,6 +42,11 @@ signed int *top1; /**<Buffer for top mic. This buffer, along with left is read i
 signed int *top2; /**<Buffer for top mic. This buffer, along with right is read into when the multiplexer select is 1. */
 signed int *left; /**<Buffer for left mic. This buffer is read into when the multiplexer select is 0. */
 signed int *right; /**<Buffer for right mic. This buffer is read into when the multiplexer select is 1. */
+
+float *top1_smooth;
+float *left_smooth;
+float *top2_smooth;
+float *right_smooth;
 
 //Buffer sizes
 int pcm_bufsize = 0;
@@ -152,11 +158,11 @@ int main (int argc, char *argv[])
 	setupmicbuffers(FRAMES, &pcm_bufsize, &mic_bufsize);
 	laserOn();
 	zeroMotors(&az_curr, &el_curr);
-	delay(DELAY); 
+	delay(SERVO_DELAY); 
 	stopMotors();
 
-	int loops = 10000;
-    for (int i = 0; i < loops; i++) //change to while(1) for real use
+/*	int loops = 10000;*/
+    while(1) //change to while(1) for real use
     {
     	stopMotors();
         // 1) read data from microphone
@@ -173,13 +179,13 @@ int main (int argc, char *argv[])
 		    printbuf(right, mic_bufsize);
         }
         // 2) if we can find 0 crossings, calculate angles, else goto 1)
-        if (!findZero(top1, FRAMES, &zeroTop1, THRESHOLD)){
+        if (!findZero(top1_smooth, FRAMES, &zeroTop1, THRESHOLD)){
             continue;
-        }else if(!findZero(left, FRAMES, &zeroLeft, THRESHOLD)){
+        }else if(!findZero(left_smooth, FRAMES, &zeroLeft, THRESHOLD)){
             continue;
-        }else if(!findZero(top2, FRAMES, &zeroTop2, THRESHOLD)){
+        }else if(!findZero(top2_smooth, FRAMES, &zeroTop2, THRESHOLD)){
             continue;
-        }else if(!findZero(right, FRAMES, &zeroRight, THRESHOLD)){
+        }else if(!findZero(right_smooth, FRAMES, &zeroRight, THRESHOLD)){
             continue;
         }
 
@@ -189,11 +195,11 @@ int main (int argc, char *argv[])
         }
 
         // 4) update position and turn on LED
-        updatePosition(delTopLeft, delTopRight, delLeftRight);
+        updatePosition(delTopLeft, delTopRight, -delLeftRight);
         //updatePosition(0, 0, delLeftRight);
 
         // delay for a bit to prevent jittering
-        delay(DELAY);
+        delay(SERVO_DELAY);
     }
     freebuffers();
     stopMotors();
@@ -205,6 +211,7 @@ void printbuf(signed int *buf, int size){
 	}
 	printf("\n\n");
 }
+
 
 void printBufToFile(FILE *fd, signed int *buf, int size){
 	fprintf(fd, "[");
@@ -301,10 +308,12 @@ int setupmicbuffers(int frames, int *pcm_size, int *mic_size){
 
     *pcm_size = frames * 2 * 2; /* 2 bytes/sample, 2 channels */
     *mic_size = frames; // one int per frame received
-    int size_mic_bytes = frames *  sizeof(signed int); 
+    int size_mic_bytes = frames *  sizeof(signed int);
+    int size_smooth_bytes = frames * sizeof(float);
 
     printf("main_buffer_size: %d bytes (%d samples)\n", pcm_bufsize, pcm_bufsize/2);
     printf("mic_buffers_size: %d bytes (%d ints)\n", size_mic_bytes, frames);
+    printf("smooth_buffer_size: %d bytes (%d floats)\n", size_smooth_bytes, frames);
     buffer = (char *) malloc(*pcm_size);
     if (!buffer)
     {
@@ -312,6 +321,7 @@ int setupmicbuffers(int frames, int *pcm_size, int *mic_size){
         snd_pcm_close(handle);
         return -1;
     }
+    
 
     top1 = (signed int *) malloc(size_mic_bytes);
     if (!top1)
@@ -344,6 +354,38 @@ int setupmicbuffers(int frames, int *pcm_size, int *mic_size){
         snd_pcm_close(handle);
         return -1;
     }
+    
+    top1_smooth = (float *) malloc(size_smooth_bytes);
+    if (!top1_smooth)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    }
+    
+    top2_smooth = (float *) malloc(size_smooth_bytes);
+    if (!top2_smooth)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    }
+    
+    left_smooth = (float *) malloc(size_smooth_bytes);
+    if (!left_smooth)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    }
+    
+    right_smooth = (float *) malloc(size_smooth_bytes);
+    if (!right_smooth)
+    {
+        fprintf(stdout, "Buffer error.\n");
+        snd_pcm_close(handle);
+        return -1;
+    }
 
 
     return 0;
@@ -355,6 +397,10 @@ void freebuffers(){
     free(top2);
 	free(left);
 	free(right);
+	free(top1_smooth);
+    free(top2_smooth);
+	free(left_smooth);
+	free(right_smooth);
 }
 
 //(char code for sub buffer to fill, main buffer, size of main buffer)
@@ -415,6 +461,8 @@ void readMics(int *top1, int *left, int *top2, int *right)
 	if (debug) printf("mux: %d, read %d frames to buffer\n", sel, err);
     fillbuf(TOP1, top1, buffer, pcm_bufsize);
     fillbuf(LEFT, left, buffer, pcm_bufsize);
+    lowpass(top1, top1_smooth, frames);
+    lowpass(left, left_smooth, frames);
 
 	sel = 0;
 	digitalWrite(MUXSE, sel);
@@ -422,6 +470,8 @@ void readMics(int *top1, int *left, int *top2, int *right)
 	if (debug) printf("mux: %d, read %d frames to buffer\n", sel, err);
 	fillbuf(TOP2, top2, buffer, pcm_bufsize);
 	fillbuf(RIGHT, right, buffer, pcm_bufsize);
+	lowpass(top2, top2_smooth, frames);
+    lowpass(right, right_smooth, frames);
 
     if (err == -EPIPE) fprintf(stderr, "Overrun occurred: %d\n", err);
     if (err < 0) err = snd_pcm_recover(handle, err, 0);
