@@ -11,7 +11,6 @@ Table of Contents
       * [Prerequisites](#prerequisites)
       * [Installation](#installation)
       * [How to use](#how-to-use)
-      * [Social media links](#social-media-links)
       
 # acoustic-locator
 
